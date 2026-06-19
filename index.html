@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Портал объектов · ГИП</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f4f5f7; --surface:#ffffff; --surface-2:#f8f9fb;
+    --line:#e6e8ec; --line-2:#d7dade;
+    --text:#1a1d23; --muted:#6b7280; --hint:#9aa1ab;
+    --accent:#2f5fe0; --accent-soft:#eaf0fe;
+    --green:#1d9e75; --green-bg:#e1f5ee;
+    --amber:#c07b14; --amber-bg:#faeeda;
+    --blue:#185fa5; --blue-bg:#e6f1fb;
+    --red:#c0392b; --red-bg:#fcebeb;
+    --purple:#6a4bbd; --purple-bg:#eeeafe;
+    --gray:#7a8088; --gray-bg:#eef0f2;
+    --radius:14px; --radius-sm:10px;
+    --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.45;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none;cursor:pointer}
+  .wrap{max-width:1200px;margin:0 auto;padding:18px 22px 80px}
+  input,select,button{font-family:inherit}
+
+  /* ===== login ===== */
+  .login{min-height:90vh;display:flex;align-items:center;justify-content:center}
+  .login .card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:34px 32px;width:360px;text-align:center}
+  .login .logo{width:52px;height:52px;border-radius:14px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:23px;margin:0 auto 16px}
+  .login h1{font-size:20px;font-weight:800}
+  .login p{font-size:13px;color:var(--muted);margin:4px 0 22px}
+  .login input{width:100%;font-size:14.5px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin-bottom:11px;outline:none}
+  .login input:focus{border-color:var(--accent);background:#fff}
+  .login button{width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14.5px;font-weight:700;cursor:pointer;margin-top:4px}
+  .login .err{color:var(--red);font-size:13px;min-height:18px;margin-top:8px;font-weight:600}
+  .login .hint{font-size:12px;color:var(--hint);margin-top:14px}
+
+  /* ===== header ===== */
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+  .brand{display:flex;align-items:center;gap:12px;cursor:pointer}
+  .brand .logo{width:38px;height:38px;border-radius:11px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px}
+  .brand h1{font-size:18px;font-weight:800;letter-spacing:-.2px}
+  .brand p{font-size:12px;color:var(--muted);margin-top:1px}
+  .usermenu{display:flex;align-items:center;gap:14px}
+  .sync{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+  .sync .dot{width:8px;height:8px;border-radius:50%;background:var(--hint)}
+  .sync .dot.ok{background:var(--green)} .sync .dot.err{background:var(--red)}
+  .who{text-align:right}
+  .who .n{font-size:13.5px;font-weight:700}
+  .who .r{font-size:11.5px;color:var(--muted)}
+  .rolebadge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:7px;text-transform:uppercase;letter-spacing:.3px}
+  .role-admin{color:var(--purple);background:var(--purple-bg)}
+  .role-director{color:var(--blue);background:var(--blue-bg)}
+  .role-gip{color:var(--green);background:var(--green-bg)}
+  .nav{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+  .nav a{font-size:13.5px;font-weight:600;color:var(--muted);padding:8px 14px;border-radius:9px;border:1px solid transparent}
+  .nav a.active{color:var(--accent);background:var(--accent-soft)}
+  .nav a:hover{color:var(--accent)}
+
+  .btn{font-size:13px;font-weight:600;color:var(--muted);background:var(--surface);border:1px solid var(--line-2);border-radius:9px;padding:9px 14px;cursor:pointer}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.pri{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.pri:hover{color:#fff;filter:brightness(1.05)}
+  .btn.sm{padding:6px 10px;font-size:12px}
+  .btn.danger:hover{border-color:var(--red);color:var(--red)}
+
+  .ro-banner{background:var(--blue-bg);border:1px solid #cfe0f3;color:var(--blue);font-size:12.5px;font-weight:600;padding:9px 14px;border-radius:10px;margin-bottom:14px}
+
+  /* passport */
+  .passport{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 22px;margin-bottom:16px}
+  .ptitle{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+  .ptitle i{color:var(--accent);font-style:normal;font-weight:800}
+  .ptitle span{font-size:15px;font-weight:700}
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field.wide{grid-column:1/-1}
+  .field label{font-size:11.5px;color:var(--hint);text-transform:uppercase;letter-spacing:.3px;font-weight:600}
+  .field input,.field select{font-size:14px;font-weight:500;color:var(--text);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 12px;outline:none}
+  .field input:focus,.field select:focus{border-color:var(--accent);background:#fff}
+  .field input::placeholder{color:var(--hint);font-weight:400}
+  .field input:disabled,.field select:disabled{color:var(--muted);background:#f2f3f5;cursor:not-allowed}
+
+  .tabs{display:flex;gap:4px;margin-bottom:18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .tab{font-size:14px;font-weight:600;color:var(--muted);background:none;border:none;padding:11px 15px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+  .tab .cnt{font-size:11.5px;color:var(--hint);font-weight:600;margin-left:5px}
+
+  .hero{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin-bottom:14px}
+  .hero .top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .hero h2{font-size:17px;font-weight:800;display:flex;align-items:center;gap:9px}
+  .hero h2 .tag{font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:3px 9px;border-radius:7px;text-transform:uppercase;letter-spacing:.4px}
+  .hero .big{font-size:38px;font-weight:800;letter-spacing:-1px;line-height:1}
+  .hero .big small{font-size:18px;color:var(--hint)}
+  .hero .sub{font-size:13px;color:var(--muted);margin-top:3px}
+  .bar{height:9px;border-radius:6px;background:var(--gray-bg);margin-top:14px;overflow:hidden}
+  .bar > i{display:block;height:100%;border-radius:6px;background:var(--green);transition:width .3s}
+  .bar.thin{height:6px;margin-top:10px}
+
+  .dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px}
+  .dcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:15px 17px}
+  .dcard .k{font-size:12px;color:var(--muted);font-weight:600}
+  .dcard .v{font-size:24px;font-weight:800;margin-top:4px;letter-spacing:-.5px}
+
+  .flow{display:flex;align-items:center;justify-content:center;gap:10px;color:var(--hint);font-size:12.5px;font-weight:600;margin:10px 0 12px}
+  .flow .ln{flex:1;height:1px;background:var(--line)}
+  .blocked{background:var(--red-bg);border:1px solid #f2cfcf;border-radius:var(--radius-sm);padding:13px 16px;margin-bottom:14px}
+  .blocked .h{font-size:13px;font-weight:700;color:var(--red);margin-bottom:8px}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:#8a2d22;background:#fff;border:1px solid #f2cfcf;border-radius:8px;padding:5px 10px 5px 6px;margin:0 7px 7px 0}
+  .chip b{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--red);background:var(--red-bg);padding:2px 6px;border-radius:6px}
+  .ok-note{font-size:13px;color:var(--green);font-weight:600;background:var(--green-bg);border-radius:var(--radius-sm);padding:11px 16px;margin-bottom:14px}
+
+  .grouplabel{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin:16px 4px 9px}
+  .colhead{display:grid;gap:12px;padding:2px 14px 8px;font-size:11px;color:var(--hint);text-transform:uppercase;letter-spacing:.3px;font-weight:600}
+  .colhead.sec{grid-template-columns:48px 1fr 150px 124px 124px 158px}
+  .colhead.ird{grid-template-columns:1fr 160px 130px 158px}
+
+  .row{display:grid;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:9px 14px;margin-bottom:7px}
+  .row.sec{grid-template-columns:48px 1fr 150px 124px 124px 158px}
+  .row.ird{grid-template-columns:1fr 160px 130px 158px}
+  .row:hover{border-color:var(--line-2)}
+  .row .num{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 6px}
+  .row.r-marka .num{color:var(--accent)}
+  .row .title{font-size:13.5px;font-weight:600;letter-spacing:-.1px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .tcount{font-size:11px;font-weight:700;color:var(--amber);background:var(--amber-bg);border-radius:20px;padding:2px 8px;cursor:pointer}
+  .row input.cell,.row select.cell{font-size:13px;color:var(--text);background:transparent;border:1px solid transparent;border-radius:8px;padding:7px 9px;outline:none;width:100%}
+  .row input.cell:hover{border-color:var(--line)}
+  .row input.cell:focus{border-color:var(--accent);background:var(--surface-2)}
+  .row input.cell::placeholder{color:var(--hint)}
+  .row input[type=date]{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .row input:disabled,.row select:disabled{color:var(--muted);cursor:not-allowed;opacity:.8}
+
+  .stsel{font-size:12.5px;font-weight:600;border:1px solid var(--line);border-radius:20px;padding:6px 10px;cursor:pointer;outline:none;width:100%}
+  .stsel:disabled{cursor:not-allowed;opacity:.85}
+  .b-none{color:var(--gray);background:var(--gray-bg);border-color:var(--gray-bg)}
+  .b-work{color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bg)}
+  .b-check{color:var(--blue);background:var(--blue-bg);border-color:var(--blue-bg)}
+  .b-late{color:var(--red);background:var(--red-bg);border-color:var(--red-bg)}
+  .b-done{color:var(--green);background:var(--green-bg);border-color:var(--green-bg)}
+  .b-corr{color:var(--purple);background:var(--purple-bg);border-color:var(--purple-bg)}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 16px;align-items:center}
+  .empty-note{padding:26px 18px;text-align:center;color:var(--hint);font-size:13.5px;line-height:1.6}
+
+  /* tasks */
+  .task{display:grid;grid-template-columns:1fr 150px 140px 120px 130px 120px 30px;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:9px 12px;margin-bottom:7px}
+  .task input,.task select{font-size:13px;border:1px solid transparent;border-radius:8px;padding:7px 8px;outline:none;width:100%;background:transparent}
+  .task input:hover{border-color:var(--line)} .task input:focus{border-color:var(--accent);background:var(--surface-2)}
+  .task input[type=date]{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .task .del{color:var(--hint);cursor:pointer;text-align:center;font-size:16px}
+  .task .del:hover{color:var(--red)}
+  .colhead.task{grid-template-columns:1fr 150px 140px 120px 130px 120px 30px}
+  .pri-low{color:var(--gray);background:var(--gray-bg)} .pri-mid{color:var(--blue);background:var(--blue-bg)}
+  .pri-high{color:var(--amber);background:var(--amber-bg)} .pri-crit{color:var(--red);background:var(--red-bg)}
+  .tk-new{color:var(--gray);background:var(--gray-bg)} .tk-work{color:var(--amber);background:var(--amber-bg)} .tk-done{color:var(--green);background:var(--green-bg)}
+  .tk-check{color:var(--blue);background:var(--blue-bg)} .tk-fix{color:var(--red);background:var(--red-bg)}
+  .task select{font-weight:600;border-radius:20px;text-align:center}
+
+  /* inline task panel under a section */
+  .secwrap{margin-bottom:7px}
+  .secwrap .row.sec{margin-bottom:0}
+  .secwrap.open .row.sec{border-color:var(--accent);border-bottom-color:var(--line)}
+  .chev-sec{margin-left:auto;color:var(--hint);font-size:11px;transition:transform .15s}
+  .secwrap.open .chev-sec{transform:rotate(90deg);color:var(--accent)}
+  .taskpanel{background:var(--surface-2);border:1px solid var(--accent);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);padding:11px 14px 13px}
+  .taskpanel .ph{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .tk{display:grid;grid-template-columns:1fr 150px 108px 108px 118px 96px 26px;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin-bottom:6px}
+  .tdate{font-size:11px;color:var(--muted);white-space:nowrap;font-family:var(--mono)}
+  .tk2{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:9px 11px;margin-bottom:7px}
+  .tk-title{width:100%;font-size:13.5px;font-weight:600;border:1px solid transparent;border-radius:7px;padding:6px 8px;outline:none;background:transparent}
+  .tk-title:hover{border-color:var(--line)} .tk-title:focus{border-color:var(--accent);background:var(--surface-2)}
+  .tk-meta{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:7px}
+  .tk-meta select,.tk-meta input{font-size:12px;border:1px solid var(--line);border-radius:7px;padding:5px 7px;outline:none;background:var(--surface)}
+  .tk-meta input[type=date]{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+  .tk-meta select:focus,.tk-meta input:focus{border-color:var(--accent)}
+  .tk-from{font-weight:600;color:#3c3489;background:#eeedfe;border-color:#cecbf6}
+  .tk-meta select.pri-low,.tk-meta select.pri-mid,.tk-meta select.pri-high,.tk-meta select.pri-crit,.tk-meta select.tk-new,.tk-meta select.tk-work,.tk-meta select.tk-done{font-weight:600;border-radius:20px;border:none}
+  .tk-meta .del{color:var(--hint);cursor:pointer;font-size:16px;padding:0 4px;margin-left:auto}.tk-meta .del:hover{color:var(--red)}
+  .taccept{font-size:11.5px;font-weight:700;color:var(--green);background:var(--green-bg);padding:5px 10px;border-radius:20px;white-space:nowrap}
+  .tk-accept{white-space:nowrap}
+  .tk-return:hover{border-color:var(--red);color:var(--red)}
+  .tinfo{font-size:11.5px;font-weight:600;color:var(--blue);background:var(--blue-bg);padding:5px 10px;border-radius:20px;white-space:nowrap}
+  .thist-btn{font-size:11px;font-weight:600;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);padding:4px 8px;border-radius:20px;cursor:pointer;white-space:nowrap}
+  .thist-btn.on{color:var(--accent);border-color:var(--accent)}
+  .thist{margin-top:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:9px 12px}
+  .thist .he{font-size:12px;color:var(--text);padding:3px 0;border-bottom:1px solid var(--line)}
+  .thist .he:last-child{border-bottom:none}
+  .thist .ht{font-family:var(--mono);color:var(--muted)} .thist .hb{color:var(--hint)} .thist .hc{color:var(--blue);font-style:normal}
+  .lk-st{font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:20px;white-space:nowrap}
+  .disc{margin-top:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+  .msg{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;margin-bottom:6px}
+  .msg-h{font-size:11.5px;color:var(--muted)} .msg-h b{color:var(--text);font-weight:600}
+  .msg-h .ht{font-family:var(--mono);margin-left:6px}
+  .msg-t{font-size:13px;margin-top:3px;white-space:pre-wrap;word-break:break-word}
+  .msg-f{margin-top:4px} .msg-f a{font-size:12.5px;font-weight:600;cursor:pointer}
+  .disc-form{margin-top:8px}
+  .disc-form textarea{width:100%;font-family:inherit;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;outline:none;resize:vertical;background:var(--surface)}
+  .disc-form textarea:focus{border-color:var(--accent)}
+  .disc-actions{display:flex;gap:8px;align-items:center;margin-top:7px;flex-wrap:wrap}
+  .filebtn{cursor:pointer}
+  .lkact{display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .sd-dates{display:flex;align-items:center;flex-wrap:wrap;gap:7px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px;margin-top:4px}
+  .sd-dl{font-weight:600;color:var(--text)} .sd-cust{margin-left:14px;color:var(--accent)}
+  .sd-dates input{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:7px;padding:6px 8px;outline:none;background:var(--surface)}
+  .sd-dates input:focus{border-color:var(--accent)}
+  .glegend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:0 2px 10px;align-items:center}
+  .glegend i{display:inline-block;width:16px;height:10px;border-radius:3px;vertical-align:middle;margin-right:5px}
+  .glegend .lg-pod{background:#5dcaa5} .glegend .lg-cust{background:rgba(47,95,224,0.1);border:1.5px dashed #2f5fe0}
+  .glegend .lg-q{width:10px;height:10px;transform:rotate(45deg);background:#dd9c3e}
+  .tk:last-child{margin-bottom:0}
+  .tk input,.tk select{font-size:12.5px;border:1px solid transparent;border-radius:7px;padding:6px 7px;width:100%;outline:none;background:transparent}
+  .tk input:hover{border-color:var(--line)} .tk input:focus{border-color:var(--accent);background:#fff}
+  .tk input[type=date]{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+  .tk select{font-weight:600;border-radius:20px;text-align:center}
+  .tk select:disabled,.tk input:disabled{opacity:.85;cursor:not-allowed}
+  .tk .del{color:var(--hint);cursor:pointer;text-align:center;font-size:15px}
+  .tk .del:hover{color:var(--red)}
+
+  /* urgent tasks on dashboard */
+  .urgent{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:14px}
+  .urgent .u{display:flex;align-items:center;gap:10px;padding:9px 15px;border-bottom:1px solid var(--line);cursor:pointer;font-size:13px}
+  .urgent .u:last-child{border-bottom:none}
+  .urgent .u:hover{background:var(--surface-2)}
+  .urgent .u .ic{color:var(--amber)}
+  .urgent .u .tt{font-weight:600}
+  .urgent .u .sc{font-size:11.5px;color:var(--muted)}
+  .urgent .u .due{margin-left:auto;font-size:12px;font-weight:700;white-space:nowrap}
+
+  @media(max-width:860px){ .tk,.task,.colhead.task{grid-template-columns:1fr 1fr} }
+
+  /* portfolio */
+  .pf-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px}
+  .pf-head h2{font-size:18px;font-weight:800}
+  .objgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+  .objcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:17px 19px;cursor:pointer;transition:border-color .15s}
+  .objcard:hover{border-color:var(--accent)}
+  .objcard .code{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:3px 8px;border-radius:7px;display:inline-block;margin-bottom:8px}
+  .objcard h3{font-size:15px;font-weight:700;letter-spacing:-.1px;min-height:40px}
+  .objcard .gip{font-size:12.5px;color:var(--muted);margin:6px 0 12px}
+  .objcard .stat{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:8px}
+  .objcard .stat b{font-weight:800;color:var(--text)}
+
+  /* users table */
+  .utable{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .urow{display:grid;grid-template-columns:1.1fr 0.9fr 0.9fr 1fr 1.2fr 130px 78px;gap:10px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line)}
+  .urow.head{background:var(--surface-2);font-size:11px;text-transform:uppercase;letter-spacing:.3px;color:var(--hint);font-weight:700}
+  .urow:last-child{border-bottom:none}
+  .urow input,.urow select{font-size:13px;border:1px solid var(--line);border-radius:8px;padding:7px 9px;outline:none;width:100%;background:var(--surface-2)}
+  .urow input:focus{border-color:var(--accent)}
+
+  /* gantt */
+  .gantt{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:8px 0;overflow-x:auto}
+  .grow{display:grid;grid-template-columns:280px 1fr;align-items:stretch;border-bottom:1px solid var(--line)}
+  .grow:last-child{border-bottom:none}
+  .glabel{padding:10px 14px;border-right:1px solid var(--line);min-width:0}
+  .gl-name{font-size:13px;font-weight:600;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .gl-code{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:2px 6px;border-radius:6px;margin-right:6px}
+  .gl-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px}
+  .gl-meta .w{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .gtrack{position:relative;min-width:560px;min-height:54px;padding:0}
+  .gaxis{position:relative;height:26px;min-width:560px;border-bottom:1px solid var(--line)}
+  .gtick{position:absolute;top:0;height:100%;border-left:1px dashed var(--line);font-family:var(--mono);font-size:10.5px;color:var(--hint);padding-left:4px;padding-top:7px}
+  .gridline{position:absolute;top:0;bottom:0;border-left:1px dashed var(--line)}
+  .gbar{position:absolute;top:14px;height:17px;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;z-index:2}
+  .gbar-cust{position:absolute;top:35px;height:12px;border-radius:5px;border:1.5px dashed #2f5fe0;background:rgba(47,95,224,0.08);display:flex;align-items:center;padding:0 6px;font-size:9.5px;font-weight:700;color:#185fa5;white-space:nowrap;overflow:hidden}
+  .gtoday{position:absolute;top:0;bottom:0;border-left:2px solid var(--accent);z-index:3}
+  .gtoday span{position:absolute;top:-2px;left:3px;font-size:10px;font-weight:700;color:var(--accent)}
+  .gleft{display:inline-block;font-size:11px;font-weight:600;margin-left:8px;padding:3px 8px;border-radius:20px}
+  .l-ok{color:var(--green);background:var(--green-bg)} .l-soon{color:var(--amber);background:var(--amber-bg)}
+  .l-late{color:var(--red);background:var(--red-bg)} .l-done{color:var(--gray);background:var(--gray-bg)}
+  .gantt-head{display:grid;grid-template-columns:280px 1fr;border-bottom:1px solid var(--line)}
+  .gantt-head .gl{padding:9px 14px;font-size:11px;color:var(--hint);text-transform:uppercase;letter-spacing:.3px;font-weight:600;border-right:1px solid var(--line)}
+
+  .role-podryad{color:var(--amber);background:var(--amber-bg)}
+  .navbadge{display:inline-block;min-width:18px;text-align:center;font-size:11px;font-weight:700;color:#fff;background:var(--red);border-radius:20px;padding:1px 6px;margin-left:7px}
+
+  /* схема */
+  .schema{display:flex;flex-direction:column;gap:12px}
+  .zone{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px 16px}
+  .zlabel{font-size:11px;font-weight:700;color:var(--hint);text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px}
+  .zbody{display:flex;flex-wrap:wrap;gap:14px 16px;align-items:flex-end}
+  .zbody.center{justify-content:center;gap:40px}
+  .subz{width:100%;font-size:12px;font-weight:700;color:var(--muted);margin:4px 0 2px}
+  .snode{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;width:62px}
+  .snode:hover .circle{transform:scale(1.07)}
+  .pips{display:flex;gap:3px;height:11px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:62px}
+  .pip{width:9px;height:9px;border-radius:3px;display:inline-block}
+  .pip.pri-low{background:#b9bdc4}.pip.pri-mid{background:#5a8fd6}.pip.pri-high{background:#dd9c3e}.pip.pri-crit{background:#d4685d}
+  .pip-more{font-size:9px;color:var(--muted);font-weight:700}
+  .circle{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .12s}
+  .core{width:40px;height:40px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text)}
+  .snlbl{font-size:10px;color:var(--muted);text-align:center;line-height:1.1;max-width:62px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bignode{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .bigcirc{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .bigcore{width:74px;height:74px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center}
+  .bigpct{font-size:22px;font-weight:800}
+  .biglbl{font-size:13px;font-weight:700}
+  .inode{display:flex;flex-direction:column;align-items:center}
+  .icirc{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10.5px;font-weight:700;font-family:var(--mono)}
+
+  /* личный кабинет */
+  .lkblock{margin-bottom:18px}
+  .lkh{font-size:13.5px;font-weight:700;margin:0 2px 10px}
+  .lkblock.over{background:var(--red-bg);border:1px solid #f2cfcf;border-radius:var(--radius);padding:14px 16px}
+  .lkcard{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:11px 14px;margin-bottom:8px}
+  .lkhead{display:flex;align-items:center;gap:12px}
+  .lkact{flex-wrap:wrap;justify-content:flex-end}
+  .lkblock.review{background:var(--blue-bg);border:1px solid #cfe0f3;border-radius:var(--radius);padding:14px 16px}
+  .lkcard.c-review{border-color:#9cc2ec}
+  .lkcard.c-over{border-color:#e89b95;background:#fff}
+  .lkcard.c-mute{opacity:.72}
+  .lkmain{flex:1;cursor:pointer;min-width:0}
+  .lktitle{font-size:14px;font-weight:600}
+  .lkmeta{font-size:12px;color:var(--muted);margin-top:3px}
+  .lkpr{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+  .lkcard select{font-size:12.5px;font-weight:600;border:1px solid var(--line);border-radius:20px;padding:6px 10px;outline:none}
+
+  .role-smetchik{color:#993c1d;background:#faece7}
+  .role-pom_gip{color:#0f6e56;background:#e1f5ee}
+  .role-rp{color:#854f0b;background:#faeeda}
+  .pipc{display:inline-flex;align-items:center;gap:2px;font-size:9.5px;font-weight:800;color:var(--muted)}
+  .fdot{display:inline-block;width:11px;height:11px;border-radius:50%;flex-shrink:0}
+  .circle{position:relative}
+  .exdot{position:absolute;right:-2px;bottom:-2px;width:13px;height:13px;border-radius:50%;border:2px solid var(--surface)}
+  .exp-block{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px}
+  .exp-head{display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:700}
+  .exp-head i{color:var(--accent);font-style:normal}
+  .exp-cnt{font-size:13px;font-weight:700;color:var(--muted)}
+  .exp-bar{height:6px;border-radius:4px;background:var(--gray-bg);margin:10px 0 12px;overflow:hidden}
+  .exp-bar>i{display:block;height:100%;background:var(--green);border-radius:4px;transition:width .3s}
+  .exp-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
+  .exp-row:last-child{border-bottom:none}
+  .exp-chk{flex:1;display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13.5px}
+  .exp-chk input{width:18px;height:18px;cursor:pointer;flex-shrink:0}
+  .exp-row.done .exp-st{color:var(--green);font-weight:600}
+  .exp-date{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:8px;padding:7px 9px;outline:none;background:var(--surface-2)}
+  .exp-date:focus{border-color:var(--accent)}
+  .assigns{display:flex;flex-direction:column;gap:8px}
+  .assign-head{display:grid;grid-template-columns:150px 1fr 1.2fr 1fr;gap:10px;font-size:11px;color:var(--hint);text-transform:uppercase;letter-spacing:.3px;font-weight:600;padding:0 2px}
+  .assign-row{display:grid;grid-template-columns:150px 1fr 1.2fr 1fr;gap:10px;align-items:center}
+  .assign-label{font-size:13px;font-weight:600}
+  .assign-row input,.assign-row select{font-size:13px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;outline:none;background:var(--surface-2);min-width:0}
+  .assign-row input:focus,.assign-row select:focus{border-color:var(--accent)}
+  .assign-row input:disabled,.assign-row select:disabled{color:var(--muted);background:#f2f3f5;cursor:not-allowed}
+  @media(max-width:760px){.assign-head{display:none}.assign-row{grid-template-columns:1fr}}
+  .member-wrap{border-bottom:1px solid var(--line)} .member-wrap:last-of-type{border-bottom:none} .member-wrap .member{border-bottom:none}
+  .accbadge{font-size:10.5px;font-weight:700;color:var(--amber);background:var(--amber-bg);padding:1px 7px;border-radius:6px}
+  .access-ed{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:11px 13px;margin:0 0 10px}
+  .acc-row{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:8px;font-size:13px}
+  .acc-row label{display:flex;align-items:center;gap:7px;cursor:pointer}
+  .acc-secs{border-top:1px solid var(--line);padding-top:9px}
+  .accchip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;background:var(--surface);border:1px solid var(--line-2);border-radius:7px;padding:4px 9px;margin:0 6px 6px 0}
+  .accchip span{cursor:pointer;color:var(--hint);font-weight:700}.accchip span:hover{color:var(--red)}
+
+  /* флаги раздела */
+  .flag{font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;margin-left:6px;vertical-align:middle}
+  .fl-exon{color:#fff;background:var(--accent)} .fl-link{color:var(--accent);background:var(--accent-soft)}
+  .fl-ok{color:var(--green);background:var(--green-bg)} .fl-old{color:var(--red);background:var(--red-bg)}
+  .inclchk{width:15px;height:15px;margin-right:6px;cursor:pointer;vertical-align:middle}
+  .row.off{opacity:.5} .row.off .title{text-decoration:line-through;text-decoration-color:var(--line-2)}
+  .custcode{width:56px;font-size:12px;font-family:var(--mono);border:1px solid var(--line);border-radius:6px;padding:5px 5px;margin-left:5px;outline:none;background:var(--surface)}
+  .custname{flex:1;min-width:120px;font-size:13px;border:1px solid var(--line);border-radius:6px;padding:6px 8px;outline:none;background:var(--surface)}
+  .custcode:focus,.custname:focus{border-color:var(--accent)}
+  .row .title .custname{font-weight:400}
+  .delcust{color:var(--hint);cursor:pointer;font-size:17px;margin-left:8px;font-weight:700;flex-shrink:0}
+  .delcust:hover{color:var(--red)}
+  .addsec{margin:10px 0 4px}
+  .picker{display:flex;gap:8px;margin:0 0 14px;flex-wrap:wrap;align-items:center}
+  .picker select{flex:1;min-width:240px;font-size:13px;border:1px solid var(--line-2);border-radius:9px;padding:9px 11px;background:var(--surface);outline:none;cursor:pointer}
+  .picker select:focus{border-color:var(--accent)}
+  .picker select:disabled{color:var(--hint);background:var(--surface-2);cursor:default}
+
+  /* карточка-деталь раздела */
+  .secdet{background:var(--surface-2);border:1px solid var(--accent);border-top:none;padding:12px 14px}
+  .sd-grid{display:grid;grid-template-columns:2fr 1fr auto;gap:12px;align-items:end;margin-bottom:10px}
+  .sd-f label{display:block;font-size:11px;color:var(--hint);text-transform:uppercase;letter-spacing:.3px;font-weight:600;margin-bottom:4px}
+  .sd-f input,.sd-f select{width:100%;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;outline:none;background:var(--surface)}
+  .sd-link{display:flex;gap:6px}.sd-link input{flex:1}
+  .sd-chk{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;white-space:nowrap;padding-bottom:8px}
+  .sd-hist{border-top:1px solid var(--line);padding-top:9px}
+  .sd-ht{font-size:11px;font-weight:700;color:var(--hint);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px}
+  .he{font-size:12px;color:var(--text);padding:2px 0}.he .ht{font-family:var(--mono);color:var(--muted)}.he .hb{color:var(--hint)}.he.muted{color:var(--hint);font-style:italic}
+
+  /* gantt диапазоны и вопросы */
+  .grange{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+  .grange .gr{font-size:12.5px;font-weight:600;color:var(--muted);background:var(--surface);border:1px solid var(--line-2);border-radius:8px;padding:7px 13px;cursor:pointer}
+  .grange .gr.on{color:#fff;background:var(--accent);border-color:var(--accent)}
+  .gpin{position:absolute;top:1px;width:11px;height:11px;border-radius:3px;transform:translateX(-50%) rotate(45deg);border:2px solid var(--surface);z-index:4}
+  .gtq{font-size:11px;font-weight:700;color:var(--amber);margin-left:7px}
+  .gq-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+  .gq{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:20px;cursor:pointer;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .gq:hover{filter:brightness(.96)}
+  .gq-more{font-size:10.5px;font-weight:700;color:var(--muted);background:var(--gray-bg);padding:2px 8px;border-radius:20px;cursor:pointer}
+  .snmute{font-size:12.5px;color:var(--hint);font-style:italic}
+
+  /* команда / контакты */
+  .member{display:flex;align-items:center;gap:12px;padding:9px 2px;border-bottom:1px solid var(--line)}
+  .member:last-of-type{border-bottom:none}
+  .mav{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+  .minfo{flex:1;min-width:0}.mn{font-size:14px;font-weight:600}
+  .mc{font-size:12px;color:var(--muted);margin-top:2px;display:flex;gap:14px;flex-wrap:wrap}
+  .manual-fields{display:grid;grid-template-columns:1.3fr 1fr 1fr 1.2fr;gap:8px;flex:1}
+  .manual-fields input{font-size:13px;border:1px solid var(--line);border-radius:7px;padding:7px 9px;outline:none;background:var(--surface);min-width:0}
+  .manual-fields input:focus{border-color:var(--accent)}
+  @media(max-width:720px){.manual-fields{grid-template-columns:1fr 1fr}}
+  .addmember{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+  .addmember select{flex:1;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--surface-2);outline:none}
+  .lktag{font-size:11px;font-weight:700;color:var(--amber);background:var(--amber-bg);padding:1px 7px;border-radius:6px;margin-left:6px}
+
+  .src{margin-top:22px;padding:16px 18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);font-size:12.5px;color:var(--muted);line-height:1.6}
+  .src b{color:var(--text)}
+  @media(max-width:860px){
+    .row.sec,.colhead.sec{grid-template-columns:44px 1fr}
+    .row.sec .title{grid-column:2}
+    .row.sec input.cell,.row.sec .stsel{grid-column:1/-1}
+    .row.ird,.colhead.ird{grid-template-columns:1fr}
+    .task,.colhead.task{grid-template-columns:1fr 1fr}
+    .colhead{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap"><div id="root"></div></div>
+
+<script>
+/* ===================== Supabase ===================== */
+const SB_URL='https://urfnpjumxkewyizaxgns.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyZm5wanVteGtld3lpemF4Z25zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMzkyNDMsImV4cCI6MjA5MTgxNTI0M30.vDbdyE3Z4whApQo50Mfgor11SL-dT1PWDOygipxVKtE';
+const SB_H={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
+
+/* ===================== Каркас ===================== */
+const STAGE_P=[
+  {k:'p1',n:'1',t:'Пояснительная записка'},
+  {k:'p2',n:'2',t:'Схема планировочной организации земельного участка'},
+  {k:'p3',n:'3',t:'Архитектурные решения'},
+  {k:'p4',n:'4',t:'Конструктивные и объёмно-планировочные решения'},
+  {k:'p5',n:'5',t:'Сведения об инженерном оборудовании и о сетях ИТО'},
+  {k:'p6',n:'6',t:'Проект организации строительства'},
+  {k:'p7',n:'7',t:'Проект организации работ по сносу или демонтажу'},
+  {k:'p8',n:'8',t:'Перечень мероприятий по охране окружающей среды'},
+  {k:'p9',n:'9',t:'Мероприятия по обеспечению пожарной безопасности'},
+  {k:'p10',n:'10',t:'Мероприятия по обеспечению доступа инвалидов'},
+  {k:'p10_1',n:'10¹',t:'Требования к безопасной эксплуатации объектов'},
+  {k:'p11',n:'11',t:'Смета на строительство'},
+  {k:'p11_1',n:'11¹',t:'Мероприятия по энергоэффективности и учёту ресурсов'},
+  {k:'p12',n:'12',t:'Иная документация (изыскания, обследования)'}
+];
+const STAGE_R=[
+  {group:'Общие данные',items:[{k:'r_srd',m:'СРД',t:'Состав рабочей документации'},{k:'r_gp',m:'ГП',t:'Генеральный план'}]},
+  {group:'Архитектура и конструкции',items:[{k:'r_ar',m:'АР',t:'Архитектурные решения'},{k:'r_as',m:'АС',t:'Архитектурно-строительные решения, ограждения'},{k:'r_kr',m:'КР',t:'Конструктивные решения (КЖ, КМ, КД)'}]},
+  {group:'Инженерные системы и сети (ИОС)',items:[
+    {k:'r_eom',m:'ЭОМ',t:'Силовое электрооборудование и электроосвещение'},{k:'r_es',m:'ЭС',t:'Электроснабжение (наружные сети)'},{k:'r_en',m:'ЭН',t:'Наружное освещение'},
+    {k:'r_vk',m:'ВК',t:'Водопровод и канализация (внутренние)'},{k:'r_nvk',m:'НВК',t:'Наружные сети водоснабжения и канализации'},
+    {k:'r_ov',m:'ОВ',t:'Отопление и вентиляция'},{k:'r_ts',m:'ТС',t:'Тепловые сети'},{k:'r_tm',m:'ТМ',t:'Тепломеханические решения'},
+    {k:'r_ss',m:'СС',t:'Сети связи'},{k:'r_ps',m:'ПС',t:'Пожарная сигнализация и пожаротушение'},
+    {k:'r_gsv',m:'ГСВ',t:'Газоснабжение внутреннее'},{k:'r_gsn',m:'ГСН',t:'Газоснабжение наружное'},{k:'r_tx',m:'ТХ',t:'Технологические решения'}]},
+  {group:'Организация, экология, безопасность',items:[{k:'r_pos',m:'ПОС',t:'Проект организации строительства'},{k:'r_oos',m:'ООС',t:'Охрана окружающей среды'},{k:'r_pb',m:'ПБ',t:'Пожарная безопасность'}]},
+  {group:'Сметная документация',items:[{k:'r_sm',m:'СМ',t:'Сметная документация'}]}
+];
+const IRD=[
+  {group:'Правоустанавливающие и градостроительные',items:[{k:'i_egrn',t:'Выписка из ЕГРН на земельный участок'},{k:'i_kpt',t:'Кадастровый план территории'},{k:'i_gpzu',t:'Градостроительный план ЗУ (ГПЗУ)'},{k:'i_sit',t:'Ситуационный план расположения участка'}]},
+  {group:'Технические условия (ТУ)',items:[{k:'i_tu_vs',t:'ТУ на водоснабжение'},{k:'i_tu_vo',t:'ТУ на водоотведение'},{k:'i_tu_es',t:'ТУ на электроснабжение'},{k:'i_tu_ts',t:'ТУ на теплоснабжение'},{k:'i_tu_gs',t:'ТУ на газоснабжение'},{k:'i_tu_ss',t:'ТУ на сети связи'}]},
+  {group:'Исходные данные и изыскания',items:[{k:'i_znp',t:'Задание на проектирование'},{k:'i_obsled',t:'Технический отчёт об обследовании'},{k:'i_geod',t:'Инженерно-геодезические изыскания'},{k:'i_geol',t:'Инженерно-геологические изыскания'},{k:'i_ecol',t:'Инженерно-экологические изыскания'}]}
+];
+const IRD_DEPS={i_gpzu:['p2','r_gp'],i_sit:['r_gp'],i_kpt:['p2'],i_tu_vs:['r_vk','r_nvk'],i_tu_vo:['r_vk','r_nvk'],i_tu_es:['r_eom','r_es','r_en'],i_tu_ts:['r_ov','r_ts','r_tm'],i_tu_gs:['r_gsv','r_gsn'],i_tu_ss:['r_ss'],i_obsled:['p4','p12'],i_geod:['p12','r_gp'],i_geol:['p4','p12'],i_ecol:['p8'],i_znp:['p1']};
+
+const STATUSES=['не начат','в работе','на проверке','замечания','сдан','корректировка'];
+const STAT_CLS={'не начат':'b-none','в работе':'b-work','на проверке':'b-check','замечания':'b-late','сдан':'b-done','корректировка':'b-corr'};
+const STAT_COLOR={'не начат':'#b9bdc4','в работе':'#dd9c3e','на проверке':'#5a8fd6','замечания':'#d4685d','сдан':'#2bb189','корректировка':'#9580d4'};
+const IRD_STATUSES=['нет','запрошено','ожидается','получено','не требуется'];
+const IRD_CLS={'нет':'b-late','запрошено':'b-work','ожидается':'b-check','получено':'b-done','не требуется':'b-none'};
+const PRIOS=['низкий','средний','высокий','критичный'];
+const PRIO_CLS={'низкий':'pri-low','средний':'pri-mid','высокий':'pri-high','критичный':'pri-crit'};
+const FROM_COLOR={'Руководитель проекта':'#534ab7','Заказчик':'#185fa5','Стройка':'#854f0b','Административные':'#5f5e5a','Исполнитель':'#0f6e56','Функциональный пользователь':'#993556'};
+const FROM_SHORT={'Руководитель проекта':'РП','Заказчик':'Заказчик','Стройка':'Стройка','Административные':'Адм.','Исполнитель':'Исполн.','Функциональный пользователь':'Функц. польз.'};
+const EXON_ST=['—','направлен','согласован','замечания'];
+const EXON_COLOR={'направлен':'#EF9F27','согласован':'#2bb189','замечания':'#d4685d'};
+const EXPERTISE_STAGES=['Комплект для ГГЭ на проверку заказчику','Согласование комплекта для ГГЭ с заказчиком','Открытие ЛК','Загрузка комплекта в ГГЭ + подписание заказчиком','Предпроверка в ГГЭ','Оплата заказ-наряда','Получение замечаний','Получение положительного'];
+const EXPERTISE_PARTS=[['tech','Техническая документация'],['smeta','Смета']];
+const TK_STATUSES=['новая','в работе','на проверке','на корректировке','выполнена'];
+const TK_CLS={'новая':'tk-new','в работе':'tk-work','на проверке':'tk-check','на корректировке':'tk-fix','выполнена':'tk-done'};
+const TASK_FROM=['Руководитель проекта','Заказчик','Стройка','Административные','Исполнитель','Функциональный пользователь'];
+const ROLE_NAME={admin:'Администратор',director:'Генеральный директор',rp:'Руководитель проекта',gip:'ГИП',podryad:'Подряд',smetchik:'Сметчик',pom_gip:'Помощник ГИПа'};
+const ROLE_LIST=['gip','pom_gip','podryad','smetchik','rp','director','admin'];
+const STAT_FRAC={'не начат':0,'в работе':0.4,'на проверке':0.7,'замечания':0.5,'сдан':1,'корректировка':0.85};
+const ACTUALS=['—','актуален','откорректирован','устарел'];
+const GANTT_RANGES=[['today','Сегодня',1],['week','Неделя',7],['month','Месяц',31],['quarter','Квартал',92],['year','Год',365],['all','Всё',0]];
+
+const PASSPORT_FIELDS=[
+  {k:'code',label:'Шифр объекта',ph:'напр. 15-24'},
+  {k:'name',label:'Наименование объекта',ph:'Полное наименование объекта',wide:true},
+  {k:'address',label:'Адрес',ph:'Адрес объекта',wide:true},
+  {k:'dateSign',label:'Дата подписания договора',ph:'дд.мм.гггг'},
+  {k:'dateEnd',label:'Дата окончания',ph:'дд.мм.гггг'},
+  {k:'cost',label:'Стоимость ПИР, ₽',ph:'0'},
+  {k:'area',label:'Площадь',ph:'м²'},
+  {k:'volume',label:'Строительный объём',ph:'м³'},
+  {k:'floors',label:'Этажность',ph:'эт.'}
+];
+
+/* ===================== Состояние ===================== */
+let DB={users:[],objects:[],backoffice:[]};
+let session={userId:null};
+let currentUser=null, currentObjId=null, view='login', activeTab='dash', hideEmpty=false, openSec={}, configMode=false, ganttRange='all', histOpen={}, openDisc={}, openAccess={};
+const MAX_FILE=3*1024*1024;
+function fmtSize(n){return n>=1048576?(n/1048576).toFixed(1)+' МБ':Math.max(1,Math.round(n/1024))+' КБ';}
+
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const esc=s=>(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function loadLocal(){try{const d=JSON.parse(localStorage.getItem('piron_db_v3'));if(d)DB=d;}catch(e){}try{const s=JSON.parse(localStorage.getItem('piron_session'));if(s)session=s;}catch(e){}}
+function saveLocal(){localStorage.setItem('piron_db_v3',JSON.stringify(DB));localStorage.setItem('piron_session',JSON.stringify(session));}
+
+/* ---- cloud ---- */
+function setSync(ok,msg){const d=document.getElementById('syncDot'),t=document.getElementById('syncTxt');if(d)d.className='dot '+(ok?'ok':'err');if(t)t.textContent=msg||'';}
+function flashSaved(){setSync(true,'Сохранение…');}
+function isEditing(){const a=document.activeElement;return a&&(a.tagName==='INPUT'||a.tagName==='SELECT')&&a.closest('#root');}
+const pushT={};
+function pushKey(key,data){
+  saveLocal();clearTimeout(pushT[key]);
+  pushT[key]=setTimeout(()=>{
+    fetch(SB_URL+'/rest/v1/storage',{method:'POST',headers:Object.assign({},SB_H,{'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'}),body:JSON.stringify({key:key,value:JSON.stringify(data)})})
+    .then(r=>setSync(r.ok,r.ok?'Сохранено ☁':'Ошибка сохранения')).catch(()=>setSync(false,'Нет соединения'));
+  },900);
+}
+function persistObj(){pushKey('piron_objects',DB.objects);flashSaved();}
+function persistUsers(){pushKey('piron_users',DB.users);flashSaved();}
+function persistBO(){pushKey('piron_backoffice',DB.backoffice);flashSaved();}
+function mergeById(remote,local){
+  if(!Array.isArray(remote))remote=[];if(!Array.isArray(local))local=[];
+  const map={};remote.forEach(x=>{if(x&&x.id)map[x.id]=x;});
+  local.forEach(x=>{if(x&&x.id&&!map[x.id])map[x.id]=x;}); // локальные записи, которых нет в облаке, НЕ теряем
+  return Object.keys(map).map(k=>map[k]);
+}
+function fetchRemote(){
+  if(isEditing())return;
+  fetch(SB_URL+'/rest/v1/storage?select=key,value&key=in.(piron_users,piron_objects,piron_backoffice)',{headers:SB_H})
+   .then(r=>r.json()).then(rows=>{
+     let ru,ro,rb;
+     if(Array.isArray(rows))rows.forEach(row=>{try{const v=JSON.parse(row.value);if(row.key==='piron_users')ru=v;if(row.key==='piron_objects')ro=v;if(row.key==='piron_backoffice')rb=v;}catch(e){}});
+     if(ru!==undefined){const n=DB.users.length;DB.users=mergeById(ru,DB.users);if(DB.users.length>(ru.length||0))pushKey('piron_users',DB.users);}
+     if(ro!==undefined){DB.objects=mergeById(ro,DB.objects);if(DB.objects.length>(ro.length||0))pushKey('piron_objects',DB.objects);}
+     if(rb!==undefined){DB.backoffice=mergeById(rb,DB.backoffice);if(DB.backoffice.length>(rb.length||0))pushKey('piron_backoffice',DB.backoffice);}
+     ensureSeed();
+     if(session.userId)currentUser=DB.users.find(u=>u.id===session.userId)||currentUser;
+     saveLocal();setSync(true,'Синхронизировано');render();
+   }).catch(()=>setSync(false,'Нет соединения'));
+}
+function ensureSeed(){
+  if(!DB.users||!DB.users.length){DB.users=[{id:uid(),login:'admin',password:'admin',name:'Администратор',role:'admin'}];pushKey('piron_users',DB.users);}
+  if(!DB.objects)DB.objects=[];
+  if(!DB.backoffice)DB.backoffice=[];
+}
+
+/* ===================== Авторизация ===================== */
+function doLogin(){
+  const lg=document.getElementById('lg-login').value.trim();
+  const pw=document.getElementById('lg-pass').value;
+  const u=DB.users.find(x=>x.login.toLowerCase()===lg.toLowerCase()&&x.password===pw);
+  if(!u){document.getElementById('lg-err').textContent='Неверный логин или пароль';return;}
+  currentUser=u;session.userId=u.id;saveLocal();view='portfolio';render();
+}
+function logout(){currentUser=null;session.userId=null;currentObjId=null;view='login';saveLocal();render();}
+
+/* ===================== Доступ ===================== */
+const O=()=>DB.objects.find(o=>o.id===currentObjId);
+function isMember(o){if(!o||!currentUser)return false;const id=currentUser.id;return o.gipId===id||o.podryadId===id||o.pomGipId===id||(o.team||[]).includes(id);}
+function userScope(){const o=O();return o&&o.access&&o.access[currentUser.id];}
+function canEdit(){const o=O();if(!o||!currentUser)return false;if(currentUser.role==='admin')return true;if(currentUser.role==='director'||currentUser.role==='rp')return false;if(!isMember(o))return false;const sc=userScope();if(sc&&sc.edit===false)return false;return true;}
+function canAsk(){const o=O();if(!o||!currentUser)return false;if(currentUser.role==='admin')return true;if(currentUser.role==='rp')return true;if(currentUser.role==='director')return false;if(!isMember(o))return false;const sc=userScope();if(sc&&sc.ask===false)return false;return true;}
+function scopeAllows(k){const sc=userScope();if(sc&&sc.restrict&&Array.isArray(sc.sections))return sc.sections.includes(k);return true;}
+function visibleObjects(){if(!currentUser)return[];const live=DB.objects.filter(o=>!o._del);if(currentUser.role==='admin'||currentUser.role==='director'||currentUser.role==='rp')return live;return live.filter(isMember);}
+function usersLive(){return DB.users.filter(u=>!u._del);}
+function gipUsers(){return usersLive().filter(u=>u.role==='gip');}
+function podryadUsers(){return usersLive().filter(u=>u.role==='podryad');}
+function userById(id){return DB.users.find(x=>x.id===id);}
+function userName(id){const u=userById(id);return u?(u.name||u.login):'';}
+function objTasks(o){return (o&&o.tasks||[]).filter(t=>!t._del);}
+
+/* ===================== Хендлеры данных ===================== */
+const nowStr=()=>{const d=new Date();const p=n=>('0'+n).slice(-2);return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());};
+const todayStr=()=>new Date().toISOString().slice(0,10);
+function rowOf(k){const o=O();return o.rows[k]||(o.rows[k]={st:'не начат'});}
+function logHist(k,txt){const r=rowOf(k);r.history=r.history||[];r.history.unshift({ts:nowStr(),txt:txt,by:(currentUser&&(currentUser.name||currentUser.login))||''});if(r.history.length>15)r.history.length=15;}
+function setPassport(k,v){O().passport[k]=v;persistObj();if(k==='code'||k==='name')render();}
+function setCell(k,f,v){const r=rowOf(k);r[f]=v;if(f==='link')logHist(k,'обновлена ссылка');persistObj();}
+function setStatus(k,v){const r=rowOf(k);r.st=v;logHist(k,'статус → '+v);persistObj();render();}
+function setExon(k,v){const r=rowOf(k);r.exonSt=v;logHist(k,'ЭКЗОН: '+v);persistObj();render();}
+function exonOf(k){const r=O().rows[k]||{};return r.exonSt||(r.exon?'согласован':'—');}
+function expData(){const o=O();o.expertise=o.expertise||{};o.expertise.tech=o.expertise.tech||{};o.expertise.smeta=o.expertise.smeta||{};return o.expertise;}
+function setExp(part,i,f,v){const e=expData();e[part][i]=e[part][i]||{done:false,date:''};e[part][i][f]=v;if(f==='done'&&v&&!e[part][i].date)e[part][i].date=todayStr();persistObj();render();}
+function setActual(k,v){const r=rowOf(k);r.actual=v;logHist(k,'состояние: '+v);persistObj();render();}
+function setIncl(k,v){rowOf(k).on=v;persistObj();render();}
+function setIrdIncl(k,v){const o=O();const cur=o.ird[k];const ob=(typeof cur==='string')?{st:cur}:(cur||{});ob.on=v;o.ird[k]=ob;persistObj();render();}
+function secIncluded(k){const o=O();if(o&&o.curated)return (o.rows[k]||{}).on===true;return (o&&o.rows[k]||{}).on!==false;}
+function irdData(k){const o=O();const v=o.ird[k];if(typeof v==='string')return{st:v};return v||{};}
+function irdStatus(k){return irdData(k).st||'нет';}
+function irdIncluded(k){const o=O();if(o&&o.curated)return irdData(k).on===true;return irdData(k).on!==false;}
+function setIrd(k,f,v){const o=O();const cur=o.ird[k];const ob=(typeof cur==='string')?{st:cur}:(cur||{});ob[f]=v;o.ird[k]=ob;persistObj();if(f==='st')render();}
+function setTab(t){activeTab=t;render();}
+function toggleEmpty(){hideEmpty=!hideEmpty;render();}
+function toggleConfig(){configMode=!configMode;render();}
+function setGanttRange(r){ganttRange=r;render();}
+
+/* tasks (вопросы) inline по разделам */
+function toggleSec(k){openSec[k]=!openSec[k];render();}
+function addTaskFor(k){const o=O();o.tasks=o.tasks||[];o.tasks.unshift({id:uid(),title:'',sec:k,author:currentUser.id,assignee:'',from:'',due:'',prio:'средний',status:'новая',created:todayStr(),history:[{ts:nowStr(),by:(currentUser.name||currentUser.login),action:'создана'}]});openSec[k]=true;persistObj();render();}
+function setTask(id,f,v){const o=O();const t=objTasks(o).find(x=>x.id===id);if(t){t[f]=v;persistObj();if(f==='status'||f==='prio')render();}}
+function setTaskIn(objId,id,f,v){let t;if(objId==='__bo__'){t=(DB.backoffice||[]).find(x=>x.id===id);}else{const o=DB.objects.find(x=>x.id===objId);t=o&&(o.tasks||[]).find(x=>x.id===id);}if(t){t[f]=v;(objId==='__bo__'?persistBO():persistObj());render();}}
+function delTask(id){const o=O();const t=objTasks(o).find(x=>x.id===id);if(t){t._del=true;persistObj();render();}}
+function findTask(objId,id){if(objId==='__bo__')return(DB.backoffice||[]).find(x=>x.id===id);const o=DB.objects.find(x=>x.id===objId);return o&&(o.tasks||[]).find(x=>x.id===id);}
+function persistFor(objId){objId==='__bo__'?persistBO():persistObj();}
+function logTask(t,action,comment){t.history=t.history||[];t.history.unshift({ts:nowStr(),by:(currentUser&&(currentUser.name||currentUser.login))||'',action:action,comment:comment||''});if(t.history.length>40)t.history.length=40;}
+function setTaskF(objId,id,f,v){const t=findTask(objId,id);if(t){const old=t[f];t[f]=v;if(f==='status'&&old!==v)logTask(t,'статус: '+v);if(f==='assignee')logTask(t,'исполнитель: '+(userName(v)||'снят'));persistFor(objId);if(f==='status'||f==='prio')render();}}
+function delTaskF(objId,id){const t=findTask(objId,id);if(t){t._del=true;persistFor(objId);render();}}
+function acceptTask(objId,id){const t=findTask(objId,id);if(t&&t.assignee===currentUser.id&&!t.acceptedAt){t.acceptedAt=todayStr();t.acceptedBy=currentUser.id;if(t.status==='новая')t.status='в работе';logTask(t,'принял в работу');persistFor(objId);render();}}
+function submitReview(objId,id){const t=findTask(objId,id);if(t&&t.assignee===currentUser.id){t.status='на проверке';logTask(t,'отправлено на проверку автору');persistFor(objId);render();}}
+function acceptReview(objId,id){const t=findTask(objId,id);if(t&&t.author===currentUser.id&&t.status==='на проверке'){t.status='выполнена';logTask(t,'принято автором');persistFor(objId);render();}}
+function returnReview(objId,id){const t=findTask(objId,id);if(!t||t.author!==currentUser.id||t.status!=='на проверке')return;const c=prompt('Комментарий для возврата на корректировку:','');if(c===null)return;t.status='на корректировке';logTask(t,'возвращено на корректировку',c);persistFor(objId);render();}
+function toggleHist(id){histOpen[id]=!histOpen[id];render();}
+function toggleDisc(id){openDisc[id]=!openDisc[id];render();}
+function addReply(objId,id){const inp=document.getElementById('reply_'+id);const text=inp?inp.value.trim():'';if(!text)return;const t=findTask(objId,id);if(!t)return;t.messages=t.messages||[];t.messages.push({id:uid(),by:currentUser.id,byName:(currentUser.name||currentUser.login),ts:nowStr(),text:text});logTask(t,'ответ');persistFor(objId);render();}
+function attachFile(objId,id,inputEl){const f=inputEl.files&&inputEl.files[0];if(!f)return;if(f.size>MAX_FILE){alert('Файл больше 3 МБ — слишком большой для загрузки. Для крупных файлов лучше дать ссылку на облако (Яндекс.Диск) в ответе.');inputEl.value='';return;}const reader=new FileReader();reader.onload=function(){const fid='file_'+uid();pushKey('piron_'+fid,{name:f.name,type:f.type,data:reader.result});const t=findTask(objId,id);if(!t)return;t.messages=t.messages||[];t.messages.push({id:uid(),by:currentUser.id,byName:(currentUser.name||currentUser.login),ts:nowStr(),text:'',fileId:fid,fileName:f.name,fileSize:f.size});logTask(t,'прикреплён файл: '+f.name);persistFor(objId);render();};reader.readAsDataURL(f);}
+function openFile(fid){setSync(true,'Загрузка файла…');fetch(SB_URL+'/rest/v1/storage?select=value&key=eq.piron_'+fid,{headers:SB_H}).then(r=>r.json()).then(rows=>{if(rows&&rows[0]&&rows[0].value){const v=JSON.parse(rows[0].value);const a=document.createElement('a');a.href=v.data;a.download=v.name||'file';document.body.appendChild(a);a.click();a.remove();setSync(true,'Синхронизировано');}else{setSync(false,'Файл не найден');alert('Файл не найден в облаке');}}).catch(()=>{setSync(false,'Ошибка');alert('Не удалось загрузить файл');});}
+function openTask(k){activeTab=(k&&k[0]==='p')?'P':'R';openSec[k]=true;render();}
+function openLKTask(objId,k){if(objId==='__bo__'){view='backoffice';render();return;}currentObjId=objId;view='object';activeTab=(k&&k[0]==='p')?'P':'R';if(k)openSec[k]=true;render();}
+function assigneeSelect(t){return '<option value="">— исполнитель —</option>'+usersLive().map(u=>'<option value="'+u.id+'"'+(t.assignee===u.id?' selected':'')+'>'+esc(u.name||u.login)+' ('+ROLE_NAME[u.role]+')</option>').join('');}
+function weekRange(){const d=todayD();const off=(d.getDay()+6)%7;const mon=new Date(+d-off*DAY);const sun=new Date(+mon+6*DAY);sun.setHours(23,59,59,0);return{mon,sun};}
+function myTasks(){const out=[];const add=(t,o)=>{const asg=(t.assignee===currentUser.id||(!t.assignee&&o&&o.gipId===currentUser.id));const rev=(t.author===currentUser.id&&t.status==='на проверке');if(asg||rev)out.push({t:t,o:o,review:rev&&!asg});};DB.objects.filter(o=>!o._del).forEach(o=>objTasks(o).forEach(t=>add(t,o)));(DB.backoffice||[]).filter(t=>!t._del).forEach(t=>add(t,null));return out;}
+
+/* команда проекта */
+function addMember(uId){if(!uId)return;const o=O();o.team=o.team||[];if(!o.team.includes(uId))o.team.push(uId);persistObj();render();}
+function removeMember(uId){const o=O();o.team=(o.team||[]).filter(x=>x!==uId);persistObj();render();}
+function toggleAccess(uid){openAccess[uid]=!openAccess[uid];render();}
+function accOf(uid){const o=O();o.access=o.access||{};return o.access[uid]||(o.access[uid]={restrict:false,sections:[],edit:true,ask:true});}
+function setAccess(uid,f,v){accOf(uid)[f]=v;persistObj();render();}
+function addAccessSec(uid){const s=document.getElementById('accpick_'+uid);if(!s||!s.value)return;const a=accOf(uid);a.sections=a.sections||[];if(!a.sections.includes(s.value))a.sections.push(s.value);a.restrict=true;persistObj();render();}
+function removeAccessSec(uid,k){const a=accOf(uid);a.sections=(a.sections||[]).filter(x=>x!==k);persistObj();render();}
+function allSecList(){const out=[];STAGE_P.forEach(x=>out.push({k:x.k,t:x.n+'. '+x.t}));customP().forEach(i=>out.push({k:i.k,t:(i.label||'•')+' '+(i.t||'подраздел')}));STAGE_R.forEach(g=>g.items.forEach(i=>out.push({k:i.k,t:i.m+' — '+i.t})));customR().forEach(i=>out.push({k:i.k,t:(i.label||'•')+' '+(i.t||'подраздел')}));return out;}
+function addManualMember(){const o=O();o.teamExtra=o.teamExtra||[];o.teamExtra.push({id:uid(),name:'',role:'',phone:'',email:''});persistObj();render();}
+function setManualMember(id,f,v){const o=O();const m=(o.teamExtra||[]).find(x=>x.id===id);if(m){m[f]=v;persistObj();}}
+function delManualMember(id){const o=O();o.teamExtra=(o.teamExtra||[]).filter(x=>x.id!==id);persistObj();render();}
+
+/* кастомные подразделы (состав проекта) */
+function addCustomSec(stage){const ex=objExtra(O());const k=(stage==='P'?'pc':'rc')+uid();(stage==='P'?ex.P:ex.R).push({k:k,label:'',t:''});O().rows[k]={on:true,st:'не начат'};persistObj();render();}
+function setCustomSec(k,f,v){const ex=objExtra(O());const it=ex.P.concat(ex.R).find(x=>x.k===k);if(it){it[f]=v;persistObj();}}
+function delCustomSec(k){if(!confirm('Удалить добавленный подраздел? Его данные сотрутся.'))return;const ex=objExtra(O());ex.P=ex.P.filter(x=>x.k!==k);ex.R=ex.R.filter(x=>x.k!==k);if(O().rows)delete O().rows[k];persistObj();render();}
+function addCustomIrd(){const ex=objExtra(O());const k='ic'+uid();ex.I.push({k:k,t:''});O().ird[k]={on:true,st:'нет'};persistObj();render();}
+function setCustomIrd(k,v){const ex=objExtra(O());const it=ex.I.find(x=>x.k===k);if(it){it.t=v;persistObj();}}
+function delCustomIrd(k){if(!confirm('Удалить добавленный ИРД?'))return;const ex=objExtra(O());ex.I=ex.I.filter(x=>x.k!==k);if(O().ird)delete O().ird[k];persistObj();render();}
+
+/* objects */
+function openObject(id){currentObjId=id;view='object';activeTab='dash';configMode=false;render();}
+function newObject(){const o={id:uid(),passport:{},rows:{},ird:{},tasks:[],team:[],extra:{P:[],R:[],I:[]},curated:true,gipId:(currentUser.role==='gip'?currentUser.id:'')};DB.objects.push(o);persistObj();openObject(o.id);}
+function delObject(id){if(confirm('Архивировать объект? Данные сохранятся, объект скроется из списка.')){const o=DB.objects.find(x=>x.id===id);if(o){o._del=true;persistObj();}view='portfolio';currentObjId=null;render();}}
+function goPortfolio(){view='portfolio';currentObjId=null;render();}
+function goUsers(){view='users';render();}
+function goLK(){view='lk';render();}
+function goBO(){view='backoffice';render();}
+
+/* бэкофис (общие вопросы) */
+function canBO(){return currentUser&&(currentUser.role==='admin'||currentUser.role==='director');}
+function addBO(){DB.backoffice=DB.backoffice||[];DB.backoffice.unshift({id:uid(),title:'',author:currentUser.id,assignee:'',from:'',due:'',prio:'средний',status:'новая',created:todayStr(),history:[{ts:nowStr(),by:(currentUser.name||currentUser.login),action:'создана'}]});persistBO();render();}
+function setBO(id,f,v){const t=(DB.backoffice||[]).find(x=>x.id===id);if(t){const old=t[f];t[f]=v;if(f==='status'&&old!==v)logTask(t,'статус: '+v);persistBO();if(f==='status'||f==='prio')render();}}
+function delBO(id){const t=(DB.backoffice||[]).find(x=>x.id===id);if(t){t._del=true;persistBO();render();}}
+
+/* users admin */
+function addUser(){DB.users.push({id:uid(),login:'',password:'',name:'',role:'gip',phone:'',email:''});persistUsers();render();}
+function setUser(id,f,v){const u=userById(id);if(u){u[f]=v;persistUsers();if(f==='role')render();}}
+function delUser(id){if(id===currentUser.id){alert('Нельзя архивировать себя');return;}if(confirm('Архивировать пользователя? Данные и история сохранятся.')){const u=userById(id);if(u){u._del=true;persistUsers();}render();}}
+
+/* ===================== Расчёты ===================== */
+const ROW_LABEL={},ROW_NAME={},IRD_NAME={};
+STAGE_P.forEach(x=>{ROW_LABEL[x.k]=x.n;ROW_NAME[x.k]=x.t;});
+STAGE_R.forEach(g=>g.items.forEach(i=>{ROW_LABEL[i.k]=i.m;ROW_NAME[i.k]=i.t;}));
+IRD.forEach(g=>g.items.forEach(i=>{IRD_NAME[i.k]=i.t;}));
+const ALLK=STAGE_P.map(x=>x.k).concat(STAGE_R.flatMap(g=>g.items.map(i=>i.k)));
+/* кастомные подразделы объекта */
+function objExtra(o){o=o||O();if(!o)return{P:[],R:[],I:[]};o.extra=o.extra||{};o.extra.P=o.extra.P||[];o.extra.R=o.extra.R||[];o.extra.I=o.extra.I||[];return o.extra;}
+function customP(){return objExtra().P;}
+function customR(){return objExtra().R;}
+function customI(){return objExtra().I;}
+function rowLabel(k){if(ROW_LABEL[k]!=null)return ROW_LABEL[k];const o=O();if(o&&o.extra){const f=(o.extra.P||[]).concat(o.extra.R||[]).find(x=>x.k===k);if(f)return f.label||'•';}return k;}
+function rowName(k){if(ROW_NAME[k]!=null)return ROW_NAME[k];const o=O();if(o&&o.extra){const f=(o.extra.P||[]).concat(o.extra.R||[]).find(x=>x.k===k);if(f)return f.t||'(подраздел)';}return 'раздел';}
+function irdName(k){if(IRD_NAME[k]!=null)return IRD_NAME[k];const o=O();const f=(o&&o.extra&&o.extra.I||[]).find(x=>x.k===k);return f?(f.t||'(ИРД)'):'ИРД';}
+function keysP(){return STAGE_P.map(x=>x.k).concat(customP().map(x=>x.k));}
+function keysR(){return STAGE_R.flatMap(g=>g.items.map(i=>i.k)).concat(customR().map(x=>x.k));}
+function keysAll(){return keysP().concat(keysR());}
+function objProgress(o){const rows=o.rows||{};const ex=((o.extra&&o.extra.P)||[]).concat((o.extra&&o.extra.R)||[]).map(x=>x.k);const cur=o.curated;const inc=k=>cur?(rows[k]||{}).on===true:(rows[k]||{}).on!==false;const ks=ALLK.concat(ex).filter(inc);let d=0;ks.forEach(k=>{if((rows[k]||{}).st==='сдан')d++;});return{done:d,total:ks.length,pct:ks.length?Math.round(d/ks.length*100):0};}
+function progressKeys(keys){const o=O();const ks=keys.filter(secIncluded);let done=0,started=0;ks.forEach(k=>{const st=(o.rows[k]||{}).st||'не начат';if(st==='сдан')done++;if(st!=='не начат')started++;});return{total:ks.length,done,started,pct:ks.length?Math.round(done/ks.length*100):0};}
+function irdProgress(){const keys=IRD.flatMap(g=>g.items.map(i=>i.k)).concat(customI().map(x=>x.k)).filter(irdIncluded);let ready=0;keys.forEach(k=>{const st=irdStatus(k);if(st==='получено'||st==='не требуется')ready++;});return{total:keys.length,ready,pct:keys.length?Math.round(ready/keys.length*100):0};}
+function blockedSections(){const set=new Set();Object.keys(IRD_DEPS).forEach(ik=>{if(!irdIncluded(ik))return;const ready=['получено','не требуется'].includes(irdStatus(ik));if(!ready)IRD_DEPS[ik].forEach(rk=>{if(!secIncluded(rk))return;if(((O().rows[rk]||{}).st||'не начат')!=='сдан')set.add(rk);});});return[...set];}
+function plural(n,a,b,c){n=Math.abs(n)%100;const n1=n%10;if(n>10&&n<20)return c;if(n1>1&&n1<5)return b;if(n1===1)return a;return c;}
+const todayD=()=>{const d=new Date();d.setHours(0,0,0,0);return d;};
+function taskStats(o){const ts=objTasks(o);const open=ts.filter(t=>t.status!=='выполнена');const od=open.filter(t=>t.due&&new Date(t.due)<todayD());return{total:ts.length,open:open.length,overdue:od.length};}
+function tasksForSec(k){return objTasks(O()).filter(t=>t.sec===k&&t.status!=='выполнена').length;}
+
+/* ===================== UI-кусочки ===================== */
+function dis(){return canEdit()?'':' disabled';}
+function statusSelect(k){const st=(O().rows[k]||{}).st||'не начат';const o=STATUSES.map(s=>'<option'+(s===st?' selected':'')+'>'+s+'</option>').join('');return '<select class="stsel '+STAT_CLS[st]+'"'+dis()+' onchange="setStatus(\''+k+'\',this.value)">'+o+'</select>';}
+function irdSelect(k){const st=irdStatus(k);const o=IRD_STATUSES.map(s=>'<option'+(s===st?' selected':'')+'>'+s+'</option>').join('');return '<select class="stsel '+IRD_CLS[st]+'"'+dis()+' onchange="setIrd(\''+k+'\',\'st\',this.value)">'+o+'</select>';}
+function secRow(numHtml,title,k,isMarka){
+  const incl=secIncluded(k);
+  if(!scopeAllows(k))return '';
+  if(!configMode&&!incl)return '';
+  const r=O().rows[k]||{};const st=r.st||'не начат';
+  const oc=tasksForSec(k);
+  if(!configMode&&hideEmpty&&st==='не начат'&&!r.who&&!r.start&&!r.end&&!oc)return '';
+  const tcb=oc?'<span class="tcount" title="Открытых вопросов">⚡ '+oc+'</span>':'';
+  const ex=exonOf(k);
+  const flags=(ex&&ex!=='—'?'<span class="flag" style="color:#fff;background:'+(EXON_COLOR[ex]||'#888780')+'" title="ЭКЗОН: '+esc(ex)+'">ЭКЗОН: '+esc(ex)+'</span>':'')+(r.link?'<span class="flag fl-link" title="Есть ссылка на том">↗</span>':'')+(r.actual&&r.actual!=='—'?'<span class="flag '+(r.actual==='устарел'?'fl-old':'fl-ok')+'">'+esc(r.actual)+'</span>':'');
+  const open=!!openSec[k];
+  const chk=configMode?'<input type="checkbox" class="inclchk"'+dis()+(incl?' checked':'')+' onchange="setIncl(\''+k+'\',this.checked)">':'';
+  const row='<div class="row sec'+(isMarka?' r-marka':'')+(incl?'':' off')+'">'+
+    '<div class="num">'+chk+numHtml+'</div>'+
+    '<div class="title" style="cursor:pointer" onclick="toggleSec(\''+k+'\')" title="Открыть карточку раздела">'+esc(title)+tcb+flags+'<span class="chev-sec">▶</span></div>'+
+    '<input class="cell" placeholder="Исполнитель"'+dis()+' value="'+esc(r.who||'')+'" onchange="setCell(\''+k+'\',\'who\',this.value)">'+
+    '<input class="cell" type="date"'+dis()+' value="'+esc(r.start||'')+'" title="Начало" onchange="setCell(\''+k+'\',\'start\',this.value)">'+
+    '<input class="cell" type="date"'+dis()+' value="'+esc(r.end||'')+'" title="Окончание" onchange="setCell(\''+k+'\',\'end\',this.value)">'+
+    statusSelect(k)+'</div>';
+  return '<div class="secwrap'+(open?' open':'')+'">'+row+(open?(renderSecDetail(k)+renderTaskPanel(k)):'')+'</div>';
+}
+function renderSecDetail(k){
+  const r=O().rows[k]||{};const ro=!canEdit();const hist=r.history||[];
+  return '<div class="secdet">'+
+    '<div class="sd-grid">'+
+      '<div class="sd-f"><label>Ссылка на Яндекс.Диск</label><div class="sd-link"><input'+(ro?' disabled':'')+' placeholder="https://disk.yandex.ru/..." value="'+esc(r.link||'')+'" onchange="setCell(\''+k+'\',\'link\',this.value)">'+(r.link?'<a class="btn sm" href="'+esc(r.link)+'" target="_blank" rel="noopener">↗</a>':'')+'</div></div>'+
+      '<div class="sd-f"><label>Состояние раздела</label><select'+(ro?' disabled':'')+' onchange="setActual(\''+k+'\',this.value)">'+ACTUALS.map(a=>'<option'+((r.actual||'—')===a?' selected':'')+'>'+a+'</option>').join('')+'</select></div>'+
+      '<div class="sd-f"><label>ЭКЗОН (стадия Р)</label><select'+(ro?' disabled':'')+' onchange="setExon(\''+k+'\',this.value)">'+EXON_ST.map(s=>'<option'+(exonOf(k)===s?' selected':'')+'>'+s+'</option>').join('')+'</select></div>'+
+    '</div>'+
+    '<div class="sd-dates">'+
+      '<span class="sd-dl">Срок подрядчика:</span> <b>'+(r.start?esc(r.start):'—')+' → '+(r.end?esc(r.end):'—')+'</b> <span class="muted" style="font-size:11px">(в строке раздела)</span>'+
+      '<span class="sd-dl sd-cust">Срок заказчика:</span>'+
+      '<input type="date"'+(ro?' disabled':'')+' value="'+esc(r.custStart||'')+'" title="Заказчик: начало" onchange="setCell(\''+k+'\',\'custStart\',this.value)"> → '+
+      '<input type="date"'+(ro?' disabled':'')+' value="'+esc(r.custEnd||'')+'" title="Заказчик: окончание" onchange="setCell(\''+k+'\',\'custEnd\',this.value)">'+
+    '</div>'+
+    '<div class="sd-hist"><div class="sd-ht">История изменений</div>'+(hist.length?hist.map(h=>'<div class="he"><span class="ht">'+esc(h.ts)+'</span> — '+esc(h.txt)+(h.by?' <span class="hb">('+esc(h.by)+')</span>':'')+'</div>').join(''):'<div class="he muted">пока нет записей — статусы и изменения логируются здесь автоматически</div>')+'</div>'+
+  '</div>';
+}
+function statusOpts(t){const cur=t.status||'новая';const isAA=(t.author===currentUser.id||currentUser.role==='admin');return TK_STATUSES.filter(s=>s!=='выполнена'||isAA||s===cur).map(s=>'<option'+(s===cur?' selected':'')+'>'+s+'</option>').join('');}
+function taskActions(objId,t){const me=currentUser.id;let h='';
+  if(t.status==='на проверке'&&t.author===me){h+='<button class="btn sm pri" onclick="acceptReview(\''+objId+'\',\''+t.id+'\')">Принять</button><button class="btn sm tk-return" onclick="returnReview(\''+objId+'\',\''+t.id+'\')">Вернуть на корректировку</button>';}
+  else if(t.assignee===me&&t.status!=='выполнена'){if(!t.acceptedAt)h+='<button class="btn sm" onclick="acceptTask(\''+objId+'\',\''+t.id+'\')">Принял</button>';if(t.status!=='на проверке')h+='<button class="btn sm pri" onclick="submitReview(\''+objId+'\',\''+t.id+'\')">Решено → на проверку</button>';else h+='<span class="tinfo">ждёт проверки автором</span>';}
+  else if(t.status==='на проверке'){h+='<span class="tinfo">на проверке у автора</span>';}
+  return h;
+}
+function histBtn(t){return '<span class="thist-btn'+(histOpen[t.id]?' on':'')+'" onclick="toggleHist(\''+t.id+'\')" title="История изменений">🕘 '+((t.history||[]).length)+'</span>';}
+function discBtn(t){return '<span class="thist-btn'+(openDisc[t.id]?' on':'')+'" onclick="toggleDisc(\''+t.id+'\')" title="Ответы и файлы">💬 '+((t.messages||[]).length)+'</span>';}
+function discPanel(objId,t){
+  if(!openDisc[t.id])return '';
+  const msgs=t.messages||[];
+  const list=msgs.length?msgs.map(m=>'<div class="msg"><div class="msg-h"><b>'+esc(m.byName||'')+'</b> <span class="ht">'+esc(m.ts)+'</span></div>'+(m.text?'<div class="msg-t">'+esc(m.text)+'</div>':'')+(m.fileId?'<div class="msg-f"><a onclick="openFile(\''+m.fileId+'\')">📎 '+esc(m.fileName||'файл')+'</a>'+(m.fileSize?' <span class="muted">('+fmtSize(m.fileSize)+')</span>':'')+'</div>':'')+'</div>').join(''):'<div class="muted" style="font-size:12.5px;padding:2px 0 6px">Ответов пока нет — напишите первым.</div>';
+  const form=currentUser?'<div class="disc-form"><textarea id="reply_'+t.id+'" placeholder="Написать ответ…" rows="2"></textarea><div class="disc-actions"><button class="btn sm pri" onclick="addReply(\''+objId+'\',\''+t.id+'\')">Отправить</button><label class="btn sm filebtn">📎 Прикрепить файл<input type="file" style="display:none" onchange="attachFile(\''+objId+'\',\''+t.id+'\',this)"></label><span class="muted" style="font-size:11px">до 3 МБ</span></div></div>':'';
+  return '<div class="disc"><div class="sd-ht">Ответы и файлы</div>'+list+form+'</div>';
+}
+function histPanel(t){if(!histOpen[t.id])return '';const h=t.history||[];return '<div class="thist"><div class="sd-ht">История согласования</div>'+(h.length?h.map(e=>'<div class="he"><span class="ht">'+esc(e.ts)+'</span> — '+esc(e.action)+(e.comment?': <i class="hc">«'+esc(e.comment)+'»</i>':'')+(e.by?' <span class="hb">('+esc(e.by)+')</span>':'')+'</div>').join(''):'<div class="he muted">нет записей</div>')+'</div>';}
+function taskRow(objId,t,editable){
+  const d=editable?'':' disabled';
+  const overdue=t.due&&t.status!=='выполнена'&&new Date(t.due)<todayD();
+  const stD=(editable||t.assignee===currentUser.id||t.author===currentUser.id)?'':' disabled';
+  return '<div class="tk2">'+
+    '<input class="tk-title"'+d+' placeholder="Вопрос / что сделать" value="'+esc(t.title||'')+'" onchange="setTaskF(\''+objId+'\',\''+t.id+'\',\'title\',this.value)">'+
+    '<div class="tk-meta">'+
+      '<span class="fdot" style="background:'+(FROM_COLOR[t.from]||'transparent')+(t.from?'':';border:1px dashed var(--line-2)')+'" title="От кого: '+esc(t.from||'не указано')+'"></span>'+
+      '<select class="tk-from"'+d+' title="От кого поставлена задача" onchange="setTaskF(\''+objId+'\',\''+t.id+'\',\'from\',this.value)"><option value="">— от кого —</option>'+TASK_FROM.map(f=>'<option'+(t.from===f?' selected':'')+'>'+f+'</option>').join('')+'</select>'+
+      '<select'+d+' title="Исполнитель (получит вопрос в ЛК)" onchange="setTaskF(\''+objId+'\',\''+t.id+'\',\'assignee\',this.value)">'+assigneeSelect(t)+'</select>'+
+      '<input type="date"'+d+' title="Срок решения" style="'+(overdue?'color:var(--red);font-weight:700':'')+'" value="'+esc(t.due||'')+'" onchange="setTaskF(\''+objId+'\',\''+t.id+'\',\'due\',this.value)">'+
+      '<select class="'+TK_CLS[t.status||'новая']+'"'+stD+' onchange="setTaskF(\''+objId+'\',\''+t.id+'\',\'status\',this.value)">'+statusOpts(t)+'</select>'+
+      '<span class="tdate" title="Дата постановки">📌 '+esc(t.created||'—')+'</span>'+
+      (t.acceptedAt?'<span class="taccept" title="Исполнитель принял в работу">✓ принял '+esc(t.acceptedAt)+'</span>':'')+
+      discBtn(t)+histBtn(t)+
+      taskActions(objId,t)+
+      (editable?'<span class="del" onclick="delTaskF(\''+objId+'\',\''+t.id+'\')" title="Удалить">×</span>':'')+
+    '</div>'+
+    discPanel(objId,t)+histPanel(t)+
+  '</div>';
+}
+function renderTaskPanel(k){
+  const o=O();const ts=objTasks(o).filter(t=>t.sec===k);
+  const add=canAsk()?'<button class="btn sm pri" onclick="addTaskFor(\''+k+'\')">+ вопрос</button>':'';
+  const head='<div class="ph"><span>Вопросы (задачи) раздела</span>'+add+'</div>';
+  if(!ts.length)return '<div class="taskpanel">'+head+'<div style="font-size:12.5px;color:var(--hint)">Вопросов нет.'+(canAsk()?' Нажмите «+ вопрос», чтобы ускорить раздел.':'')+'</div></div>';
+  const rows=ts.map(t=>taskRow(o.id,t,canAsk())).join('');
+  return '<div class="taskpanel">'+head+rows+'</div>';
+}
+function irdRow(i){const r=irdData(i.k);const incl=irdIncluded(i.k);if(!configMode&&!incl)return '';
+  const chk=configMode?'<input type="checkbox" class="inclchk"'+dis()+(incl?' checked':'')+' onchange="setIrdIncl(\''+i.k+'\',this.checked)">':'';
+  return '<div class="row ird'+(incl?'':' off')+'"><div class="title">'+chk+esc(i.t)+'</div>'+
+  '<input class="cell" placeholder="Ответственный"'+dis()+' value="'+esc(r.who||'')+'" onchange="setIrd(\''+i.k+'\',\'who\',this.value)">'+
+  '<input class="cell" type="date" title="Срок получения"'+dis()+' value="'+esc(r.due||'')+'" onchange="setIrd(\''+i.k+'\',\'due\',this.value)">'+
+  irdSelect(i.k)+'</div>';}
+function custSecRow(item,isMarka){
+  const k=item.k;const incl=secIncluded(k);
+  if(!scopeAllows(k))return '';
+  if(!configMode&&!incl)return '';
+  const r=O().rows[k]||{};const oc=tasksForSec(k);
+  const open=!!openSec[k];const d=dis();const ed=canEdit();
+  const chk=configMode?'<input type="checkbox" class="inclchk"'+d+(incl?' checked':'')+' onchange="setIncl(\''+k+'\',this.checked)">':'';
+  const tcb=oc?'<span class="tcount">⚡ '+oc+'</span>':'';
+  const ex=exonOf(k);const exf=(ex&&ex!=='—')?'<span class="flag" style="color:#fff;background:'+(EXON_COLOR[ex]||'#888780')+'" title="ЭКЗОН: '+esc(ex)+'">ЭКЗОН: '+esc(ex)+'</span>':'';
+  let titleCell;
+  if(ed){
+    titleCell='<input class="custcode" value="'+esc(item.label||'')+'" placeholder="код" onchange="setCustomSec(\''+k+'\',\'label\',this.value)">'+
+      '<input class="custname" value="'+esc(item.t||'')+'" placeholder="наименование подраздела (введите название)" onchange="setCustomSec(\''+k+'\',\'t\',this.value)">'+
+      tcb+exf+'<span class="chev-sec" style="cursor:pointer" onclick="toggleSec(\''+k+'\')" title="Открыть карточку (вопросы, ссылка, ЭКЗОН)">▶</span>'+
+      '<span class="delcust" title="Удалить подраздел" onclick="delCustomSec(\''+k+'\')">×</span>';
+  }else{
+    titleCell='<span style="cursor:pointer" onclick="toggleSec(\''+k+'\')">'+esc(item.t||'(без названия)')+tcb+exf+'<span class="chev-sec">▶</span></span>';
+  }
+  const row='<div class="row sec'+(isMarka?' r-marka':'')+(incl?'':' off')+'">'+
+    '<div class="num">'+chk+(item.label&&!ed?esc(item.label):'•')+'</div>'+
+    '<div class="title">'+titleCell+'</div>'+
+    '<input class="cell" placeholder="Исполнитель"'+d+' value="'+esc(r.who||'')+'" onchange="setCell(\''+k+'\',\'who\',this.value)">'+
+    '<input class="cell" type="date"'+d+' value="'+esc(r.start||'')+'" title="Начало" onchange="setCell(\''+k+'\',\'start\',this.value)">'+
+    '<input class="cell" type="date"'+d+' value="'+esc(r.end||'')+'" title="Окончание" onchange="setCell(\''+k+'\',\'end\',this.value)">'+
+    statusSelect(k)+'</div>';
+  return '<div class="secwrap'+(open?' open':'')+'">'+row+(open?(renderSecDetail(k)+renderTaskPanel(k)):'')+'</div>';
+}
+function custIrdRow(item){const k=item.k;const incl=irdIncluded(k);if(!configMode&&!incl)return '';const r=irdData(k);const d=dis();const ed=canEdit();
+  const chk=configMode?'<input type="checkbox" class="inclchk"'+d+(incl?' checked':'')+' onchange="setIrdIncl(\''+k+'\',this.checked)">':'';
+  let titleCell;
+  if(ed)titleCell=chk+'<input class="custname" value="'+esc(item.t||'')+'" placeholder="наименование ИРД (введите название)" onchange="setCustomIrd(\''+k+'\',this.value)"><span class="delcust" title="Удалить" onclick="delCustomIrd(\''+k+'\')">×</span>';
+  else titleCell=esc(item.t||'(без названия)');
+  return '<div class="row ird'+(incl?'':' off')+'"><div class="title">'+titleCell+'</div>'+
+  '<input class="cell" placeholder="Ответственный"'+d+' value="'+esc(r.who||'')+'" onchange="setIrd(\''+k+'\',\'who\',this.value)">'+
+  '<input class="cell" type="date" title="Срок получения"'+d+' value="'+esc(r.due||'')+'" onchange="setIrd(\''+k+'\',\'due\',this.value)">'+
+  irdSelect(k)+'</div>';}
+function addSecCtl(stage){if(!configMode||!canEdit())return '';return '<div class="addsec"><button class="btn sm pri" onclick="addCustomSec(\''+stage+'\')">+ Добавить подраздел</button></div>';}
+function sectionPicker(stage){
+  if(!canEdit())return '';
+  let opts='';
+  if(stage==='P')opts=STAGE_P.filter(x=>!secIncluded(x.k)).map(x=>'<option value="'+x.k+'">'+x.n+'. '+esc(x.t)+'</option>').join('');
+  else opts=STAGE_R.map(g=>{const its=g.items.filter(i=>!secIncluded(i.k));return its.length?'<optgroup label="'+esc(g.group)+'">'+its.map(i=>'<option value="'+i.k+'">'+esc(i.m)+' — '+esc(i.t)+'</option>').join('')+'</optgroup>':'';}).join('');
+  const none=!opts;
+  return '<div class="picker"><select id="secpick_'+stage+'"'+(none?' disabled':'')+'><option value="">'+(none?'все разделы каталога уже добавлены':'+ добавить раздел из каталога…')+'</option>'+opts+'</select>'+
+    '<button class="btn sm pri" onclick="pickSec(\''+stage+'\')">Добавить</button>'+
+    '<button class="btn sm" onclick="addCustomSec(\''+stage+'\')">+ свой подраздел</button></div>';
+}
+function pickSec(stage){const s=document.getElementById('secpick_'+stage);if(s&&s.value)setIncl(s.value,true);}
+function irdPicker(){
+  if(!canEdit())return '';
+  const opts=IRD.map(g=>{const its=g.items.filter(i=>!irdIncluded(i.k));return its.length?'<optgroup label="'+esc(g.group)+'">'+its.map(i=>'<option value="'+i.k+'">'+esc(i.t)+'</option>').join('')+'</optgroup>':'';}).join('');
+  const none=!opts;
+  return '<div class="picker"><select id="irdpick"'+(none?' disabled':'')+'><option value="">'+(none?'все ИРД каталога уже добавлены':'+ добавить ИРД из каталога…')+'</option>'+opts+'</select>'+
+    '<button class="btn sm pri" onclick="pickIrd()">Добавить</button>'+
+    '<button class="btn sm" onclick="addCustomIrd()">+ свой ИРД</button></div>';
+}
+function pickIrd(){const s=document.getElementById('irdpick');if(s&&s.value)setIrdIncl(s.value,true);}
+
+/* ===================== Рендер: дашборд ===================== */
+function renderDash(){
+  const o=O();const all=progressKeys(keysAll());const pP=progressKeys(keysP());const pR=progressKeys(keysR());const ird=irdProgress();const blocked=blockedSections();const ts=taskStats(o);
+  let html='<div class="hero"><div class="top"><h2><span class="tag">Итог</span> Комплект ПИР</h2>'+
+    '<div style="text-align:right"><div class="big">'+all.pct+'<small>%</small></div><div class="sub">'+all.done+' из '+all.total+' разделов сдано</div></div></div>'+
+    '<div class="bar"><i style="width:'+all.pct+'%"></i></div></div>';
+  html+='<div class="dgrid">'+dcardBar('Стадия П — проектная',pP.pct,pP.done+'/'+pP.total+' разделов')+dcardBar('Стадия Р — рабочая',pR.pct,pR.done+'/'+pR.total+' марок')+dcardBar('ИРД — исходные данные',ird.pct,ird.ready+'/'+ird.total+' получено')+'</div>';
+  html+='<div class="dgrid">'+
+    dcardNum('Задач открыто',ts.open,'')+dcardNum('Просрочено задач',ts.overdue,ts.overdue?'var(--red)':'')+'</div>';
+  const urgent=objTasks(o).filter(t=>t.status!=='выполнена'&&t.due&&new Date(t.due)<todayD())
+    .sort((a,b)=>((a.due||'9')<(b.due||'9')?-1:1));
+  if(urgent.length){
+    html+='<div class="ptitle" style="margin:2px 4px 9px"><i>›</i><span>Просроченные задачи</span></div><div class="urgent">'+
+      urgent.map(t=>{const od=t.due&&new Date(t.due)<todayD();
+        return '<div class="u" onclick="openTask(\''+t.sec+'\')">'+
+          '<span class="ic">⚡</span><span class="tt">'+esc(t.title||'(без названия)')+'</span>'+
+          '<span class="sc">· '+esc(rowName(t.sec)||'раздел')+'</span>'+
+          '<span class="due" style="color:'+(od?'var(--red)':'var(--amber)')+'">'+(t.due?(od?'просрочено ':'до ')+esc(t.due):'критичная')+'</span></div>';}).join('')+'</div>';
+  }
+  html+='<div class="flow"><span class="ln"></span>Разделы ПИР зависят от ИРД<span class="ln"></span></div>';
+  if(blocked.length){html+='<div class="blocked"><div class="h">⚠ Ожидают ИРД — '+blocked.length+' '+plural(blocked.length,'раздел','раздела','разделов')+' нельзя завершить, пока не получены исходные данные:</div>'+blocked.map(k=>'<span class="chip"><b>'+esc(rowLabel(k))+'</b>'+esc(rowName(k))+'</span>').join('')+'</div>';}
+  else{html+='<div class="ok-note">✓ Нет разделов, заблокированных по ИРД</div>';}
+  html+='<div class="src" style="margin-top:0">Заполняйте ИРД и разделы на соответствующих вкладках. Задачи можно привязывать к разделам — счётчик ⚡ показывает открытые задачи у раздела.</div>';
+  return html;
+}
+function dcardBar(k,pct,sub){return '<div class="dcard"><div class="k">'+esc(k)+'</div><div class="v">'+pct+'<small style="font-size:14px;color:var(--hint)">%</small></div><div class="bar thin"><i style="width:'+pct+'%"></i></div><div style="font-size:12px;color:var(--muted);margin-top:7px">'+esc(sub)+'</div></div>';}
+function dcardNum(k,v,color){const c=color?' style="color:'+color+'"':'';return '<div class="dcard"><div class="k">'+esc(k)+'</div><div class="v"'+c+'>'+v+'</div></div>';}
+
+/* ИРД */
+function configBtn(){if(!canEdit())return '';return '<button class="btn'+(configMode?' pri':'')+'" onclick="toggleConfig()">'+(configMode?'✓ Готово':'⚙ Состав проекта')+'</button>';}
+function renderIrd(){const ird=irdProgress();let html='<div class="hero"><div class="top"><h2><span class="tag">Основание</span> Исходно-разрешительная документация</h2><div style="text-align:right"><div class="big">'+ird.pct+'<small>%</small></div><div class="sub">'+ird.ready+' из '+ird.total+' получено / не требуется</div></div></div><div class="bar"><i style="width:'+ird.pct+'%"></i></div></div>';
+  html+='<div class="toolbar">'+configBtn()+'<span style="font-size:12.5px;color:var(--muted)">'+(configMode?'Отметьте, какие ИРД нужны на этом объекте':'Пока документ не «получен»/«не требуется», зависимые разделы помечаются «Ожидают ИРД»')+'</span></div>';
+  if(!configMode)html+=irdPicker();
+  html+='<div class="colhead ird"><span>Документ</span><span>Ответственный</span><span>Срок получения</span><span>Статус</span></div>';
+  html+=IRD.map(g=>{const rows=g.items.map(irdRow).join('');return rows.trim()?'<div class="grouplabel">'+esc(g.group)+'</div>'+rows:'';}).join('');
+  const cust=customI().map(custIrdRow).join('');
+  if(cust.trim()||configMode)html+='<div class="grouplabel">Дополнительные ИРД</div>'+cust;
+  if(configMode&&canEdit())html+='<div class="addsec"><button class="btn sm pri" onclick="addCustomIrd()">+ Добавить ИРД</button></div>';
+  if(!html.match(/class="row ird/)&&!configMode)html+='<div class="empty-note">ИРД пока нет. Выберите нужные из каталога выше или добавьте свой.</div>';
+  return html;}
+
+/* списки разделов */
+function renderList(stage){
+  const head='<div class="colhead sec"><span>№</span><span>Раздел</span><span>Исполнитель</span><span>Начало</span><span>Окончание</span><span>Статус</span></div>';
+  const toolbar='<div class="toolbar">'+configBtn()+(configMode?'':'<button class="btn" onclick="toggleEmpty()">'+(hideEmpty?'Показать все':'Скрыть незаполненные')+'</button>')+'<span style="font-size:12.5px;color:var(--muted)">'+(configMode?'Отметьте разделы проекта и проставьте сроки':'Клик по названию раздела — карточка: ссылка, ЭКЗОН, история, вопросы')+'</span></div>';
+  let list='';
+  if(stage==='P'){
+    list=STAGE_P.map(x=>secRow(x.n,x.t,x.k,false)).join('');
+    const cust=customP().map(it=>custSecRow(it,false)).join('');
+    if(cust.trim()||configMode)list+='<div class="grouplabel">Дополнительные подразделы</div>'+cust;
+  }else{
+    list=STAGE_R.map(g=>{const rows=g.items.map(i=>secRow(i.m,i.t,i.k,true)).join('');return rows.trim()?'<div class="grouplabel">'+esc(g.group)+'</div>'+rows:'';}).join('');
+    const cust=customR().map(it=>custSecRow(it,true)).join('');
+    if(cust.trim()||configMode)list+='<div class="grouplabel">Дополнительные подразделы</div>'+cust;
+  }
+  if(!list.trim())list='<div class="empty-note">Разделов пока нет. Выберите нужные из каталога выше (выкатной список) или добавьте свой подраздел.</div>';
+  const picker=configMode?'':sectionPicker(stage);
+  return toolbar+picker+head+list+addSecCtl(stage);}
+
+/* гантт */
+const DAY=86400000;const pdt=s=>s?new Date(s+'T00:00:00'):null;const fmtDM=d=>('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2);
+const PRIO_COLOR={'низкий':'#b9bdc4','средний':'#5a8fd6','высокий':'#dd9c3e','критичный':'#d4685d'};
+function ganttItems(){const o=O();const out=[];const push=(label,name,k)=>{if(!secIncluded(k)||!scopeAllows(k))return;const r=o.rows[k]||{};if(r.start&&r.end){const a=pdt(r.start),b=pdt(r.end);if(b>=a){const tk=objTasks(o).filter(t=>t.sec===k&&t.due&&t.status!=='выполнена');const qs=objTasks(o).filter(t=>t.sec===k&&t.status!=='выполнена');let cs=null,ce=null;if(r.custStart&&r.custEnd){const x=pdt(r.custStart),y=pdt(r.custEnd);if(y>=x){cs=x;ce=y;}}out.push({k,label,name,who:r.who||'',a,b,cs:cs,ce:ce,st:r.st||'не начат',tasks:tk,qs:qs});}}};STAGE_P.forEach(x=>push(x.n,x.t,x.k));customP().forEach(i=>push(i.label||'•',i.t||'(подраздел)',i.k));STAGE_R.forEach(g=>g.items.forEach(i=>push(i.m,i.t,i.k)));customR().forEach(i=>push(i.label||'•',i.t||'(подраздел)',i.k));return out;}
+function renderGantt(){
+  let items=ganttItems();
+  const rangeBtns='<div class="grange">'+GANTT_RANGES.map(r=>'<button class="gr'+(ganttRange===r[0]?' on':'')+'" onclick="setGanttRange(\''+r[0]+'\')">'+r[1]+'</button>').join('')+'</div>';
+  if(!items.length)return rangeBtns+'<div class="empty-note">Чтобы построить график, укажите <b>Начало</b> и <b>Окончание</b> у разделов на вкладках «Стадия П» и «Стадия Р».</div>';
+  const today=todayD();let min,max;
+  const rdef=GANTT_RANGES.find(r=>r[0]===ganttRange);
+  if(ganttRange==='all'||!rdef||rdef[2]===0){min=items[0].a;max=items[0].b;items.forEach(it=>{if(it.a<min)min=it.a;if(it.b>max)max=it.b;if(it.cs&&it.cs<min)min=it.cs;if(it.ce&&it.ce>max)max=it.ce;});if(today<min)min=today;if(today>max)max=today;min=new Date(+min-3*DAY);max=new Date(+max+3*DAY);}
+  else{const days=rdef[2];min=new Date(+today-Math.max(1,Math.round(days*0.12))*DAY);max=new Date(+today+days*DAY);}
+  items=items.filter(it=>!(it.b<min||it.a>max));
+  if(!items.length)return rangeBtns+'<div class="empty-note">В выбранном периоде нет разделов с датами. Попробуйте «Всё» или больший период.</div>';
+  const span=Math.max(1,(max-min)/DAY);const pct=d=>((d-min)/DAY)/span*100;
+  const stepDays=Math.max(7,Math.ceil(span/8/7)*7);
+  let ticks='';for(let t=+min;t<=+max;t+=stepDays*DAY){const d=new Date(t);ticks+='<div class="gtick" style="left:'+pct(d)+'%">'+fmtDM(d)+'</div>';}
+  const todayLine=(today>=min&&today<=max)?'<div class="gtoday" style="left:'+pct(today)+'%"><span>сегодня</span></div>':'';
+  let rows='';
+  items.forEach(it=>{let L=Math.max(0,pct(it.a)),R=Math.min(100,pct(it.b));const W=Math.max(1.5,R-L);const col=STAT_COLOR[it.st];const dl=Math.ceil((it.b-today)/DAY);let lb,lc;
+    if(it.st==='сдан'){lb='сдан';lc='l-done';}else if(dl<0){lb='просрочено '+(-dl)+' дн';lc='l-late';}else if(dl<=7){lb='осталось '+dl+' дн';lc='l-soon';}else{lb='осталось '+dl+' дн';lc='l-ok';}
+    let grid='';for(let t=+min;t<=+max;t+=stepDays*DAY){grid+='<div class="gridline" style="left:'+pct(new Date(t))+'%"></div>';}
+    let pins='';(it.tasks||[]).forEach(tk=>{const d=pdt(tk.due);if(d>=min&&d<=max)pins+='<div class="gpin" style="left:'+pct(d)+'%;background:'+(FROM_COLOR[tk.from]||'#888780')+'" title="❓ '+esc(tk.title||'вопрос')+' · '+esc(tk.due)+(tk.from?' · от: '+esc(tk.from):'')+(tk.assignee?' · '+esc(userName(tk.assignee)):'')+'"></div>';});
+    const qs=it.qs||[];
+    const qhtml=qs.length?'<div class="gq-list">'+qs.slice(0,4).map(q=>{const od=q.due&&new Date(q.due)<today;return '<span class="gq '+PRIO_CLS[q.prio||'средний']+'" onclick="openTask(\''+it.k+'\')" title="'+esc(q.title||'вопрос')+(q.due?' · срок '+esc(q.due):'')+(q.assignee?' · '+esc(userName(q.assignee)):'')+'">❓ '+esc((q.title||'вопрос').slice(0,24))+(od?' ⚠':'')+'</span>';}).join('')+(qs.length>4?'<span class="gq-more" onclick="openTask(\''+it.k+'\')">+'+(qs.length-4)+' ещё</span>':'')+'</div>':'';
+    let custBar='';if(it.cs&&it.ce&&!(it.ce<min||it.cs>max)){const cL=Math.max(0,pct(it.cs)),cR=Math.min(100,pct(it.ce));custBar='<div class="gbar-cust" style="left:'+cL+'%;width:'+Math.max(1.5,cR-cL)+'%" title="Срок заказчика · '+fmtDM(it.cs)+'–'+fmtDM(it.ce)+'">заказчик</div>';}
+    rows+='<div class="grow"><div class="glabel"><div class="gl-name" title="'+esc(it.name)+'"><span class="gl-code">'+esc(it.label)+'</span>'+esc(it.name)+'</div><div class="gl-meta"><span class="w">'+esc(it.who||'исполнитель не указан')+'</span><span class="gleft '+lc+'">'+lb+'</span></div>'+qhtml+'</div><div class="gtrack">'+grid+todayLine+'<div class="gbar" style="left:'+L+'%;width:'+W+'%;background:'+col+'" title="Подрядчик · '+esc(it.name)+' · '+fmtDM(it.a)+'–'+fmtDM(it.b)+'">'+esc(it.label)+'</div>'+custBar+pins+'</div></div>';});
+  const legend='<div class="glegend"><span><i class="lg-pod"></i> срок подрядчика</span><span><i class="lg-cust"></i> срок заказчика</span><span><i class="lg-q"></i> вопрос (срок)</span></div>';
+  return rangeBtns+legend+'<div class="gantt"><div class="gantt-head"><div class="gl">Раздел / исполнитель</div><div class="gl" style="position:relative;border:none"><div class="gaxis">'+ticks+todayLine+'</div></div></div>'+rows+'</div>';}
+
+/* ===================== Схема (визуализация ПИРон-стиль) ===================== */
+function secNode(label,k){
+  const o=O();const st=(o.rows[k]||{}).st||'не начат';const frac=STAT_FRAC[st];const col=STAT_COLOR[st];
+  const deg=Math.round(frac*360);
+  const tasks=objTasks(o).filter(t=>t.sec===k&&t.status!=='выполнена');
+  const fc={};tasks.forEach(t=>{const f=t.from||'—';fc[f]=(fc[f]||0)+1;});
+  const pips=Object.keys(fc).map(f=>'<span class="pipc" title="'+esc(f)+' — '+fc[f]+' вопр."><span class="pip" style="background:'+(FROM_COLOR[f]||'#b9bdc4')+'"></span>'+fc[f]+'</span>').join('');
+  const ex=exonOf(k);const exDot=(ex&&ex!=='—')?'<span class="exdot" style="background:'+(EXON_COLOR[ex]||'#888780')+'" title="ЭКЗОН: '+esc(ex)+'"></span>':'';
+  return '<div class="snode" onclick="openTask(\''+k+'\')" title="'+esc(rowName(k))+' — '+st+(ex&&ex!=='—'?' · ЭКЗОН: '+esc(ex):'')+'">'+
+    '<div class="pips">'+pips+'</div>'+
+    '<div class="circle" style="background:conic-gradient('+col+' '+deg+'deg, var(--gray-bg) 0)"><div class="core">'+esc(label)+'</div>'+exDot+'</div>'+
+    '<div class="snlbl">'+esc(label)+'</div></div>';
+}
+function renderSchema(){
+  const o=O();const ird=irdProgress();const all=progressKeys(keysAll());
+  // верх: комплект
+  let html='<div class="schema">';
+  html+='<div class="zone"><div class="zlabel">Выдача комплекта</div><div class="zbody center">'+
+    bigNode('Комплект ИРД',ird.pct,'#1d9e75')+bigNode('Комплект ПИР',all.pct,'#2f5fe0')+'</div></div>';
+  // середина: разделы (только включённые) + кастомные
+  let pBody=STAGE_P.filter(x=>secIncluded(x.k)&&scopeAllows(x.k)).map(x=>secNode(x.n,x.k)).join('')+customP().filter(i=>secIncluded(i.k)&&scopeAllows(i.k)).map(i=>secNode(i.label||'•',i.k)).join('')||'<span class="snmute">нет включённых разделов</span>';
+  let rBody=STAGE_R.flatMap(g=>g.items).filter(i=>secIncluded(i.k)&&scopeAllows(i.k)).map(i=>secNode(i.m,i.k)).join('')+customR().filter(i=>secIncluded(i.k)&&scopeAllows(i.k)).map(i=>secNode(i.label||'•',i.k)).join('')||'<span class="snmute">нет включённых марок</span>';
+  html+='<div class="zone"><div class="zlabel">Разделы ПИР · вопросы</div><div class="zbody"><div class="subz">Стадия П</div>'+pBody+'<div class="subz">Стадия Р</div>'+rBody+'</div></div>';
+  // низ: ИРД (только включённые) + кастомные
+  let iStd=IRD.flatMap(g=>g.items).filter(i=>irdIncluded(i.k)).map(i=>({k:i.k,t:i.t,short:irdShort(i.k)}));
+  let iCust=customI().filter(i=>irdIncluded(i.k)).map(i=>({k:i.k,t:i.t||'ИРД',short:(i.t||'ИРД').slice(0,4)}));
+  let iBody=iStd.concat(iCust).map(i=>{const st=irdStatus(i.k);const col={'получено':'#2bb189','не требуется':'#b9bdc4','ожидается':'#5a8fd6','запрошено':'#dd9c3e','нет':'#d4685d'}[st];return '<div class="inode" title="'+esc(i.t)+' — '+st+'"><div class="icirc" style="background:'+col+'">'+esc(i.short)+'</div></div>';}).join('');
+  html+='<div class="zone"><div class="zlabel">ИРД (исходные данные)</div><div class="zbody">'+iBody+'</div></div>';
+  html+='</div>';
+  html+='<div class="src" style="margin-top:14px">Кружок раздела закрашивается по статусу, точки сверху — открытые вопросы (по приоритету). Внизу — ИРД (цвет = статус). Вверху — заполнение комплектов. Клик по разделу открывает его вопросы.</div>';
+  return html;
+}
+function bigNode(label,pct,col){const deg=Math.round(pct/100*360);return '<div class="bignode"><div class="bigcirc" style="background:conic-gradient('+col+' '+deg+'deg, var(--gray-bg) 0)"><div class="bigcore"><div class="bigpct">'+pct+'%</div></div></div><div class="biglbl">'+esc(label)+'</div></div>';}
+const IRD_SHORT={i_egrn:'ЕГРН',i_kpt:'КПТ',i_gpzu:'ГПЗУ',i_sit:'СитП',i_tu_vs:'ВС',i_tu_vo:'ВО',i_tu_es:'ЭС',i_tu_ts:'ТС',i_tu_gs:'ГС',i_tu_ss:'СС',i_znp:'ЗнП',i_obsled:'Обсл',i_geod:'ИГДИ',i_geol:'ИГИ',i_ecol:'ИЭИ'};
+function irdShort(k){return IRD_SHORT[k]||'?';}
+
+/* ===================== Экспертиза (ГГЭ) ===================== */
+function renderExpertise(){
+  const ed=canEdit();const e=expData();
+  let html='<div class="src" style="margin-top:0;margin-bottom:14px">Прохождение государственной экспертизы (ГГЭ) по объекту. Отметьте этап галочкой — дата проставится автоматически (можно изменить вручную).</div>';
+  EXPERTISE_PARTS.forEach(function(pp){var part=pp[0],title=pp[1];
+    var done=EXPERTISE_STAGES.filter(function(_,i){return (e[part][i]||{}).done;}).length;
+    html+='<div class="exp-block"><div class="exp-head"><span><i>›</i> '+esc(title)+'</span><span class="exp-cnt">'+done+' / '+EXPERTISE_STAGES.length+'</span></div>'+
+      '<div class="exp-bar"><i style="width:'+Math.round(done/EXPERTISE_STAGES.length*100)+'%"></i></div>';
+    html+=EXPERTISE_STAGES.map(function(s,i){var c=e[part][i]||{};return '<div class="exp-row'+(c.done?' done':'')+'">'+
+      '<label class="exp-chk"><input type="checkbox"'+(ed?'':' disabled')+(c.done?' checked':'')+' onchange="setExp(\''+part+'\','+i+',\'done\',this.checked)"><span class="exp-st">'+esc(s)+'</span></label>'+
+      '<input type="date" class="exp-date"'+(ed?'':' disabled')+' value="'+esc(c.date||'')+'" title="Дата" onchange="setExp(\''+part+'\','+i+',\'date\',this.value)">'+
+    '</div>';}).join('');
+    html+='</div>';
+  });
+  return html;
+}
+
+/* ===================== Личный кабинет ===================== */
+function lkCard(x,cls){const t=x.t,o=x.o;const oid=o?o.id:'__bo__';const onm=o?(o.passport.name||o.passport.code||'Объект'):'Бэкофис (общий вопрос)';const sec=o?(rowName(t.sec)||'раздел'):'';
+  const badge='<span class="lk-st '+TK_CLS[t.status]+'">'+esc(t.status||'новая')+'</span>';
+  const tags=(x.review?' <span class="lktag" style="color:var(--blue);background:var(--blue-bg)">на вашу проверку</span>':'')+(!t.assignee&&o&&!x.review?' <span class="lktag">не назначен · вы ГИП</span>':'');
+  return '<div class="lkcard '+cls+'">'+
+    '<div class="lkhead">'+
+      '<div class="lkmain" onclick="openLKTask(\''+oid+'\',\''+(t.sec||'')+'\')">'+
+        '<div class="lktitle">'+esc(t.title||'(вопрос без названия)')+tags+'</div>'+
+        '<div class="lkmeta">'+(t.from?'<span class="fdot" style="background:'+(FROM_COLOR[t.from]||'#888')+';vertical-align:middle"></span> '+esc(t.from)+' · ':'')+esc(onm)+(sec?' · '+esc(sec):'')+(t.author?' · автор: '+esc(userName(t.author)):'')+(t.due?' · срок '+esc(t.due):'')+'</div>'+
+      '</div>'+
+      '<div class="lkact">'+badge+discBtn(t)+histBtn(t)+taskActions(oid,t)+'</div>'+
+    '</div>'+discPanel(oid,t)+histPanel(t)+'</div>';}
+function renderLK(){
+  const mine=myTasks();const open=mine.filter(x=>x.t.status!=='выполнена');
+  const review=open.filter(x=>x.review);const work=open.filter(x=>!x.review);
+  const {mon,sun}=weekRange();const today=todayD();
+  const overdue=work.filter(x=>x.t.due&&new Date(x.t.due)<today);
+  const week=work.filter(x=>x.t.due&&new Date(x.t.due)>=today&&new Date(x.t.due)<=sun);
+  const later=work.filter(x=>!x.t.due||new Date(x.t.due)>sun);
+  let html='<div class="pf-head"><h2>Личный кабинет</h2><span style="font-size:13px;color:var(--muted)">Ваши вопросы и согласования · '+ROLE_NAME[currentUser.role]+'</span></div>';
+  html+='<div class="dgrid">'+dcardNum('Всего открыто',open.length,'')+dcardNum('На вашу проверку',review.length,review.length?'var(--blue)':'')+dcardNum('Просрочено',overdue.length,overdue.length?'var(--red)':'')+dcardNum('На этой неделе',week.length,'')+'</div>';
+  if(review.length)html+='<div class="lkblock review"><div class="lkh">🔎 На вашу проверку — исполнитель отметил «решено»</div>'+review.map(x=>lkCard(x,'c-review')).join('')+'</div>';
+  if(overdue.length)html+='<div class="lkblock over"><div class="lkh">🔴 Просроченные — требуют внимания</div>'+overdue.map(x=>lkCard(x,'c-over')).join('')+'</div>';
+  html+='<div class="lkblock"><div class="lkh">📅 На этой неделе ('+fmtDM(mon)+'–'+fmtDM(sun)+')</div>'+(week.length?week.map(x=>lkCard(x,'')).join(''):'<div class="empty-note">На этой неделе вопросов нет.</div>')+'</div>';
+  if(later.length)html+='<div class="lkblock"><div class="lkh">Позже / без срока</div>'+later.map(x=>lkCard(x,'c-mute')).join('')+'</div>';
+  if(!open.length)html+='<div class="empty-note">Вам пока не назначено вопросов и нет задач на проверку.</div>';
+  html+='<div class="src">Цикл вопроса: исполнитель нажимает «Принял» → работает → «Решено → на проверку» → вопрос приходит сюда автору, который «Принимает» или «Возвращает на корректировку» с комментарием. Вся история — по кнопке 🕘. Уведомления по email/мессенджеру требуют серверной части — пока всё «приходит» в Личный кабинет.</div>';
+  return html;
+}
+
+/* ===================== Бэкофис ===================== */
+function renderBackoffice(){
+  const can=canBO();
+  const list=(DB.backoffice||[]).filter(t=>!t._del);
+  const ord={новая:0,'в работе':1,выполнена:2};
+  list.sort((a,b)=>(ord[a.status]-ord[b.status])||((a.due||'9')<(b.due||'9')?-1:1));
+  let html='<div class="pf-head"><h2>Бэкофис · общие вопросы</h2>'+(can?'<button class="btn pri" onclick="addBO()">+ вопрос</button>':'')+'</div>';
+  html+='<div class="src" style="margin-top:0;margin-bottom:14px">Общие вопросы команды, не привязанные к конкретному объекту. Назначенный исполнитель получает их в своём Личном кабинете. Заводят админ и директор.</div>';
+  if(!list.length)return html+'<div class="empty-note">Общих вопросов нет.'+(can?' Нажмите «+ вопрос».':'')+'</div>';
+  const rows=list.map(t=>taskRow('__bo__',t,can)).join('');
+  return html+rows;
+}
+
+/* ===================== Рендер: экраны ===================== */
+function renderLogin(){
+  document.getElementById('root').innerHTML='<div class="login"><div class="card"><div class="logo">О</div><h1>Портал объектов</h1><p>Вход в систему</p>'+
+    '<input id="lg-login" placeholder="Логин" onkeydown="if(event.key===\'Enter\')doLogin()">'+
+    '<input id="lg-pass" type="password" placeholder="Пароль" onkeydown="if(event.key===\'Enter\')doLogin()">'+
+    '<button onclick="doLogin()">Войти</button><div class="err" id="lg-err"></div>'+
+    '<div class="hint">Первый вход администратора: <b>admin</b> / <b>admin</b><br>(после входа смените пароль и заведите пользователей)</div></div></div>';
+}
+function header(){
+  const r=currentUser.role;
+  const myOpen=myTasks().filter(x=>x.t.status!=='выполнена').length;
+  const lkBadge=myOpen?'<span class="navbadge">'+myOpen+'</span>':'';
+  const nav='<div class="nav">'+
+    '<a class="'+(view==='portfolio'?'active':'')+'" onclick="goPortfolio()">Объекты</a>'+
+    '<a class="'+(view==='lk'?'active':'')+'" onclick="goLK()">Личный кабинет'+lkBadge+'</a>'+
+    '<a class="'+(view==='backoffice'?'active':'')+'" onclick="goBO()">Бэкофис</a>'+
+    (r==='admin'?'<a class="'+(view==='users'?'active':'')+'" onclick="goUsers()">Пользователи</a>':'')+
+    '</div>';
+  return '<div class="topbar"><div class="brand" onclick="goPortfolio()"><div class="logo">О</div><div><h1>Портал объектов</h1><p>Среда общих данных по ПИР</p></div></div>'+
+    '<div class="usermenu"><div class="sync"><span class="dot" id="syncDot"></span><span id="syncTxt">…</span></div>'+
+    '<div class="who"><div class="n">'+esc(currentUser.name||currentUser.login)+'</div><div class="r"><span class="rolebadge role-'+r+'">'+ROLE_NAME[r]+'</span></div></div>'+
+    '<button class="btn sm" onclick="logout()">Выйти</button></div></div>'+nav;
+}
+function renderPortfolio(){
+  const objs=visibleObjects();
+  const canCreate=currentUser.role==='admin'||currentUser.role==='gip';
+  let head='<div class="pf-head"><h2>Объекты <span style="color:var(--hint);font-weight:600">('+objs.length+')</span></h2>'+(canCreate?'<button class="btn pri" onclick="newObject()">+ Новый объект</button>':'')+'</div>';
+  if(!objs.length)return head+'<div class="empty-note">'+(canCreate?'Объектов пока нет. Создайте первый — кнопка «+ Новый объект».':'Вам пока не назначено объектов. Обратитесь к администратору.')+'</div>';
+  const cards=objs.map(o=>{const pr=objProgress(o);const ts=taskStats(o);const nm=o.passport.name||'Без названия';const code=o.passport.code||'—';const gip=userName(o.gipId)||o.passport.gip||'ГИП не назначен';
+    return '<div class="objcard" onclick="openObject(\''+o.id+'\')"><span class="code">'+esc(code)+'</span><h3>'+esc(nm)+'</h3><div class="gip">ГИП: '+esc(gip)+'</div>'+
+      '<div class="bar thin"><i style="width:'+pr.pct+'%"></i></div>'+
+      '<div class="stat"><span>Готовность <b>'+pr.pct+'%</b></span><span>Задач: <b>'+ts.open+'</b>'+(ts.overdue?' <span style="color:var(--red)">('+ts.overdue+' просроч.)</span>':'')+'</span></div></div>';}).join('');
+  return head+'<div class="objgrid">'+cards+'</div>';
+}
+function renderObject(){
+  const o=O();if(!o){view='portfolio';return renderPortfolio();}
+  const ro=!canEdit();
+  const isAdmin=currentUser.role==='admin';const ad=isAdmin?'':' disabled';
+  let pf=PASSPORT_FIELDS.map(f=>'<div class="field'+(f.wide?' wide':'')+'"><label>'+esc(f.label)+'</label><input placeholder="'+esc(f.ph||'')+'"'+ad+' value="'+esc(o.passport[f.k]||'')+'" onchange="setPassport(\''+f.k+'\',this.value)"></div>').join('');
+  const adminNote=isAdmin?'':'<div style="font-size:12px;color:var(--hint);margin-top:10px">Паспорт и назначения редактирует только администратор.</div>';
+  const passport='<div class="passport"><div class="ptitle"><i>›</i><span>Паспорт объекта</span><span style="margin-left:auto"><button class="btn sm" onclick="goPortfolio()">← К объектам</button>'+(isAdmin?' <button class="btn sm danger" onclick="delObject(\''+o.id+'\')">Архивировать</button>':'')+'</span></div><div class="pgrid">'+pf+'</div>'+assignBlock(o)+adminNote+'</div>';
+  const roBanner=(ro&&canAsk())?'<div class="ro-banner">✎ Вам доступно создание и ведение вопросов; изменение разделов/паспорта — нет.</div>':(ro?'<div class="ro-banner">👁 Режим просмотра — у вашей роли нет прав на редактирование этого объекта.</div>':'');
+  const cI=IRD.reduce((a,g)=>a+g.items.length,0);
+  const tabs='<div class="tabs">'+tb('dash','Дашборд','')+tb('schema','Схема','')+tb('ird','ИРД','')+tb('P','Стадия П','')+tb('exp','Экспертиза','')+tb('R','Стадия Р','')+tb('gantt','График','')+'</div>';
+  let body='';
+  if(activeTab==='dash')body=renderDash();else if(activeTab==='schema')body=renderSchema();else if(activeTab==='ird')body=renderIrd();else if(activeTab==='P')body=renderList('P');else if(activeTab==='R')body=renderList('R');else if(activeTab==='exp')body=renderExpertise();else if(activeTab==='gantt')body=renderGantt();
+  return passport+teamCard(o)+roBanner+tabs+body;
+}
+function accessEditor(o,u){
+  if(!openAccess[u.id])return '';
+  const a=(o.access&&o.access[u.id])||{restrict:false,sections:[],edit:true,ask:true};
+  const secOpts=allSecList().filter(s=>!(a.sections||[]).includes(s.k)).map(s=>'<option value="'+s.k+'">'+esc(s.t)+'</option>').join('');
+  const chips=(a.sections||[]).map(k=>'<span class="accchip">'+esc(rowLabel(k))+' <span onclick="removeAccessSec(\''+u.id+'\',\''+k+'\')">×</span></span>').join('');
+  return '<div class="access-ed">'+
+    '<div class="acc-row"><label><input type="checkbox" '+(a.edit!==false?'checked ':'')+'onchange="setAccess(\''+u.id+'\',\'edit\',this.checked)"> может редактировать разделы</label>'+
+      '<label><input type="checkbox" '+(a.ask!==false?'checked ':'')+'onchange="setAccess(\''+u.id+'\',\'ask\',this.checked)"> может задавать вопросы</label></div>'+
+    '<div class="acc-row"><label><input type="checkbox" '+(a.restrict?'checked ':'')+'onchange="setAccess(\''+u.id+'\',\'restrict\',this.checked)"> доступ только к выбранным разделам</label></div>'+
+    (a.restrict?'<div class="acc-secs">'+(chips||'<span class="muted" style="font-size:12px">разделы не выбраны — добавьте ниже</span>')+'<div class="picker" style="margin:7px 0 0"><select id="accpick_'+u.id+'"><option value="">+ раздел…</option>'+secOpts+'</select><button class="btn sm" onclick="addAccessSec(\''+u.id+'\')">Добавить</button></div></div>':'')+
+  '</div>';
+}
+function teamCard(o){
+  const canManage=(currentUser.role==='admin');
+  const ids=[];[o.gipId,o.pomGipId,o.podryadId].forEach(id=>{if(id&&!ids.includes(id))ids.push(id);});(o.team||[]).forEach(id=>{if(!ids.includes(id))ids.push(id);});
+  const members=ids.map(userById).filter(Boolean);
+  const rows=members.length?members.map(u=>{
+    const fixed=(u.id===o.gipId||u.id===o.podryadId||u.id===o.pomGipId);
+    const a=o.access&&o.access[u.id];const scoped=a&&a.restrict;
+    return '<div class="member-wrap"><div class="member"><div class="mav">'+esc((u.name||u.login||'?').slice(0,1).toUpperCase())+'</div>'+
+      '<div class="minfo"><div class="mn">'+esc(u.name||u.login)+' <span class="rolebadge role-'+u.role+'">'+ROLE_NAME[u.role]+'</span>'+(scoped?' <span class="accbadge">доступ ограничен</span>':'')+'</div>'+
+      '<div class="mc">'+(u.phone?'<span>📞 '+esc(u.phone)+'</span>':'')+(u.email?'<span>✉ '+esc(u.email)+'</span>':'')+(!u.phone&&!u.email?'<span class="muted">контакты не заполнены</span>':'')+'</div></div>'+
+      (canManage?'<button class="btn sm'+(openAccess[u.id]?' pri':'')+'" onclick="toggleAccess(\''+u.id+'\')">⚙ доступ</button>':'')+
+      (canManage&&!fixed?'<button class="btn sm" onclick="removeMember(\''+u.id+'\')">убрать</button>':'')+'</div>'+
+      (canManage?accessEditor(o,u):'')+'</div>';}).join(''):'<div class="muted" style="font-size:13px">Команда не назначена. ГИП, помощник и подряд — в «Назначениях» выше; остальных добавьте ниже.</div>';
+  const manual=(o.teamExtra||[]).map(m=>{
+    if(canManage)return '<div class="member"><div class="mav" title="Вписан вручную">✎</div><div class="minfo manual-fields">'+
+      '<input placeholder="ФИО" value="'+esc(m.name||'')+'" onchange="setManualMember(\''+m.id+'\',\'name\',this.value)">'+
+      '<input placeholder="Роль / должность" value="'+esc(m.role||'')+'" onchange="setManualMember(\''+m.id+'\',\'role\',this.value)">'+
+      '<input placeholder="Телефон" value="'+esc(m.phone||'')+'" onchange="setManualMember(\''+m.id+'\',\'phone\',this.value)">'+
+      '<input placeholder="Почта" value="'+esc(m.email||'')+'" onchange="setManualMember(\''+m.id+'\',\'email\',this.value)">'+
+      '</div><button class="btn sm" onclick="delManualMember(\''+m.id+'\')">убрать</button></div>';
+    return '<div class="member"><div class="mav">'+esc((m.name||'?').slice(0,1).toUpperCase())+'</div><div class="minfo"><div class="mn">'+esc(m.name||'(без имени)')+(m.role?' <span class="rolebadge" style="background:var(--gray-bg);color:var(--muted)">'+esc(m.role)+'</span>':'')+'</div><div class="mc">'+(m.phone?'<span>📞 '+esc(m.phone)+'</span>':'')+(m.email?'<span>✉ '+esc(m.email)+'</span>':'')+'</div></div></div>';
+  }).join('');
+  let add='';
+  if(canManage){const avail=usersLive().filter(u=>!ids.includes(u.id)&&u.role!=='admin'&&u.role!=='director');
+    add='<div class="addmember"><select id="addmem"><option value="">+ добавить из пользователей…</option>'+avail.map(u=>'<option value="'+u.id+'">'+esc(u.name||u.login)+' ('+ROLE_NAME[u.role]+')</option>').join('')+'</select><button class="btn sm" onclick="addMember(document.getElementById(\'addmem\').value)">Добавить</button>'+
+      '<button class="btn sm" onclick="addManualMember()">✎ Вписать вручную</button></div>';}
+  return '<div class="passport"><div class="ptitle"><i>›</i><span>Команда проекта · контакты</span></div>'+rows+manual+add+'</div>';
+}
+function pomGipUsers(){return usersLive().filter(u=>u.role==='pom_gip');}
+function setGip(v){O().gipId=v;persistObj();render();}
+function setPodryad(v){O().podryadId=v;persistObj();render();}
+function setPomGip(v){O().pomGipId=v;persistObj();render();}
+function setObjField(f,v){O()[f]=v;persistObj();}
+function assignBlock(o){
+  const ad=(currentUser.role==='admin')?'':' disabled';
+  const sel=(curId,users,fn)=>'<select class="assign-pn"'+ad+' onchange="'+fn+'(this.value)"><option value="">— ответственное лицо —</option>'+users.map(u=>'<option value="'+u.id+'"'+(curId===u.id?' selected':'')+'>'+esc(u.name||u.login)+'</option>').join('')+'</select>';
+  const row=(label,company,coField,personSel,comment,cmField)=>
+    '<div class="assign-row"><div class="assign-label">'+label+'</div>'+
+      '<input class="assign-co"'+ad+' placeholder="Компания" value="'+esc(company||'')+'" onchange="setObjField(\''+coField+'\',this.value)">'+
+      personSel+
+      '<input class="assign-cm"'+ad+' placeholder="Комментарий" value="'+esc(comment||'')+'" onchange="setObjField(\''+cmField+'\',this.value)">'+
+    '</div>';
+  let html='<div class="ptitle" style="margin:18px 0 8px"><i>›</i><span>Назначения</span></div><div class="assigns"><div class="assign-head"><span></span><span>Компания</span><span>Ответственное лицо</span><span>Комментарий</span></div>';
+  html+=row('Ответственный ГИП',o.gipCompany,'gipCompany',sel(o.gipId,gipUsers(),'setGip'),o.gipComment,'gipComment');
+  html+=row('Помощник ГИПа',o.pomCompany,'pomCompany',sel(o.pomGipId,pomGipUsers(),'setPomGip'),o.pomComment,'pomComment');
+  html+=row('Подряд',o.podryadCompany,'podryadCompany',sel(o.podryadId,podryadUsers(),'setPodryad'),o.podryadComment,'podryadComment');
+  html+='</div>';
+  return html;
+}
+function tb(id,label,cnt){return '<button class="tab'+(activeTab===id?' active':'')+'" onclick="setTab(\''+id+'\')">'+label+(cnt!==''?'<span class="cnt">'+cnt+'</span>':'')+'</button>';}
+
+function renderUsers(){
+  const live=usersLive();
+  let html='<div class="pf-head"><h2>Пользователи <span style="color:var(--hint);font-weight:600">('+live.length+')</span></h2><button class="btn pri" onclick="addUser()">+ Пользователь</button></div>';
+  html+='<div class="src" style="margin-top:0;margin-bottom:14px">Роли: <b>ГИП</b>, <b>Помощник ГИПа</b>, <b>Подряд</b>, <b>Сметчик</b> — редактируют свои объекты (назначаются в паспорте/команде проекта), видят только свои. <b>Директор</b> — видит все, только просмотр. <b>Админ</b> — управляет всем. Удаление безопасное: пользователь архивируется, данные и история сохраняются.</div>';
+  html+='<div class="utable"><div class="urow head"><span>Имя</span><span>Логин</span><span>Пароль</span><span>Телефон</span><span>Почта</span><span>Роль</span><span></span></div>';
+  html+=live.map(u=>'<div class="urow">'+
+    '<input value="'+esc(u.name||'')+'" placeholder="Имя" onchange="setUser(\''+u.id+'\',\'name\',this.value)">'+
+    '<input value="'+esc(u.login||'')+'" placeholder="логин" onchange="setUser(\''+u.id+'\',\'login\',this.value)">'+
+    '<input value="'+esc(u.password||'')+'" placeholder="пароль" onchange="setUser(\''+u.id+'\',\'password\',this.value)">'+
+    '<input value="'+esc(u.phone||'')+'" placeholder="телефон" onchange="setUser(\''+u.id+'\',\'phone\',this.value)">'+
+    '<input value="'+esc(u.email||'')+'" placeholder="email" onchange="setUser(\''+u.id+'\',\'email\',this.value)">'+
+    '<select onchange="setUser(\''+u.id+'\',\'role\',this.value)">'+ROLE_LIST.map(r=>'<option value="'+r+'"'+(u.role===r?' selected':'')+'>'+ROLE_NAME[r]+'</option>').join('')+'</select>'+
+    '<button class="btn sm danger" onclick="delUser(\''+u.id+'\')">Архив</button></div>').join('');
+  html+='</div>';
+  return html;
+}
+
+/* ===================== Главный рендер ===================== */
+function render(){
+  if(!currentUser){renderLogin();return;}
+  let html=header();
+  if(view==='users'&&currentUser.role==='admin')html+=renderUsers();
+  else if(view==='lk')html+=renderLK();
+  else if(view==='backoffice')html+=renderBackoffice();
+  else if(view==='object'&&O())html+=renderObject();
+  else html+=renderPortfolio();
+  html+='<div class="src">Каркас разделов — ПП РФ № 87 (ред. 21.10.2025). Марки РД — ГОСТ Р 21.101-2026. Данные команды синхронизируются через облако (Supabase).</div>';
+  document.getElementById('root').innerHTML=html;
+}
+
+/* ===================== INIT ===================== */
+function init(){
+  loadLocal();
+  if(session.userId)currentUser=DB.users.find(u=>u.id===session.userId)||null;
+  if(currentUser&&view==='login')view='portfolio';
+  render();
+  fetchRemote();
+  setInterval(fetchRemote,60000);
+}
+init();
+</script>
+</body>
+</html>
