@@ -117,11 +117,11 @@
   .grouplabel{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin:16px 4px 9px}
   .colhead{display:grid;gap:12px;padding:2px 14px 8px;font-size:11px;color:var(--hint);text-transform:uppercase;letter-spacing:.3px;font-weight:600}
   .colhead.sec{grid-template-columns:48px 1fr 150px 124px 124px 158px}
-  .colhead.ird{grid-template-columns:1fr 160px 130px 158px}
+  .colhead.ird{grid-template-columns:1fr 150px 120px 150px 150px}
 
   .row{display:grid;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:9px 14px;margin-bottom:7px}
   .row.sec{grid-template-columns:48px 1fr 150px 124px 124px 158px}
-  .row.ird{grid-template-columns:1fr 160px 130px 158px}
+  .row.ird{grid-template-columns:1fr 150px 120px 150px 150px}
   .row:hover{border-color:var(--line-2)}
   .row .num{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 6px}
   .row.r-marka .num{color:var(--accent)}
@@ -178,6 +178,21 @@
   .tk-meta input[type=date]{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
   .tk-meta select:focus,.tk-meta input:focus{border-color:var(--accent)}
   .tk-from{font-weight:600;color:#3c3489;background:#eeedfe;border-color:#cecbf6}
+  .tk-fromname{font-size:12px;font-weight:600;color:#3c3489;background:#eeedfe;border:1px solid #cecbf6;border-radius:7px;padding:5px 9px;white-space:nowrap}
+  .tk-poser{font-size:11.5px;font-weight:600;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);border-radius:7px;padding:5px 9px;white-space:nowrap}
+  .gl-attn{font-size:10.5px;font-weight:700;color:var(--red);background:var(--red-bg);border-radius:6px;padding:1px 6px;margin-left:6px}
+  .tk-lbl{font-size:11px;color:var(--hint);font-weight:600;margin-right:-3px}
+  .tf-view{display:flex;gap:6px}
+  .tf-bar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+  .tf-bar select{font-size:13px;border:1px solid var(--line-2);border-radius:9px;padding:8px 10px;background:var(--surface);outline:none;min-width:180px}
+  .tf-bar select:focus{border-color:var(--accent)}
+  .tt-head,.tt-row{display:grid;grid-template-columns:2fr 1.4fr 1.2fr 1.2fr 0.8fr 0.7fr 0.8fr;gap:10px;padding:10px 14px;align-items:center}
+  .tt-head{font-size:11px;color:var(--hint);text-transform:uppercase;letter-spacing:.3px;font-weight:700;border-bottom:1px solid var(--line)}
+  .tt-row{background:var(--surface);border:1px solid var(--line);border-radius:9px;margin-bottom:6px;cursor:pointer;font-size:13px}
+  .tt-row:hover{border-color:var(--accent)}
+  .tt-title{font-weight:600}
+  .tt-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+  @media(max-width:900px){.tt-head{display:none}.tt-row{grid-template-columns:1fr}}
   .tk-meta select.pri-low,.tk-meta select.pri-mid,.tk-meta select.pri-high,.tk-meta select.pri-crit,.tk-meta select.tk-new,.tk-meta select.tk-work,.tk-meta select.tk-done{font-weight:600;border-radius:20px;border:none}
   .tk-meta .del{color:var(--hint);cursor:pointer;font-size:16px;padding:0 4px;margin-left:auto}.tk-meta .del:hover{color:var(--red)}
   .taccept{font-size:11.5px;font-weight:700;color:var(--green);background:var(--green-bg);padding:5px 10px;border-radius:20px;white-space:nowrap}
@@ -246,7 +261,7 @@
 
   /* users table */
   .utable{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
-  .urow{display:grid;grid-template-columns:1.1fr 0.9fr 0.9fr 1fr 1.2fr 130px 78px;gap:10px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line)}
+  .urow{display:grid;grid-template-columns:1.1fr 0.8fr 0.8fr 1.1fr 1fr 1.1fr 130px 78px;gap:10px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line)}
   .urow.head{background:var(--surface-2);font-size:11px;text-transform:uppercase;letter-spacing:.3px;color:var(--hint);font-weight:700}
   .urow:last-child{border-bottom:none}
   .urow input,.urow select{font-size:13px;border:1px solid var(--line);border-radius:8px;padding:7px 9px;outline:none;width:100%;background:var(--surface-2)}
@@ -360,6 +375,15 @@
   .flag{font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;margin-left:6px;vertical-align:middle}
   .fl-exon{color:#fff;background:var(--accent)} .fl-link{color:var(--accent);background:var(--accent-soft)}
   .fl-ok{color:var(--green);background:var(--green-bg)} .fl-old{color:var(--red);background:var(--red-bg)}
+  .fl-attn{color:#fff;background:var(--red);animation:attnpulse 1.6s ease-in-out infinite}
+  @keyframes attnpulse{0%,100%{opacity:1}50%{opacity:.55}}
+  .fbtn{color:#fff!important;background:var(--accent);text-decoration:none;width:18px;display:inline-block;text-align:center}
+  .fbtn-fin{background:var(--green)}
+  .sd-conflict{background:var(--red-bg);border:1px solid #f2cfcf;color:var(--red);font-size:12.5px;font-weight:600;padding:9px 12px;border-radius:8px;margin:10px 0}
+  .sd-files{border-top:1px solid var(--line);padding-top:10px;margin-top:4px}
+  .sd-file{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+  .sd-file label{width:130px;font-size:12.5px;color:var(--muted);flex-shrink:0}
+  .sd-file .sd-link{flex:1}
   .inclchk{width:15px;height:15px;margin-right:6px;cursor:pointer;vertical-align:middle}
   .row.off{opacity:.5} .row.off .title{text-decoration:line-through;text-decoration-color:var(--line-2)}
   .custcode{width:56px;font-size:12px;font-family:var(--mono);border:1px solid var(--line);border-radius:6px;padding:5px 5px;margin-left:5px;outline:none;background:var(--surface)}
@@ -475,15 +499,18 @@ const IRD_STATUSES=['нет','запрошено','ожидается','полу
 const IRD_CLS={'нет':'b-late','запрошено':'b-work','ожидается':'b-check','получено':'b-done','не требуется':'b-none'};
 const PRIOS=['низкий','средний','высокий','критичный'];
 const PRIO_CLS={'низкий':'pri-low','средний':'pri-mid','высокий':'pri-high','критичный':'pri-crit'};
-const FROM_COLOR={'Руководитель проекта':'#534ab7','Заказчик':'#185fa5','Стройка':'#854f0b','Административные':'#5f5e5a','Исполнитель':'#0f6e56','Функциональный пользователь':'#993556'};
-const FROM_SHORT={'Руководитель проекта':'РП','Заказчик':'Заказчик','Стройка':'Стройка','Административные':'Адм.','Исполнитель':'Исполн.','Функциональный пользователь':'Функц. польз.'};
+const FROM_COLOR={'Руководитель проекта':'#534ab7','Заказчик':'#185fa5','Стройка':'#854f0b','Административные':'#5f5e5a','Исполнитель':'#0f6e56','Функциональный пользователь':'#993556','ГИП':'#0c447c'};
+const FROM_SHORT={'Руководитель проекта':'РП','Заказчик':'Заказчик','Стройка':'Стройка','Административные':'Адм.','Исполнитель':'Исполн.','Функциональный пользователь':'Функц. польз.','ГИП':'ГИП'};
+const IRD_EXON=['—','да','нет','не требуется'];
 const EXON_ST=['—','направлен','согласован','замечания'];
 const EXON_COLOR={'направлен':'#EF9F27','согласован':'#2bb189','замечания':'#d4685d'};
 const EXPERTISE_STAGES=['Комплект для ГГЭ на проверку заказчику','Согласование комплекта для ГГЭ с заказчиком','Открытие ЛК','Загрузка комплекта в ГГЭ + подписание заказчиком','Предпроверка в ГГЭ','Оплата заказ-наряда','Получение замечаний','Получение положительного'];
 const EXPERTISE_PARTS=[['tech','Техническая документация'],['smeta','Смета']];
+const EXEC_KINDS=['подряд','гип','помощник','сметчик','свой'];
+const EXEC_SEED=[{"id":"ex1","name":"Доценко Николай Николаевич","org":"ИП Доценко Николай Николаевич","phone":"8 905 430-79-31","email":"nn_cod@mail.ru","inn":"616709658474","kind":"подряд","status":"активный"},{"id":"ex2","name":"Карташова Анна Александровна","org":"Картатшова Анна","phone":"8 951 867 22 03","email":"KartashovaAnna92@yandex.ru","inn":"362806962437","kind":"подряд","status":"активный"},{"id":"ex3","name":"Ляпко Игорь Валерьевич","org":"Ляпко Игорь","phone":"8 938 147-92-97","email":"zloy1653@mail.ru","inn":"237100227203","kind":"подряд","status":"активный"},{"id":"ex4","name":"Щекина Юлия Александровна","org":"Щекина Ю.А.","phone":"8 995 290 16 04","email":"Lukashovaya@mail.ru","inn":"234607462054","kind":"подряд","status":"активный"},{"id":"ex5","name":"Виробян Эдгар Артурович","org":"ООО Эксперт-строй","phone":"8-495-978-28-55","email":"expertstroiy@mail.ru","inn":"7714297624","kind":"подряд","status":"активный"},{"id":"ex6","name":"Дядичко Яна Витальевна","org":"Дядичко Яна","phone":"8 908 176 72 03","email":"yanaskrynnik0207@gmail.ru","inn":"610108396135","kind":"подряд","status":"активный"},{"id":"ex7","name":"Ускова Ольга Сергеевна","org":"Ускова Ольга","phone":"8 908 195 94 36","email":"uskova.olya2013@yandex.ru","inn":"644201627930","kind":"подряд","status":"активный"},{"id":"ex8","name":"Богомазюк Дарья Олеговна","org":"ИП Богомозюк Дарья Олеговна","phone":"8 903 473 38 38","email":"gor.d@list.ru","inn":"233530534784","kind":"подряд","status":"активный"},{"id":"ex9","name":"Тимченко Валентина Алексеевна","org":"Тимченко Валентина","phone":"8 906 452 85 10","email":"Valusha_92@mail.ru","inn":"616483750958","kind":"подряд","status":"активный"},{"id":"ex10","name":"Косилов Максим Сергеевич","org":"Косилов Максим","phone":"8 908 172 57 24","email":"kosilov.engineer@gmail.com","inn":"610304254730","kind":"подряд","status":"активный"},{"id":"ex11","name":"Гончар Виктория Вадимовна","org":"Гончар Виктория","phone":"8 928 108 23 28","email":"V.Gonchar89281082328@gmail.com","inn":"615010163863","kind":"подряд","status":"активный"},{"id":"ex12","name":"Артамонов Александр Анатольевич","org":"ИП Артамонов Александр","phone":"8 928 760 28 33","email":"wirrus@yandex.ru","inn":"890507756033","kind":"подряд","status":"активный"},{"id":"ex13","name":"Мельникова Татьяна Сергеевна","org":"ИП Мельникова Татьяна Сергеевна","phone":"8 989 704 34 39","email":"pkf.lik@yandex.ru","inn":"616609664717","kind":"подряд","status":"активный"},{"id":"ex14","name":"Дудкин Павел Юрьевич","org":"ИП Дудкин Павел Олегович","phone":"8 963 048 49 41","email":"askerovakris7@yandex.ru","inn":"773323442679","kind":"подряд","status":"чёрный список"},{"id":"ex15","name":"Нечитайло Родион Владимирович","org":"Нечитайло Родион","phone":"8-928-213-58-18","email":"nechitaylo-r@mail.ru","inn":"710410553808","kind":"подряд","status":"активный"},{"id":"ex16","name":"Чмовж Артем Александрович","org":"ИП Чмовж Александр Александрович","phone":"8-964-902-75-13","email":"chmovzh.aa@mail.ru","inn":"231297413637","kind":"подряд","status":"активный"},{"id":"ex17","name":"Афанасьев Константин Александрович","org":"Афанасьев Константин","phone":"8 908 175 00 38","email":"geopod@yandex.ru","inn":"61274027131","kind":"подряд","status":"активный"},{"id":"ex18","name":"Горбачев Василий Юрьевич","org":"ИП Горбачев Василий","phone":"8 989 704 34 39","email":"161gv@mail.ru","inn":"236000382059","kind":"подряд","status":"активный"},{"id":"ex19","name":"Глебов Юрий Анатольевич","org":"","phone":"8 903 406 10 99","email":"2561099@mail.ru","inn":"616202373841","kind":"подряд","status":"активный"},{"id":"ex20","name":"Коломоец Петр Валентинович","org":"Коломоец Петр","phone":"8 961 286 82 31","email":"kpv84@inbox.ru","inn":"614102539433","kind":"подряд","status":"активный"},{"id":"ex21","name":"Кныш Инна Сергеевна","org":"","phone":"8 995 377 1924","email":"inna_knysh@rambler.ru","inn":"614331906727","kind":"подряд","status":"активный"},{"id":"ex22","name":"Дикова Мая Олеговна","org":"","phone":"8-928-769-19-61","email":"maya.dickova@yandex.ru","inn":"610111033759","kind":"подряд","status":"активный"},{"id":"ex23","name":"Владимерец Жанна Викторовна","org":"","phone":"8-961-412-29-15","email":"gamanta85@yandex.ru","inn":"611186223597","kind":"подряд","status":"активный"},{"id":"ex24","name":"Гладышев Сергей Юрьевич","org":"","phone":"8(989)500-62-68","email":"gladyshev1993@inbox.ru","inn":"614211656899","kind":"подряд","status":"активный"},{"id":"ex25","name":"Бовт Роман Тарасович","org":"Роман Бовт","phone":"8 903 463 07 07","email":"Bovt_93@mail.ru","inn":"614706335231","kind":"подряд","status":"активный"},{"id":"ex26","name":"Зеркин Алексей Сергеевич","org":"ИП Зеркин Алексей Сергеевич","phone":"8 932-111-99-66","email":"boss.alexwork@mail.ru","inn":"26704861401","kind":"подряд","status":"активный"},{"id":"ex27","name":"Соколовская Ольга Борисовна","org":"","phone":"8-928-769-82-45","email":"oceand@mail.ru","inn":"616201120647","kind":"подряд","status":"активный"},{"id":"ex28","name":"Крошкина Екатерина Владимировна","org":"","phone":"8 920 627 75-77","email":"katrina_2008@mail.ru","inn":"332603025510","kind":"подряд","status":"активный"},{"id":"ex29","name":"Костышина Елена Николаевна","org":"","phone":"8 909 184 26 40","email":"elena_kostyshina@mail.ru","inn":"753613616010","kind":"подряд","status":"активный"},{"id":"ex30","name":"Булычев Петр Алексеевич","org":"","phone":"8 981 860-4602","email":"deerforest@yandex.ru","inn":"784201371027","kind":"подряд","status":"активный"},{"id":"ex31","name":"Власова Меланья Федоровна","org":"Власова М.Ф.","phone":"8 903 404 66 19","email":"Vlasmil@mail.ru","inn":"616512408389","kind":"подряд","status":"активный"},{"id":"ex32","name":"Кризский Вадим Сергеевич","org":"ИП Кризский В.С.","phone":"8 961 288-82-82","email":"103vadim@gmail.com","inn":"616405346106","kind":"подряд","status":"активный"},{"id":"ex33","name":"Беляев Алексей Евгеньевич","org":"ИП Беляев","phone":"8 960 448 47 38","email":"Ae.belyaev@mail.ru","inn":"616812917108","kind":"подряд","status":"активный"},{"id":"ex34","name":"Героимов Артем Владимирович","org":"","phone":"8-962-330-37-20","email":"geroimov@gmail.ru","inn":"772671795962","kind":"подряд","status":"активный"},{"id":"ex35","name":"Ягодка Виталий Дмитриевич","org":"ИП Ягодка Виталий Дмитриевич","phone":"8 988 568 71 82","email":"vitalii.yagodka@gmail.com","inn":"610106485608","kind":"подряд","status":"активный"},{"id":"ex36","name":"Карпов Виталий Владимирович","org":"","phone":"8 928-131-68-59","email":"vetal81@inbox.ru","inn":"616101384653","kind":"подряд","status":"активный"},{"id":"ex37","name":"Перегудов Андрей Владимирович","org":"","phone":"8 908 512 81 34","email":"P.A.O.I@yandex.ru","inn":"616305291534","kind":"подряд","status":"активный"},{"id":"ex38","name":"Серков Андрей Денисович","org":"","phone":"8 925 960 31 26","email":"aaa123bbb@inbox.ru","inn":"770174868374","kind":"подряд","status":"активный"},{"id":"ex39","name":"Белаш Владимир Валентинович","org":"","phone":"8(928)-608-98-25","email":"belash33@yandex.ru","inn":"616607707757","kind":"подряд","status":"активный"}];
 const TK_STATUSES=['новая','в работе','на проверке','на корректировке','выполнена'];
 const TK_CLS={'новая':'tk-new','в работе':'tk-work','на проверке':'tk-check','на корректировке':'tk-fix','выполнена':'tk-done'};
-const TASK_FROM=['Руководитель проекта','Заказчик','Стройка','Административные','Исполнитель','Функциональный пользователь'];
+const TASK_FROM=['Руководитель проекта','Заказчик','Стройка','Административные','Исполнитель','Функциональный пользователь','ГИП'];
 const ROLE_NAME={admin:'Администратор',director:'Генеральный директор',rp:'Руководитель проекта',gip:'ГИП',podryad:'Подряд',smetchik:'Сметчик',pom_gip:'Помощник ГИПа'};
 const ROLE_LIST=['gip','pom_gip','podryad','smetchik','rp','director','admin'];
 const STAT_FRAC={'не начат':0,'в работе':0.4,'на проверке':0.7,'замечания':0.5,'сдан':1,'корректировка':0.85};
@@ -503,9 +530,13 @@ const PASSPORT_FIELDS=[
 ];
 
 /* ===================== Состояние ===================== */
-let DB={users:[],objects:[],backoffice:[]};
+let DB={users:[],objects:[],backoffice:[],executors:[]};
 let session={userId:null};
 let currentUser=null, currentObjId=null, view='login', activeTab='dash', hideEmpty=false, openSec={}, configMode=false, ganttRange='all', histOpen={}, openDisc={}, openAccess={};
+let taskFilter={author:'',assignee:'',obj:'',sec:'',from:'',status:'',view:'list'};
+function setTF(f,v){taskFilter[f]=v;render();}
+function resetTF(){taskFilter={author:'',assignee:'',obj:'',sec:'',from:'',status:'',view:taskFilter.view};render();}
+function goTasks(){view='tasks';render();}
 const MAX_FILE=3*1024*1024;
 function fmtSize(n){return n>=1048576?(n/1048576).toFixed(1)+' МБ':Math.max(1,Math.round(n/1024))+' КБ';}
 
@@ -526,9 +557,11 @@ function pushKey(key,data){
     .then(r=>setSync(r.ok,r.ok?'Сохранено ☁':'Ошибка сохранения')).catch(()=>setSync(false,'Нет соединения'));
   },900);
 }
-function persistObj(){pushKey('piron_objects',DB.objects);flashSaved();}
+function persistOneObj(o){if(o&&o.id)pushKey('piron_obj_'+o.id,o);flashSaved();}
+function persistObj(){persistOneObj(O());}
 function persistUsers(){pushKey('piron_users',DB.users);flashSaved();}
 function persistBO(){pushKey('piron_backoffice',DB.backoffice);flashSaved();}
+function persistExec(){pushKey('piron_executors',DB.executors);flashSaved();}
 function mergeById(remote,local){
   if(!Array.isArray(remote))remote=[];if(!Array.isArray(local))local=[];
   const map={};remote.forEach(x=>{if(x&&x.id)map[x.id]=x;});
@@ -537,13 +570,23 @@ function mergeById(remote,local){
 }
 function fetchRemote(){
   if(isEditing())return;
-  fetch(SB_URL+'/rest/v1/storage?select=key,value&key=in.(piron_users,piron_objects,piron_backoffice)',{headers:SB_H})
-   .then(r=>r.json()).then(rows=>{
-     let ru,ro,rb;
-     if(Array.isArray(rows))rows.forEach(row=>{try{const v=JSON.parse(row.value);if(row.key==='piron_users')ru=v;if(row.key==='piron_objects')ro=v;if(row.key==='piron_backoffice')rb=v;}catch(e){}});
-     if(ru!==undefined){const n=DB.users.length;DB.users=mergeById(ru,DB.users);if(DB.users.length>(ru.length||0))pushKey('piron_users',DB.users);}
-     if(ro!==undefined){DB.objects=mergeById(ro,DB.objects);if(DB.objects.length>(ro.length||0))pushKey('piron_objects',DB.objects);}
+  Promise.all([
+    fetch(SB_URL+'/rest/v1/storage?select=key,value&key=in.(piron_users,piron_objects,piron_backoffice,piron_executors)',{headers:SB_H}).then(r=>r.json()),
+    fetch(SB_URL+'/rest/v1/storage?select=key,value&key=like.piron_obj_*',{headers:SB_H}).then(r=>r.json())
+  ]).then(function(res){
+     const rows=res[0]||[],objrows=res[1]||[];
+     let ru,rb,re,legacy;
+     if(Array.isArray(rows))rows.forEach(row=>{try{const v=JSON.parse(row.value);if(row.key==='piron_users')ru=v;if(row.key==='piron_objects')legacy=v;if(row.key==='piron_backoffice')rb=v;if(row.key==='piron_executors')re=v;}catch(e){}});
+     // объекты: старый общий список как база, отдельные записи перекрывают
+     const omap={};const perObjIds=new Set();
+     if(Array.isArray(legacy))legacy.forEach(o=>{if(o&&o.id)omap[o.id]=o;});
+     if(Array.isArray(objrows))objrows.forEach(row=>{try{const o=JSON.parse(row.value);if(o&&o.id){omap[o.id]=o;perObjIds.add(o.id);}}catch(e){}});
+     if(legacy!==undefined||(Array.isArray(objrows)&&objrows.length)){DB.objects=mergeById(Object.keys(omap).map(k=>omap[k]),DB.objects);}
+     if(ru!==undefined){DB.users=mergeById(ru,DB.users);if(DB.users.length>(ru.length||0))pushKey('piron_users',DB.users);}
      if(rb!==undefined){DB.backoffice=mergeById(rb,DB.backoffice);if(DB.backoffice.length>(rb.length||0))pushKey('piron_backoffice',DB.backoffice);}
+     if(re!==undefined){DB.executors=mergeById(re,DB.executors);if(DB.executors.length>(re.length||0))pushKey('piron_executors',DB.executors);}
+     // миграция: у объектов без отдельной записи — создать её
+     DB.objects.forEach(o=>{if(o&&o.id&&!perObjIds.has(o.id))pushKey('piron_obj_'+o.id,o);});
      ensureSeed();
      if(session.userId)currentUser=DB.users.find(u=>u.id===session.userId)||currentUser;
      saveLocal();setSync(true,'Синхронизировано');render();
@@ -553,17 +596,43 @@ function ensureSeed(){
   if(!DB.users||!DB.users.length){DB.users=[{id:uid(),login:'admin',password:'admin',name:'Администратор',role:'admin'}];pushKey('piron_users',DB.users);}
   if(!DB.objects)DB.objects=[];
   if(!DB.backoffice)DB.backoffice=[];
+  if(!DB.executors||!DB.executors.length){DB.executors=JSON.parse(JSON.stringify(EXEC_SEED));pushKey('piron_executors',DB.executors);}
 }
 
 /* ===================== Авторизация ===================== */
+const SESSION_TTL=120000;let hbTimer=null;
+const genToken=()=>uid()+uid();
+function getSessions(){return fetch(SB_URL+'/rest/v1/storage?select=value&key=eq.piron_sessions',{headers:SB_H}).then(r=>r.json()).then(rows=>{let s={};try{if(rows&&rows[0])s=JSON.parse(rows[0].value)||{};}catch(e){}return s;});}
 function doLogin(){
   const lg=document.getElementById('lg-login').value.trim();
   const pw=document.getElementById('lg-pass').value;
-  const u=DB.users.find(x=>x.login.toLowerCase()===lg.toLowerCase()&&x.password===pw);
+  const u=DB.users.find(x=>x.login.toLowerCase()===lg.toLowerCase()&&x.password===pw&&!x._del);
   if(!u){document.getElementById('lg-err').textContent='Неверный логин или пароль';return;}
-  currentUser=u;session.userId=u.id;saveLocal();view='portfolio';render();
+  document.getElementById('lg-err').textContent='Проверка сеанса…';
+  const myToken=genToken();
+  getSessions().then(function(s){
+    const cur=s[u.id];
+    if(cur&&cur.token&&cur.token!==myToken&&(Date.now()-(cur.ts||0))<SESSION_TTL){
+      document.getElementById('lg-err').innerHTML='Эта учётная запись уже открыта на другом устройстве.<br><span style="font-weight:400;color:var(--muted)">Закройте её там (Выйти) или подождите ~2 минуты.</span>';return;
+    }
+    s[u.id]={token:myToken,ts:Date.now()};pushKey('piron_sessions',s);
+    currentUser=u;session.userId=u.id;session.token=myToken;saveLocal();view='portfolio';startHeartbeat();render();
+  }).catch(function(){currentUser=u;session.userId=u.id;session.token=myToken;saveLocal();view='portfolio';startHeartbeat();render();});
 }
-function logout(){currentUser=null;session.userId=null;currentObjId=null;view='login';saveLocal();render();}
+function startHeartbeat(){if(hbTimer)clearInterval(hbTimer);hbTimer=setInterval(heartbeat,30000);}
+function heartbeat(){
+  if(!currentUser||!session.token)return;
+  getSessions().then(function(s){
+    const cur=s[currentUser.id];
+    if(cur&&cur.token&&cur.token!==session.token&&(Date.now()-(cur.ts||0))<SESSION_TTL){forceLogout();return;}
+    s[currentUser.id]={token:session.token,ts:Date.now()};pushKey('piron_sessions',s);
+  }).catch(function(){});
+}
+function forceLogout(){if(hbTimer)clearInterval(hbTimer);alert('Эта учётная запись была открыта на другом устройстве — текущий сеанс завершён.');currentUser=null;session.userId=null;session.token=null;currentObjId=null;view='login';saveLocal();render();}
+function logout(){
+  if(currentUser&&session.token){getSessions().then(function(s){if(s[currentUser.id]&&s[currentUser.id].token===session.token){delete s[currentUser.id];pushKey('piron_sessions',s);}}).catch(function(){});}
+  if(hbTimer)clearInterval(hbTimer);currentUser=null;session.userId=null;session.token=null;currentObjId=null;view='login';saveLocal();render();
+}
 
 /* ===================== Доступ ===================== */
 const O=()=>DB.objects.find(o=>o.id===currentObjId);
@@ -654,12 +723,30 @@ function delCustomIrd(k){if(!confirm('Удалить добавленный ИР
 
 /* objects */
 function openObject(id){currentObjId=id;view='object';activeTab='dash';configMode=false;render();}
-function newObject(){const o={id:uid(),passport:{},rows:{},ird:{},tasks:[],team:[],extra:{P:[],R:[],I:[]},curated:true,gipId:(currentUser.role==='gip'?currentUser.id:'')};DB.objects.push(o);persistObj();openObject(o.id);}
-function delObject(id){if(confirm('Архивировать объект? Данные сохранятся, объект скроется из списка.')){const o=DB.objects.find(x=>x.id===id);if(o){o._del=true;persistObj();}view='portfolio';currentObjId=null;render();}}
+function newObject(){const o={id:uid(),passport:{},rows:{},ird:{},tasks:[],team:[],extra:{P:[],R:[],I:[]},curated:true,gipId:(currentUser.role==='gip'?currentUser.id:'')};DB.objects.push(o);persistOneObj(o);openObject(o.id);}
+function delObject(id){if(confirm('Архивировать объект? Данные сохранятся, объект скроется из списка.')){const o=DB.objects.find(x=>x.id===id);if(o){o._del=true;persistOneObj(o);}view='portfolio';currentObjId=null;render();}}
 function goPortfolio(){view='portfolio';currentObjId=null;render();}
 function goUsers(){view='users';render();}
 function goLK(){view='lk';render();}
 function goBO(){view='backoffice';render();}
+function goArchive(){view='archive';render();}
+function goExecs(){view='execs';render();}
+function restoreObject(id){const o=DB.objects.find(x=>x.id===id);if(o){o._del=false;persistOneObj(o);}render();}
+/* реестр исполнителей */
+function execsLive(){return (DB.executors||[]).filter(e=>!e._del);}
+function addExec(){DB.executors=DB.executors||[];DB.executors.unshift({id:'ex_'+uid(),name:'',org:'',phone:'',email:'',inn:'',kind:'подряд',status:'активный'});persistExec();render();}
+function setExec(id,f,v){const e=(DB.executors||[]).find(x=>x.id===id);if(e){e[f]=v;persistExec();if(f==='status'||f==='kind')render();}}
+function delExec(id){const e=(DB.executors||[]).find(x=>x.id===id);if(e){e._del=true;persistExec();render();}}
+/* загрузка / накладки по исполнителям (по всем объектам) */
+function labelOf(o,k){if(ROW_LABEL[k]!=null)return ROW_LABEL[k];const ex=((o.extra&&o.extra.P)||[]).concat((o.extra&&o.extra.R)||[]);const f=ex.find(x=>x.k===k);return f?(f.label||'•'):k;}
+function execAssignments(name){const nm=(name||'').trim().toLowerCase();if(!nm)return[];const out=[];DB.objects.filter(o=>!o._del).forEach(o=>{const rows=o.rows||{};Object.keys(rows).forEach(k=>{const r=rows[k];if(!r||r.on===false)return;if((r.who||'').trim().toLowerCase()===nm&&r.st!=='сдан')out.push({o:o,k:k,start:r.start,end:r.end,st:r.st||'не начат'});});});return out;}
+function ovl(s1,e1,s2,e2){if(!s1||!e1||!s2||!e2)return false;return !(e1<s2||e2<s1);}
+function conflictsFor(name,start,end,exObj,exK){if(!name||!start||!end)return[];return execAssignments(name).filter(a=>!(a.o.id===exObj&&a.k===exK)&&ovl(start,end,a.start,a.end));}
+/* файлы раздела (задание/шаблон/итог) */
+function setFile(k,slot,v){const r=rowOf(k);r.files=r.files||{};r.files[slot]=v;logHist(k,(v?'добавлен файл: ':'убран файл: ')+({task:'Задание',tpl:'Шаблон',fin:'Итоговый раздел'}[slot]||slot));persistObj();render();}
+function needAttn(k){const r=O().rows[k]||{};if(!r.start)return false;const f=r.files||{};if(f.task&&f.tpl)return false;const start=pdt(r.start);if(!start)return false;return (start-todayD())/DAY<=2;}
+function attnText(k){const r=O().rows[k]||{};const f=r.files||{};const miss=[];if(!f.task)miss.push('Задание');if(!f.tpl)miss.push('Шаблон');return miss.length?'не загружено: '+miss.join(' и '):'';}
+function fileFlags(k,r){const f=r.files||{};let h='';if(needAttn(k))h+='<span class="flag fl-attn" title="За пару дней до начала не загружены Задание/Шаблон">⚠ важно</span>';if(f.task)h+='<a class="flag fbtn" href="'+esc(f.task)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Задание">З</a>';if(f.tpl)h+='<a class="flag fbtn" href="'+esc(f.tpl)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Шаблон">Ш</a>';if(f.fin)h+='<a class="flag fbtn fbtn-fin" href="'+esc(f.fin)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Итоговый раздел">И</a>';return h;}
 
 /* бэкофис (общие вопросы) */
 function canBO(){return currentUser&&(currentUser.role==='admin'||currentUser.role==='director');}
@@ -668,7 +755,7 @@ function setBO(id,f,v){const t=(DB.backoffice||[]).find(x=>x.id===id);if(t){cons
 function delBO(id){const t=(DB.backoffice||[]).find(x=>x.id===id);if(t){t._del=true;persistBO();render();}}
 
 /* users admin */
-function addUser(){DB.users.push({id:uid(),login:'',password:'',name:'',role:'gip',phone:'',email:''});persistUsers();render();}
+function addUser(){DB.users.push({id:uid(),login:'',password:'',name:'',role:'gip',phone:'',email:'',company:''});persistUsers();render();}
 function setUser(id,f,v){const u=userById(id);if(u){u[f]=v;persistUsers();if(f==='role')render();}}
 function delUser(id){if(id===currentUser.id){alert('Нельзя архивировать себя');return;}if(confirm('Архивировать пользователя? Данные и история сохранятся.')){const u=userById(id);if(u){u._del=true;persistUsers();}render();}}
 
@@ -711,25 +798,26 @@ function secRow(numHtml,title,k,isMarka){
   if(!configMode&&hideEmpty&&st==='не начат'&&!r.who&&!r.start&&!r.end&&!oc)return '';
   const tcb=oc?'<span class="tcount" title="Открытых вопросов">⚡ '+oc+'</span>':'';
   const ex=exonOf(k);
-  const flags=(ex&&ex!=='—'?'<span class="flag" style="color:#fff;background:'+(EXON_COLOR[ex]||'#888780')+'" title="ЭКЗОН: '+esc(ex)+'">ЭКЗОН: '+esc(ex)+'</span>':'')+(r.link?'<span class="flag fl-link" title="Есть ссылка на том">↗</span>':'')+(r.actual&&r.actual!=='—'?'<span class="flag '+(r.actual==='устарел'?'fl-old':'fl-ok')+'">'+esc(r.actual)+'</span>':'');
+  const flags=(ex&&ex!=='—'?'<span class="flag" style="color:#fff;background:'+(EXON_COLOR[ex]||'#888780')+'" title="ЭКЗОН: '+esc(ex)+'">ЭКЗОН: '+esc(ex)+'</span>':'')+(r.link?'<span class="flag fl-link" title="Есть ссылка на том">↗</span>':'')+(r.actual&&r.actual!=='—'?'<span class="flag '+(r.actual==='устарел'?'fl-old':'fl-ok')+'">'+esc(r.actual)+'</span>':'')+fileFlags(k,r);
   const open=!!openSec[k];
   const chk=configMode?'<input type="checkbox" class="inclchk"'+dis()+(incl?' checked':'')+' onchange="setIncl(\''+k+'\',this.checked)">':'';
   const row='<div class="row sec'+(isMarka?' r-marka':'')+(incl?'':' off')+'">'+
     '<div class="num">'+chk+numHtml+'</div>'+
     '<div class="title" style="cursor:pointer" onclick="toggleSec(\''+k+'\')" title="Открыть карточку раздела">'+esc(title)+tcb+flags+'<span class="chev-sec">▶</span></div>'+
-    '<input class="cell" placeholder="Исполнитель"'+dis()+' value="'+esc(r.who||'')+'" onchange="setCell(\''+k+'\',\'who\',this.value)">'+
+    '<input class="cell" list="execlist" placeholder="Исполнитель"'+dis()+' value="'+esc(r.who||'')+'" onchange="setCell(\''+k+'\',\'who\',this.value)">'+
     '<input class="cell" type="date"'+dis()+' value="'+esc(r.start||'')+'" title="Начало" onchange="setCell(\''+k+'\',\'start\',this.value)">'+
     '<input class="cell" type="date"'+dis()+' value="'+esc(r.end||'')+'" title="Окончание" onchange="setCell(\''+k+'\',\'end\',this.value)">'+
     statusSelect(k)+'</div>';
   return '<div class="secwrap'+(open?' open':'')+'">'+row+(open?(renderSecDetail(k)+renderTaskPanel(k)):'')+'</div>';
 }
+function secConflict(k,r){const cf=conflictsFor(r.who,r.start,r.end,O().id,k);if(!cf.length)return '';return '<div class="sd-conflict">⚠ Накладка по времени у «'+esc(r.who||'')+'»: '+cf.map(function(a){return esc((a.o.passport&&a.o.passport.name)||'объект')+' / '+esc(labelOf(a.o,a.k))+' ('+esc(a.start||'?')+'–'+esc(a.end||'?')+')';}).join('; ')+'</div>';}
 function renderSecDetail(k){
   const r=O().rows[k]||{};const ro=!canEdit();const hist=r.history||[];
   return '<div class="secdet">'+
     '<div class="sd-grid">'+
       '<div class="sd-f"><label>Ссылка на Яндекс.Диск</label><div class="sd-link"><input'+(ro?' disabled':'')+' placeholder="https://disk.yandex.ru/..." value="'+esc(r.link||'')+'" onchange="setCell(\''+k+'\',\'link\',this.value)">'+(r.link?'<a class="btn sm" href="'+esc(r.link)+'" target="_blank" rel="noopener">↗</a>':'')+'</div></div>'+
       '<div class="sd-f"><label>Состояние раздела</label><select'+(ro?' disabled':'')+' onchange="setActual(\''+k+'\',this.value)">'+ACTUALS.map(a=>'<option'+((r.actual||'—')===a?' selected':'')+'>'+a+'</option>').join('')+'</select></div>'+
-      '<div class="sd-f"><label>ЭКЗОН (стадия Р)</label><select'+(ro?' disabled':'')+' onchange="setExon(\''+k+'\',this.value)">'+EXON_ST.map(s=>'<option'+(exonOf(k)===s?' selected':'')+'>'+s+'</option>').join('')+'</select></div>'+
+      '<div class="sd-f"><label>ЭКЗОН</label><select'+(ro?' disabled':'')+' onchange="setExon(\''+k+'\',this.value)">'+EXON_ST.map(s=>'<option'+(exonOf(k)===s?' selected':'')+'>'+s+'</option>').join('')+'</select></div>'+
     '</div>'+
     '<div class="sd-dates">'+
       '<span class="sd-dl">Срок подрядчика:</span> <b>'+(r.start?esc(r.start):'—')+' → '+(r.end?esc(r.end):'—')+'</b> <span class="muted" style="font-size:11px">(в строке раздела)</span>'+
@@ -737,6 +825,9 @@ function renderSecDetail(k){
       '<input type="date"'+(ro?' disabled':'')+' value="'+esc(r.custStart||'')+'" title="Заказчик: начало" onchange="setCell(\''+k+'\',\'custStart\',this.value)"> → '+
       '<input type="date"'+(ro?' disabled':'')+' value="'+esc(r.custEnd||'')+'" title="Заказчик: окончание" onchange="setCell(\''+k+'\',\'custEnd\',this.value)">'+
     '</div>'+
+    secConflict(k,r)+
+    '<div class="sd-files"><div class="sd-dl" style="margin-bottom:6px">Файлы (по ссылке — любой носитель):</div>'+
+      [['task','Задание'],['tpl','Шаблон'],['fin','Итоговый раздел']].map(function(ff){var url=(r.files||{})[ff[0]]||'';return '<div class="sd-file"><label>'+ff[1]+'</label><div class="sd-link"><input'+(ro?' disabled':'')+' placeholder="ссылка на файл" value="'+esc(url)+'" onchange="setFile(\''+k+'\',\''+ff[0]+'\',this.value)">'+(url?'<a class="btn sm pri" href="'+esc(url)+'" target="_blank" rel="noopener">Открыть</a>':'')+'</div></div>';}).join('')+'</div>'+
     '<div class="sd-hist"><div class="sd-ht">История изменений</div>'+(hist.length?hist.map(h=>'<div class="he"><span class="ht">'+esc(h.ts)+'</span> — '+esc(h.txt)+(h.by?' <span class="hb">('+esc(h.by)+')</span>':'')+'</div>').join(''):'<div class="he muted">пока нет записей — статусы и изменения логируются здесь автоматически</div>')+'</div>'+
   '</div>';
 }
@@ -761,13 +852,17 @@ function taskRow(objId,t,editable){
   const d=editable?'':' disabled';
   const overdue=t.due&&t.status!=='выполнена'&&new Date(t.due)<todayD();
   const stD=(editable||t.assignee===currentUser.id||t.author===currentUser.id)?'':' disabled';
+  const isBO=(objId==='__bo__');
+  const fromCell=isBO
+    ? '<span class="tk-fromname" title="Кто поставил задачу">от: '+esc(userName(t.author)||'—')+'</span>'
+    : '<span class="fdot" style="background:'+(FROM_COLOR[t.from]||'transparent')+(t.from?'':';border:1px dashed var(--line-2)')+'" title="От кого: '+esc(t.from||'не указано')+'"></span><select class="tk-from"'+d+' title="От кого поставлена задача" onchange="setTaskF(\''+objId+'\',\''+t.id+'\',\'from\',this.value)"><option value="">— от кого —</option>'+TASK_FROM.map(f=>'<option'+(t.from===f?' selected':'')+'>'+f+'</option>').join('')+'</select>';
   return '<div class="tk2">'+
     '<input class="tk-title"'+d+' placeholder="Вопрос / что сделать" value="'+esc(t.title||'')+'" onchange="setTaskF(\''+objId+'\',\''+t.id+'\',\'title\',this.value)">'+
     '<div class="tk-meta">'+
-      '<span class="fdot" style="background:'+(FROM_COLOR[t.from]||'transparent')+(t.from?'':';border:1px dashed var(--line-2)')+'" title="От кого: '+esc(t.from||'не указано')+'"></span>'+
-      '<select class="tk-from"'+d+' title="От кого поставлена задача" onchange="setTaskF(\''+objId+'\',\''+t.id+'\',\'from\',this.value)"><option value="">— от кого —</option>'+TASK_FROM.map(f=>'<option'+(t.from===f?' selected':'')+'>'+f+'</option>').join('')+'</select>'+
+      fromCell+
+      ((!isBO&&t.author)?'<span class="tk-poser" title="Постановщик вопроса (кто создал)">пост.: '+esc(userName(t.author))+(userById(t.author)&&userById(t.author).company?' · '+esc(userById(t.author).company):'')+'</span>':'')+
       '<select'+d+' title="Исполнитель (получит вопрос в ЛК)" onchange="setTaskF(\''+objId+'\',\''+t.id+'\',\'assignee\',this.value)">'+assigneeSelect(t)+'</select>'+
-      '<input type="date"'+d+' title="Срок решения" style="'+(overdue?'color:var(--red);font-weight:700':'')+'" value="'+esc(t.due||'')+'" onchange="setTaskF(\''+objId+'\',\''+t.id+'\',\'due\',this.value)">'+
+      '<span class="tk-lbl">срок выполнения:</span><input type="date"'+d+' title="Срок выполнения" style="'+(overdue?'color:var(--red);font-weight:700':'')+'" value="'+esc(t.due||'')+'" onchange="setTaskF(\''+objId+'\',\''+t.id+'\',\'due\',this.value)">'+
       '<select class="'+TK_CLS[t.status||'новая']+'"'+stD+' onchange="setTaskF(\''+objId+'\',\''+t.id+'\',\'status\',this.value)">'+statusOpts(t)+'</select>'+
       '<span class="tdate" title="Дата постановки">📌 '+esc(t.created||'—')+'</span>'+
       (t.acceptedAt?'<span class="taccept" title="Исполнитель принял в работу">✓ принял '+esc(t.acceptedAt)+'</span>':'')+
@@ -791,7 +886,7 @@ function irdRow(i){const r=irdData(i.k);const incl=irdIncluded(i.k);if(!configMo
   return '<div class="row ird'+(incl?'':' off')+'"><div class="title">'+chk+esc(i.t)+'</div>'+
   '<input class="cell" placeholder="Ответственный"'+dis()+' value="'+esc(r.who||'')+'" onchange="setIrd(\''+i.k+'\',\'who\',this.value)">'+
   '<input class="cell" type="date" title="Срок получения"'+dis()+' value="'+esc(r.due||'')+'" onchange="setIrd(\''+i.k+'\',\'due\',this.value)">'+
-  irdSelect(i.k)+'</div>';}
+  irdSelect(i.k)+'<select class="cell"'+dis()+' title="Согласовано в ЭКЗОН" onchange="setIrd(\''+i.k+'\',\'exon\',this.value)">'+IRD_EXON.map(s=>'<option'+((r.exon||'—')===s?' selected':'')+'>'+s+'</option>').join('')+'</select></div>';}
 function custSecRow(item,isMarka){
   const k=item.k;const incl=secIncluded(k);
   if(!scopeAllows(k))return '';
@@ -800,7 +895,7 @@ function custSecRow(item,isMarka){
   const open=!!openSec[k];const d=dis();const ed=canEdit();
   const chk=configMode?'<input type="checkbox" class="inclchk"'+d+(incl?' checked':'')+' onchange="setIncl(\''+k+'\',this.checked)">':'';
   const tcb=oc?'<span class="tcount">⚡ '+oc+'</span>':'';
-  const ex=exonOf(k);const exf=(ex&&ex!=='—')?'<span class="flag" style="color:#fff;background:'+(EXON_COLOR[ex]||'#888780')+'" title="ЭКЗОН: '+esc(ex)+'">ЭКЗОН: '+esc(ex)+'</span>':'';
+  const ex=exonOf(k);const exf=((ex&&ex!=='—')?'<span class="flag" style="color:#fff;background:'+(EXON_COLOR[ex]||'#888780')+'" title="ЭКЗОН: '+esc(ex)+'">ЭКЗОН: '+esc(ex)+'</span>':'')+fileFlags(k,r);
   let titleCell;
   if(ed){
     titleCell='<input class="custcode" value="'+esc(item.label||'')+'" placeholder="код" onchange="setCustomSec(\''+k+'\',\'label\',this.value)">'+
@@ -813,7 +908,7 @@ function custSecRow(item,isMarka){
   const row='<div class="row sec'+(isMarka?' r-marka':'')+(incl?'':' off')+'">'+
     '<div class="num">'+chk+(item.label&&!ed?esc(item.label):'•')+'</div>'+
     '<div class="title">'+titleCell+'</div>'+
-    '<input class="cell" placeholder="Исполнитель"'+d+' value="'+esc(r.who||'')+'" onchange="setCell(\''+k+'\',\'who\',this.value)">'+
+    '<input class="cell" list="execlist" placeholder="Исполнитель"'+d+' value="'+esc(r.who||'')+'" onchange="setCell(\''+k+'\',\'who\',this.value)">'+
     '<input class="cell" type="date"'+d+' value="'+esc(r.start||'')+'" title="Начало" onchange="setCell(\''+k+'\',\'start\',this.value)">'+
     '<input class="cell" type="date"'+d+' value="'+esc(r.end||'')+'" title="Окончание" onchange="setCell(\''+k+'\',\'end\',this.value)">'+
     statusSelect(k)+'</div>';
@@ -827,7 +922,7 @@ function custIrdRow(item){const k=item.k;const incl=irdIncluded(k);if(!configMod
   return '<div class="row ird'+(incl?'':' off')+'"><div class="title">'+titleCell+'</div>'+
   '<input class="cell" placeholder="Ответственный"'+d+' value="'+esc(r.who||'')+'" onchange="setIrd(\''+k+'\',\'who\',this.value)">'+
   '<input class="cell" type="date" title="Срок получения"'+d+' value="'+esc(r.due||'')+'" onchange="setIrd(\''+k+'\',\'due\',this.value)">'+
-  irdSelect(k)+'</div>';}
+  irdSelect(k)+'<select class="cell"'+d+' title="Согласовано в ЭКЗОН" onchange="setIrd(\''+k+'\',\'exon\',this.value)">'+IRD_EXON.map(s=>'<option'+((r.exon||'—')===s?' selected':'')+'>'+s+'</option>').join('')+'</select></div>';}
 function addSecCtl(stage){if(!configMode||!canEdit())return '';return '<div class="addsec"><button class="btn sm pri" onclick="addCustomSec(\''+stage+'\')">+ Добавить подраздел</button></div>';}
 function sectionPicker(stage){
   if(!canEdit())return '';
@@ -883,7 +978,7 @@ function configBtn(){if(!canEdit())return '';return '<button class="btn'+(config
 function renderIrd(){const ird=irdProgress();let html='<div class="hero"><div class="top"><h2><span class="tag">Основание</span> Исходно-разрешительная документация</h2><div style="text-align:right"><div class="big">'+ird.pct+'<small>%</small></div><div class="sub">'+ird.ready+' из '+ird.total+' получено / не требуется</div></div></div><div class="bar"><i style="width:'+ird.pct+'%"></i></div></div>';
   html+='<div class="toolbar">'+configBtn()+'<span style="font-size:12.5px;color:var(--muted)">'+(configMode?'Отметьте, какие ИРД нужны на этом объекте':'Пока документ не «получен»/«не требуется», зависимые разделы помечаются «Ожидают ИРД»')+'</span></div>';
   if(!configMode)html+=irdPicker();
-  html+='<div class="colhead ird"><span>Документ</span><span>Ответственный</span><span>Срок получения</span><span>Статус</span></div>';
+  html+='<div class="colhead ird"><span>Документ</span><span>Ответственный</span><span>Срок получения</span><span>Статус</span><span>Согласовано в ЭКЗОН</span></div>';
   html+=IRD.map(g=>{const rows=g.items.map(irdRow).join('');return rows.trim()?'<div class="grouplabel">'+esc(g.group)+'</div>'+rows:'';}).join('');
   const cust=customI().map(custIrdRow).join('');
   if(cust.trim()||configMode)html+='<div class="grouplabel">Дополнительные ИРД</div>'+cust;
@@ -935,7 +1030,7 @@ function renderGantt(){
     const qs=it.qs||[];
     const qhtml=qs.length?'<div class="gq-list">'+qs.slice(0,4).map(q=>{const od=q.due&&new Date(q.due)<today;return '<span class="gq '+PRIO_CLS[q.prio||'средний']+'" onclick="openTask(\''+it.k+'\')" title="'+esc(q.title||'вопрос')+(q.due?' · срок '+esc(q.due):'')+(q.assignee?' · '+esc(userName(q.assignee)):'')+'">❓ '+esc((q.title||'вопрос').slice(0,24))+(od?' ⚠':'')+'</span>';}).join('')+(qs.length>4?'<span class="gq-more" onclick="openTask(\''+it.k+'\')">+'+(qs.length-4)+' ещё</span>':'')+'</div>':'';
     let custBar='';if(it.cs&&it.ce&&!(it.ce<min||it.cs>max)){const cL=Math.max(0,pct(it.cs)),cR=Math.min(100,pct(it.ce));custBar='<div class="gbar-cust" style="left:'+cL+'%;width:'+Math.max(1.5,cR-cL)+'%" title="Срок заказчика · '+fmtDM(it.cs)+'–'+fmtDM(it.ce)+'">заказчик</div>';}
-    rows+='<div class="grow"><div class="glabel"><div class="gl-name" title="'+esc(it.name)+'"><span class="gl-code">'+esc(it.label)+'</span>'+esc(it.name)+'</div><div class="gl-meta"><span class="w">'+esc(it.who||'исполнитель не указан')+'</span><span class="gleft '+lc+'">'+lb+'</span></div>'+qhtml+'</div><div class="gtrack">'+grid+todayLine+'<div class="gbar" style="left:'+L+'%;width:'+W+'%;background:'+col+'" title="Подрядчик · '+esc(it.name)+' · '+fmtDM(it.a)+'–'+fmtDM(it.b)+'">'+esc(it.label)+'</div>'+custBar+pins+'</div></div>';});
+    rows+='<div class="grow"><div class="glabel"><div class="gl-name" title="'+esc(it.name)+'"><span class="gl-code">'+esc(it.label)+'</span>'+esc(it.name)+(needAttn(it.k)?'<span class="gl-attn" title="За пару дней до старта '+esc(attnText(it.k))+'">⚠ важно · '+esc(attnText(it.k))+'</span>':'')+'</div><div class="gl-meta"><span class="w">'+esc(it.who||'исполнитель не указан')+'</span><span class="gleft '+lc+'">'+lb+'</span></div>'+qhtml+'</div><div class="gtrack">'+grid+todayLine+'<div class="gbar" style="left:'+L+'%;width:'+W+'%;background:'+col+'" title="Подрядчик · '+esc(it.name)+' · '+fmtDM(it.a)+'–'+fmtDM(it.b)+'">'+esc(it.label)+'</div>'+custBar+pins+'</div></div>';});
   const legend='<div class="glegend"><span><i class="lg-pod"></i> срок подрядчика</span><span><i class="lg-cust"></i> срок заказчика</span><span><i class="lg-q"></i> вопрос (срок)</span></div>';
   return rangeBtns+legend+'<div class="gantt"><div class="gantt-head"><div class="gl">Раздел / исполнитель</div><div class="gl" style="position:relative;border:none"><div class="gaxis">'+ticks+todayLine+'</div></div></div>'+rows+'</div>';}
 
@@ -1051,7 +1146,10 @@ function header(){
     '<a class="'+(view==='portfolio'?'active':'')+'" onclick="goPortfolio()">Объекты</a>'+
     '<a class="'+(view==='lk'?'active':'')+'" onclick="goLK()">Личный кабинет'+lkBadge+'</a>'+
     '<a class="'+(view==='backoffice'?'active':'')+'" onclick="goBO()">Бэкофис</a>'+
+    (r==='admin'||r==='director'?'<a class="'+(view==='tasks'?'active':'')+'" onclick="goTasks()">Все задачи</a>':'')+
+    (r==='admin'||r==='director'||r==='rp'?'<a class="'+(view==='execs'?'active':'')+'" onclick="goExecs()">Исполнители</a>':'')+
     (r==='admin'?'<a class="'+(view==='users'?'active':'')+'" onclick="goUsers()">Пользователи</a>':'')+
+    (r==='admin'?'<a class="'+(view==='archive'?'active':'')+'" onclick="goArchive()">Архив</a>':'')+
     '</div>';
   return '<div class="topbar"><div class="brand" onclick="goPortfolio()"><div class="logo">О</div><div><h1>Портал объектов</h1><p>Среда общих данных по ПИР</p></div></div>'+
     '<div class="usermenu"><div class="sync"><span class="dot" id="syncDot"></span><span id="syncTxt">…</span></div>'+
@@ -1124,9 +1222,9 @@ function teamCard(o){
   return '<div class="passport"><div class="ptitle"><i>›</i><span>Команда проекта · контакты</span></div>'+rows+manual+add+'</div>';
 }
 function pomGipUsers(){return usersLive().filter(u=>u.role==='pom_gip');}
-function setGip(v){O().gipId=v;persistObj();render();}
-function setPodryad(v){O().podryadId=v;persistObj();render();}
-function setPomGip(v){O().pomGipId=v;persistObj();render();}
+function setGip(v){const o=O();o.gipId=v;const u=userById(v);if(u&&u.company)o.gipCompany=u.company;persistObj();render();}
+function setPodryad(v){const o=O();o.podryadId=v;const u=userById(v);if(u&&u.company)o.podryadCompany=u.company;persistObj();render();}
+function setPomGip(v){const o=O();o.pomGipId=v;const u=userById(v);if(u&&u.company)o.pomCompany=u.company;persistObj();render();}
 function setObjField(f,v){O()[f]=v;persistObj();}
 function assignBlock(o){
   const ad=(currentUser.role==='admin')?'':' disabled';
@@ -1150,11 +1248,12 @@ function renderUsers(){
   const live=usersLive();
   let html='<div class="pf-head"><h2>Пользователи <span style="color:var(--hint);font-weight:600">('+live.length+')</span></h2><button class="btn pri" onclick="addUser()">+ Пользователь</button></div>';
   html+='<div class="src" style="margin-top:0;margin-bottom:14px">Роли: <b>ГИП</b>, <b>Помощник ГИПа</b>, <b>Подряд</b>, <b>Сметчик</b> — редактируют свои объекты (назначаются в паспорте/команде проекта), видят только свои. <b>Директор</b> — видит все, только просмотр. <b>Админ</b> — управляет всем. Удаление безопасное: пользователь архивируется, данные и история сохраняются.</div>';
-  html+='<div class="utable"><div class="urow head"><span>Имя</span><span>Логин</span><span>Пароль</span><span>Телефон</span><span>Почта</span><span>Роль</span><span></span></div>';
+  html+='<div class="utable"><div class="urow head"><span>Имя</span><span>Логин</span><span>Пароль</span><span>Компания</span><span>Телефон</span><span>Почта</span><span>Роль</span><span></span></div>';
   html+=live.map(u=>'<div class="urow">'+
     '<input value="'+esc(u.name||'')+'" placeholder="Имя" onchange="setUser(\''+u.id+'\',\'name\',this.value)">'+
     '<input value="'+esc(u.login||'')+'" placeholder="логин" onchange="setUser(\''+u.id+'\',\'login\',this.value)">'+
     '<input value="'+esc(u.password||'')+'" placeholder="пароль" onchange="setUser(\''+u.id+'\',\'password\',this.value)">'+
+    '<input value="'+esc(u.company||'')+'" placeholder="Компания" onchange="setUser(\''+u.id+'\',\'company\',this.value)">'+
     '<input value="'+esc(u.phone||'')+'" placeholder="телефон" onchange="setUser(\''+u.id+'\',\'phone\',this.value)">'+
     '<input value="'+esc(u.email||'')+'" placeholder="email" onchange="setUser(\''+u.id+'\',\'email\',this.value)">'+
     '<select onchange="setUser(\''+u.id+'\',\'role\',this.value)">'+ROLE_LIST.map(r=>'<option value="'+r+'"'+(u.role===r?' selected':'')+'>'+ROLE_NAME[r]+'</option>').join('')+'</select>'+
@@ -1163,6 +1262,134 @@ function renderUsers(){
   return html;
 }
 
+/* ===================== Все задачи (агрегатор) ===================== */
+function allTasksFlat(){
+  const out=[];
+  DB.objects.filter(o=>!o._del).forEach(o=>{(o.tasks||[]).filter(t=>!t._del).forEach(t=>out.push({t:t,o:o,scope:'obj'}));});
+  (DB.backoffice||[]).filter(t=>!t._del).forEach(t=>out.push({t:t,o:null,scope:'bo'}));
+  return out;
+}
+function renderAllTasks(){
+  const all=allTasksFlat();
+  // фильтрация
+  const f=taskFilter;
+  let list=all.filter(x=>{
+    if(f.author&&x.t.author!==f.author)return false;
+    if(f.assignee&&x.t.assignee!==f.assignee)return false;
+    if(f.obj){if(f.obj==='__bo__'?x.scope!=='bo':!(x.o&&x.o.id===f.obj))return false;}
+    if(f.sec&&x.t.sec!==f.sec)return false;
+    if(f.from&&x.t.from!==f.from)return false;
+    if(f.status&&(x.t.status||'новая')!==f.status)return false;
+    return true;
+  });
+  // опции фильтров — только из людей, у кого есть ЛК
+  const userOpts=usersLive().map(u=>'<option value="'+u.id+'"'+(f.author===u.id?' selected':'')+'>'+esc(u.name||u.login)+' ('+ROLE_NAME[u.role]+')</option>').join('');
+  const assigneeOpts=usersLive().map(u=>'<option value="'+u.id+'"'+(f.assignee===u.id?' selected':'')+'>'+esc(u.name||u.login)+'</option>').join('');
+  const objOpts=DB.objects.filter(o=>!o._del).map(o=>'<option value="'+o.id+'"'+(f.obj===o.id?' selected':'')+'>'+esc(o.passport.name||'(объект)')+'</option>').join('')+'<option value="__bo__"'+(f.obj==='__bo__'?' selected':'')+'>Бэкофис</option>';
+  const secKeys={};all.forEach(x=>{if(x.t.sec)secKeys[x.t.sec]=true;});
+  const secOpts=Object.keys(secKeys).map(k=>'<option value="'+k+'"'+(f.sec===k?' selected':'')+'>'+esc(rowLabel(k))+' · '+esc(rowName(k))+'</option>').join('');
+  const fromOpts=TASK_FROM.map(s=>'<option value="'+s+'"'+(f.from===s?' selected':'')+'>'+s+'</option>').join('');
+  const stOpts=TK_STATUSES.map(s=>'<option value="'+s+'"'+(f.status===s?' selected':'')+'>'+s+'</option>').join('');
+
+  let html='<div class="pf-head"><h2>Все задачи <span style="color:var(--hint);font-weight:600">('+list.length+' из '+all.length+')</span></h2>'+
+    '<div class="tf-view"><button class="btn sm'+(f.view==='list'?' pri':'')+'" onclick="setTF(\'view\',\'list\')">Список</button>'+
+    '<button class="btn sm'+(f.view==='gantt'?' pri':'')+'" onclick="setTF(\'view\',\'gantt\')">Гантт</button></div></div>';
+  html+='<div class="src" style="margin-top:0;margin-bottom:14px">Сводный список задач по всем объектам и бэкофису. Доступно: админ, генеральный директор.</div>';
+  html+='<div class="tf-bar">'+
+    '<select onchange="setTF(\'author\',this.value)"><option value="">Постановщик: все</option>'+userOpts+'</select>'+
+    '<select onchange="setTF(\'assignee\',this.value)"><option value="">Исполнитель: все</option>'+assigneeOpts+'</select>'+
+    '<select onchange="setTF(\'obj\',this.value)"><option value="">Объект: все</option>'+objOpts+'</select>'+
+    '<select onchange="setTF(\'sec\',this.value)"><option value="">Раздел: все</option>'+secOpts+'</select>'+
+    '<select onchange="setTF(\'from\',this.value)"><option value="">От кого: все</option>'+fromOpts+'</select>'+
+    '<select onchange="setTF(\'status\',this.value)"><option value="">Статус: все</option>'+stOpts+'</select>'+
+    '<button class="btn sm" onclick="resetTF()">Сброс</button>'+
+  '</div>';
+  if(!list.length)return html+'<div class="empty-note">Нет задач по выбранным фильтрам.</div>';
+  if(f.view==='gantt')return html+renderTasksGantt(list);
+  // список
+  const sortFn=(a,b)=>((a.t.due||'9')<(b.t.due||'9')?-1:1);
+  list.sort(sortFn);
+  html+='<div class="tt-head"><span>Задача</span><span>Объект / раздел</span><span>Постановщик</span><span>Исполнитель</span><span>От кого</span><span>Срок</span><span>Статус</span></div>';
+  html+=list.map(x=>{
+    const t=x.t,o=x.o;
+    const onm=o?esc(o.passport.name||'(объект)'):'Бэкофис';
+    const sec=t.sec?esc(rowLabel(t.sec))+' · '+esc(rowName(t.sec)):'';
+    const overdue=t.due&&t.status!=='выполнена'&&new Date(t.due)<todayD();
+    const aut=t.author?esc(userName(t.author)):'—';
+    const autCo=userById(t.author)&&userById(t.author).company?'<div class="tt-sub">'+esc(userById(t.author).company)+'</div>':'';
+    const asg=t.assignee?esc(userName(t.assignee)):'—';
+    const asgCo=userById(t.assignee)&&userById(t.assignee).company?'<div class="tt-sub">'+esc(userById(t.assignee).company)+'</div>':'';
+    const goLink=o?'openLKTask(\''+o.id+'\',\''+(t.sec||'')+'\')':'goBO()';
+    return '<div class="tt-row" onclick="'+goLink+'">'+
+      '<div class="tt-title">'+esc(t.title||'(вопрос без названия)')+'</div>'+
+      '<div>'+onm+(sec?'<div class="tt-sub">'+sec+'</div>':'')+'</div>'+
+      '<div>'+aut+autCo+'</div>'+
+      '<div>'+asg+asgCo+'</div>'+
+      '<div>'+(t.from?'<span class="fdot" style="background:'+(FROM_COLOR[t.from]||'#888')+'"></span> '+esc(t.from):'—')+'</div>'+
+      '<div'+(overdue?' style="color:var(--red);font-weight:700"':'')+'>'+(t.due?esc(t.due):'—')+'</div>'+
+      '<div><span class="lk-st '+TK_CLS[t.status||'новая']+'">'+esc(t.status||'новая')+'</span></div>'+
+    '</div>';
+  }).join('');
+  return html;
+}
+function renderTasksGantt(list){
+  const items=list.filter(x=>x.t.due).map(x=>{
+    const t=x.t,o=x.o; const due=pdt(t.due);
+    const created=t.created?pdt(t.created.length===10?t.created:t.due):null;
+    let start=created&&created<=due?created:new Date(+due-2*DAY);
+    return {t:t,o:o,a:start,b:due,name:(t.title||'(вопрос)'),label:(t.from||''),sub:(o?o.passport.name:'Бэкофис')+(t.sec?' · '+rowLabel(t.sec):''),st:t.status||'новая'};
+  });
+  if(!items.length)return '<div class="empty-note">Среди отобранных задач нет указанных сроков — Гантт строить не из чего.</div>';
+  const today=todayD();let min=items[0].a,max=items[0].b;items.forEach(it=>{if(it.a<min)min=it.a;if(it.b>max)max=it.b;});if(today<min)min=today;if(today>max)max=today;min=new Date(+min-3*DAY);max=new Date(+max+3*DAY);
+  const span=Math.max(1,(max-min)/DAY);const pct=d=>((d-min)/DAY)/span*100;const step=Math.max(7,Math.ceil(span/8/7)*7);
+  let ticks='';for(let t=+min;t<=+max;t+=step*DAY){const d=new Date(t);ticks+='<div class="gtick" style="left:'+pct(d)+'%">'+fmtDM(d)+'</div>';}
+  const todayLine=(today>=min&&today<=max)?'<div class="gtoday" style="left:'+pct(today)+'%"><span>сегодня</span></div>':'';
+  let rows='';items.forEach(it=>{const L=Math.max(0,pct(it.a)),R=Math.min(100,pct(it.b));const W=Math.max(1.5,R-L);const col=FROM_COLOR[it.t.from]||'#888780';
+    rows+='<div class="grow"><div class="glabel"><div class="gl-name" title="'+esc(it.name)+'">'+esc(it.name)+'</div><div class="gl-meta"><span class="w">'+esc(it.sub)+'</span></div></div><div class="gtrack">'+todayLine+'<div class="gbar" style="left:'+L+'%;width:'+W+'%;background:'+col+'" title="'+esc(it.t.from||'')+' · '+fmtDM(it.a)+'–'+fmtDM(it.b)+'">'+esc(it.t.from||'')+'</div></div></div>';});
+  return '<div class="gantt"><div class="gantt-head"><div class="gl">Вопрос</div><div class="gl" style="position:relative;border:none"><div class="gaxis">'+ticks+todayLine+'</div></div></div>'+rows+'</div>';
+}
+
+/* ===================== Архив ===================== */
+function renderArchive(){
+  const arch=DB.objects.filter(o=>o._del);
+  let html='<div class="pf-head"><h2>Архив объектов <span style="color:var(--hint);font-weight:600">('+arch.length+')</span></h2></div>';
+  html+='<div class="src" style="margin-top:0;margin-bottom:14px">Удалённые объекты не стираются — они здесь. Любой можно вернуть кнопкой «Восстановить».</div>';
+  if(!arch.length)return html+'<div class="empty-note">Архив пуст.</div>';
+  html+='<div class="utable">'+arch.map(o=>'<div class="urow" style="grid-template-columns:1fr 160px 130px">'+
+    '<span style="font-weight:600">'+esc((o.passport&&o.passport.name)||'Без названия')+'</span>'+
+    '<span class="muted" style="font-size:12.5px">'+esc((o.passport&&o.passport.gip)||'')+'</span>'+
+    '<button class="btn sm pri" onclick="restoreObject(\''+o.id+'\')">Восстановить</button></div>').join('')+'</div>';
+  return html;
+}
+/* ===================== Исполнители (реестр + загруженность) ===================== */
+function renderExecs(){
+  const list=execsLive();const canManage=currentUser.role==='admin';
+  let html='<div class="pf-head"><h2>Исполнители <span style="color:var(--hint);font-weight:600">('+list.length+')</span></h2>'+(canManage?'<button class="btn pri" onclick="addExec()">+ Исполнитель</button>':'')+'</div>';
+  html+='<div class="src" style="margin-top:0;margin-bottom:14px">База исполнителей (импортирована из «Базы подрядчиков», можно добавлять). Загруженность считается по разделам, где человек указан исполнителем, со статусом ≠ «сдан».</div>';
+  const load={};DB.objects.filter(o=>!o._del).forEach(o=>{const rows=o.rows||{};Object.keys(rows).forEach(k=>{const r=rows[k];if(!r||r.on===false)return;const who=(r.who||'').trim();if(!who||r.st==='сдан')return;load[who]=load[who]||{cnt:0,objs:{},soon:0};load[who].cnt++;load[who].objs[(o.passport&&o.passport.name)||o.id]=1;if(r.end&&(pdt(r.end)-todayD())/DAY<7)load[who].soon++;});});
+  const names=Object.keys(load).sort((a,b)=>load[b].cnt-load[a].cnt);
+  html+='<div class="ptitle" style="margin:4px 4px 10px"><i>›</i><span>Загруженность — кто чем занят сейчас</span></div>';
+  if(names.length){
+    html+='<div class="utable"><div class="urow head" style="grid-template-columns:1.4fr 90px 90px 1.6fr"><span>Исполнитель</span><span>Разделов</span><span>Срочных</span><span>Объекты</span></div>'+
+    names.map(n=>{const l=load[n];const heavy=l.cnt>=6;return '<div class="urow" style="grid-template-columns:1.4fr 90px 90px 1.6fr"><span style="font-weight:600">'+esc(n)+'</span><span'+(heavy?' style="color:var(--red);font-weight:700"':'')+'>'+l.cnt+'</span><span'+(l.soon?' style="color:var(--amber);font-weight:700"':'')+'>'+l.soon+'</span><span class="muted" style="font-size:12px">'+esc(Object.keys(l.objs).join(', '))+'</span></div>';}).join('')+'</div>';
+    html+='<div class="src" style="margin-top:10px">Чем больше «разделов» — тем выше загрузка; <b style="color:var(--red)">красным</b> — кандидаты на перегруз (≥6 разделов). У кого мало разделов — тем можно отдать новые задачи.</div>';
+  } else html+='<div class="empty-note">Пока нет назначенных исполнителей по разделам.</div>';
+  html+='<div class="ptitle" style="margin:18px 4px 10px"><i>›</i><span>Реестр исполнителей</span></div>';
+  const gt='grid-template-columns:1.3fr 1.3fr 1fr 1.3fr 110px 120px 60px';
+  html+='<div class="utable"><div class="urow head" style="'+gt+'"><span>ФИО</span><span>Организация</span><span>Телефон</span><span>Email</span><span>Тип</span><span>Статус</span><span></span></div>';
+  html+=list.map(e=>{const d=canManage?'':' disabled';return '<div class="urow" style="'+gt+'">'+
+    '<input value="'+esc(e.name||'')+'"'+d+' onchange="setExec(\''+e.id+'\',\'name\',this.value)">'+
+    '<input value="'+esc(e.org||'')+'"'+d+' onchange="setExec(\''+e.id+'\',\'org\',this.value)">'+
+    '<input value="'+esc(e.phone||'')+'"'+d+' onchange="setExec(\''+e.id+'\',\'phone\',this.value)">'+
+    '<input value="'+esc(e.email||'')+'"'+d+' onchange="setExec(\''+e.id+'\',\'email\',this.value)">'+
+    '<select'+d+' onchange="setExec(\''+e.id+'\',\'kind\',this.value)">'+EXEC_KINDS.map(kk=>'<option'+(e.kind===kk?' selected':'')+'>'+kk+'</option>').join('')+'</select>'+
+    '<select'+d+' onchange="setExec(\''+e.id+'\',\'status\',this.value)"><option'+(e.status==='активный'?' selected':'')+'>активный</option><option'+(e.status==='чёрный список'?' selected':'')+'>чёрный список</option></select>'+
+    (canManage?'<button class="btn sm danger" onclick="delExec(\''+e.id+'\')">×</button>':'<span></span>')+
+    '</div>';}).join('')+'</div>';
+  return html;
+}
+function execDatalist(){return '<datalist id="execlist">'+execsLive().map(e=>'<option value="'+esc(e.name)+'">').join('')+'</datalist>';}
+
 /* ===================== Главный рендер ===================== */
 function render(){
   if(!currentUser){renderLogin();return;}
@@ -1170,9 +1397,13 @@ function render(){
   if(view==='users'&&currentUser.role==='admin')html+=renderUsers();
   else if(view==='lk')html+=renderLK();
   else if(view==='backoffice')html+=renderBackoffice();
+  else if(view==='execs')html+=renderExecs();
+  else if(view==='tasks'&&(currentUser.role==='admin'||currentUser.role==='director'))html+=renderAllTasks();
+  else if(view==='archive'&&currentUser.role==='admin')html+=renderArchive();
   else if(view==='object'&&O())html+=renderObject();
   else html+=renderPortfolio();
   html+='<div class="src">Каркас разделов — ПП РФ № 87 (ред. 21.10.2025). Марки РД — ГОСТ Р 21.101-2026. Данные команды синхронизируются через облако (Supabase).</div>';
+  html+=execDatalist();
   document.getElementById('root').innerHTML=html;
 }
 
@@ -1181,6 +1412,7 @@ function init(){
   loadLocal();
   if(session.userId)currentUser=DB.users.find(u=>u.id===session.userId)||null;
   if(currentUser&&view==='login')view='portfolio';
+  if(currentUser){if(!session.token)session.token=genToken();startHeartbeat();setTimeout(heartbeat,1500);}
   render();
   fetchRemote();
   setInterval(fetchRemote,60000);
