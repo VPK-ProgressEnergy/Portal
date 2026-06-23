@@ -26,6 +26,9 @@
   body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.45;-webkit-font-smoothing:antialiased}
   a{color:var(--accent);text-decoration:none;cursor:pointer}
   .wrap{max-width:1200px;margin:0 auto;padding:18px 22px 80px}
+  .brandstrip{background:#1c1e26;padding:10px 22px;display:flex;align-items:center;justify-content:center}
+  .bs-logo{height:34px;width:auto;display:block;opacity:.95}
+  .lg-brand-img{display:block;margin:0 auto 14px;max-width:200px;max-height:74px;background:#1c1e26;border-radius:10px;padding:10px 14px}
   input,select,button{font-family:inherit}
 
   /* ===== login ===== */
@@ -337,6 +340,7 @@
   .role-smetchik{color:#993c1d;background:#faece7}
   .role-pom_gip{color:#0f6e56;background:#e1f5ee}
   .role-rp{color:#854f0b;background:#faeeda}
+  .role-advisor{color:#0c447c;background:#e6f1fb}
   .pipc{display:inline-flex;align-items:center;gap:2px;font-size:9.5px;font-weight:800;color:var(--muted)}
   .fdot{display:inline-block;width:11px;height:11px;border-radius:50%;flex-shrink:0}
   .circle{position:relative}
@@ -448,6 +452,7 @@
 </style>
 </head>
 <body>
+<div class="brandstrip"><img class="bs-logo" src="logo.png" alt="ВПК Прогресс Энерго"></div>
 <div class="wrap"><div id="root"></div></div>
 
 <script>
@@ -511,8 +516,8 @@ const EXEC_SEED=[{"id":"ex1","name":"Доценко Николай Никола�
 const TK_STATUSES=['новая','в работе','на проверке','на корректировке','выполнена'];
 const TK_CLS={'новая':'tk-new','в работе':'tk-work','на проверке':'tk-check','на корректировке':'tk-fix','выполнена':'tk-done'};
 const TASK_FROM=['Руководитель проекта','Заказчик','Стройка','Административные','Исполнитель','Функциональный пользователь','ГИП'];
-const ROLE_NAME={admin:'Администратор',director:'Генеральный директор',rp:'Руководитель проекта',gip:'ГИП',podryad:'Подряд',smetchik:'Сметчик',pom_gip:'Помощник ГИПа'};
-const ROLE_LIST=['gip','pom_gip','podryad','smetchik','rp','director','admin'];
+const ROLE_NAME={admin:'Администратор',director:'Генеральный директор',advisor:'Советник ГД',rp:'Руководитель проекта',gip:'ГИП',podryad:'Подряд',smetchik:'Сметчик',pom_gip:'Помощник ГИПа'};
+const ROLE_LIST=['gip','pom_gip','podryad','smetchik','rp','advisor','director','admin'];
 const STAT_FRAC={'не начат':0,'в работе':0.4,'на проверке':0.7,'замечания':0.5,'сдан':1,'корректировка':0.85};
 const ACTUALS=['—','актуален','откорректирован','устарел'];
 const GANTT_RANGES=[['today','Сегодня',1],['week','Неделя',7],['month','Месяц',31],['quarter','Квартал',92],['year','Год',365],['all','Всё',0]];
@@ -534,6 +539,8 @@ let DB={users:[],objects:[],backoffice:[],executors:[]};
 let session={userId:null};
 let currentUser=null, currentObjId=null, view='login', activeTab='dash', hideEmpty=false, openSec={}, configMode=false, ganttRange='all', histOpen={}, openDisc={}, openAccess={};
 let taskFilter={author:'',assignee:'',obj:'',sec:'',from:'',status:'',view:'list'};
+let execPick='';
+function pickExec(name){execPick=(execPick===name?'':name);render();}
 function setTF(f,v){taskFilter[f]=v;render();}
 function resetTF(){taskFilter={author:'',assignee:'',obj:'',sec:'',from:'',status:'',view:taskFilter.view};render();}
 function goTasks(){view='tasks';render();}
@@ -638,10 +645,10 @@ function logout(){
 const O=()=>DB.objects.find(o=>o.id===currentObjId);
 function isMember(o){if(!o||!currentUser)return false;const id=currentUser.id;return o.gipId===id||o.podryadId===id||o.pomGipId===id||(o.team||[]).includes(id);}
 function userScope(){const o=O();return o&&o.access&&o.access[currentUser.id];}
-function canEdit(){const o=O();if(!o||!currentUser)return false;if(currentUser.role==='admin')return true;if(currentUser.role==='director'||currentUser.role==='rp')return false;if(!isMember(o))return false;const sc=userScope();if(sc&&sc.edit===false)return false;return true;}
-function canAsk(){const o=O();if(!o||!currentUser)return false;if(currentUser.role==='admin')return true;if(currentUser.role==='rp')return true;if(currentUser.role==='director')return false;if(!isMember(o))return false;const sc=userScope();if(sc&&sc.ask===false)return false;return true;}
+function canEdit(){const o=O();if(!o||!currentUser)return false;if(currentUser.role==='admin')return true;if(currentUser.role==='director'||currentUser.role==='advisor')return false;if(!isMember(o))return false;const sc=userScope();if(sc&&sc.edit===false)return false;return true;}
+function canAsk(){const o=O();if(!o||!currentUser)return false;if(currentUser.role==='admin')return true;if(currentUser.role==='rp')return true;if(currentUser.role==='director'||currentUser.role==='advisor')return false;if(!isMember(o))return false;const sc=userScope();if(sc&&sc.ask===false)return false;return true;}
 function scopeAllows(k){const sc=userScope();if(sc&&sc.restrict&&Array.isArray(sc.sections))return sc.sections.includes(k);return true;}
-function visibleObjects(){if(!currentUser)return[];const live=DB.objects.filter(o=>!o._del);if(currentUser.role==='admin'||currentUser.role==='director'||currentUser.role==='rp')return live;return live.filter(isMember);}
+function visibleObjects(){if(!currentUser)return[];const live=DB.objects.filter(o=>!o._del);if(currentUser.role==='admin'||currentUser.role==='director'||currentUser.role==='advisor'||currentUser.role==='rp')return live;return live.filter(isMember);}
 function usersLive(){return DB.users.filter(u=>!u._del);}
 function gipUsers(){return usersLive().filter(u=>u.role==='gip');}
 function podryadUsers(){return usersLive().filter(u=>u.role==='podryad');}
@@ -749,7 +756,7 @@ function attnText(k){const r=O().rows[k]||{};const f=r.files||{};const miss=[];i
 function fileFlags(k,r){const f=r.files||{};let h='';if(needAttn(k))h+='<span class="flag fl-attn" title="За пару дней до начала не загружены Задание/Шаблон">⚠ важно</span>';if(f.task)h+='<a class="flag fbtn" href="'+esc(f.task)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Задание">З</a>';if(f.tpl)h+='<a class="flag fbtn" href="'+esc(f.tpl)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Шаблон">Ш</a>';if(f.fin)h+='<a class="flag fbtn fbtn-fin" href="'+esc(f.fin)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Итоговый раздел">И</a>';return h;}
 
 /* бэкофис (общие вопросы) */
-function canBO(){return currentUser&&(currentUser.role==='admin'||currentUser.role==='director');}
+function canBO(){return currentUser&&(currentUser.role==='admin'||currentUser.role==='director'||currentUser.role==='rp');}
 function addBO(){DB.backoffice=DB.backoffice||[];DB.backoffice.unshift({id:uid(),title:'',author:currentUser.id,assignee:'',from:'',due:'',prio:'средний',status:'новая',created:todayStr(),history:[{ts:nowStr(),by:(currentUser.name||currentUser.login),action:'создана'}]});persistBO();render();}
 function setBO(id,f,v){const t=(DB.backoffice||[]).find(x=>x.id===id);if(t){const old=t[f];t[f]=v;if(f==='status'&&old!==v)logTask(t,'статус: '+v);persistBO();if(f==='status'||f==='prio')render();}}
 function delBO(id){const t=(DB.backoffice||[]).find(x=>x.id===id);if(t){t._del=true;persistBO();render();}}
@@ -1132,7 +1139,7 @@ function renderBackoffice(){
 
 /* ===================== Рендер: экраны ===================== */
 function renderLogin(){
-  document.getElementById('root').innerHTML='<div class="login"><div class="card"><div class="logo">О</div><h1>Портал объектов</h1><p>Вход в систему</p>'+
+  document.getElementById('root').innerHTML='<div class="login"><div class="card"><img class="lg-brand-img" src="logo.png" alt="ВПК Прогресс Энерго"><h1>Портал объектов</h1><p>Среда общих данных по ПИР · вход в систему</p>'+
     '<input id="lg-login" placeholder="Логин" onkeydown="if(event.key===\'Enter\')doLogin()">'+
     '<input id="lg-pass" type="password" placeholder="Пароль" onkeydown="if(event.key===\'Enter\')doLogin()">'+
     '<button onclick="doLogin()">Войти</button><div class="err" id="lg-err"></div>'+
@@ -1146,7 +1153,7 @@ function header(){
     '<a class="'+(view==='portfolio'?'active':'')+'" onclick="goPortfolio()">Объекты</a>'+
     '<a class="'+(view==='lk'?'active':'')+'" onclick="goLK()">Личный кабинет'+lkBadge+'</a>'+
     '<a class="'+(view==='backoffice'?'active':'')+'" onclick="goBO()">Бэкофис</a>'+
-    (r==='admin'||r==='director'?'<a class="'+(view==='tasks'?'active':'')+'" onclick="goTasks()">Все задачи</a>':'')+
+    (r==='admin'||r==='director'||r==='advisor'||r==='rp'?'<a class="'+(view==='tasks'?'active':'')+'" onclick="goTasks()">Все задачи</a>':'')+
     (r==='admin'||r==='director'||r==='rp'?'<a class="'+(view==='execs'?'active':'')+'" onclick="goExecs()">Исполнители</a>':'')+
     (r==='admin'?'<a class="'+(view==='users'?'active':'')+'" onclick="goUsers()">Пользователи</a>':'')+
     (r==='admin'?'<a class="'+(view==='archive'?'active':'')+'" onclick="goArchive()">Архив</a>':'')+
@@ -1158,7 +1165,7 @@ function header(){
 }
 function renderPortfolio(){
   const objs=visibleObjects();
-  const canCreate=currentUser.role==='admin'||currentUser.role==='gip';
+  const canCreate=currentUser.role==='admin'||currentUser.role==='gip'||currentUser.role==='rp';
   let head='<div class="pf-head"><h2>Объекты <span style="color:var(--hint);font-weight:600">('+objs.length+')</span></h2>'+(canCreate?'<button class="btn pri" onclick="newObject()">+ Новый объект</button>':'')+'</div>';
   if(!objs.length)return head+'<div class="empty-note">'+(canCreate?'Объектов пока нет. Создайте первый — кнопка «+ Новый объект».':'Вам пока не назначено объектов. Обратитесь к администратору.')+'</div>';
   const cards=objs.map(o=>{const pr=objProgress(o);const ts=taskStats(o);const nm=o.passport.name||'Без названия';const code=o.passport.code||'—';const gip=userName(o.gipId)||o.passport.gip||'ГИП не назначен';
@@ -1371,7 +1378,8 @@ function renderExecs(){
   html+='<div class="ptitle" style="margin:4px 4px 10px"><i>›</i><span>Загруженность — кто чем занят сейчас</span></div>';
   if(names.length){
     html+='<div class="utable"><div class="urow head" style="grid-template-columns:1.4fr 90px 90px 1.6fr"><span>Исполнитель</span><span>Разделов</span><span>Срочных</span><span>Объекты</span></div>'+
-    names.map(n=>{const l=load[n];const heavy=l.cnt>=6;return '<div class="urow" style="grid-template-columns:1.4fr 90px 90px 1.6fr"><span style="font-weight:600">'+esc(n)+'</span><span'+(heavy?' style="color:var(--red);font-weight:700"':'')+'>'+l.cnt+'</span><span'+(l.soon?' style="color:var(--amber);font-weight:700"':'')+'>'+l.soon+'</span><span class="muted" style="font-size:12px">'+esc(Object.keys(l.objs).join(', '))+'</span></div>';}).join('')+'</div>';
+    names.map(n=>{const l=load[n];const heavy=l.cnt>=6;const sel=(execPick===n?' style="background:var(--accent-soft);border-left:3px solid var(--accent);grid-template-columns:1.4fr 90px 90px 1.6fr"':' style="grid-template-columns:1.4fr 90px 90px 1.6fr;cursor:pointer"');return '<div class="urow"'+sel+' onclick="pickExec(\''+esc(n).replace(/'/g,'&#39;')+'\')"><span style="font-weight:600">'+esc(n)+(execPick===n?' · Гантт ниже':'')+'</span><span'+(heavy?' style="color:var(--red);font-weight:700"':'')+'>'+l.cnt+'</span><span'+(l.soon?' style="color:var(--amber);font-weight:700"':'')+'>'+l.soon+'</span><span class="muted" style="font-size:12px">'+esc(Object.keys(l.objs).join(', '))+'</span></div>';}).join('')+'</div>';
+    if(execPick)html+=renderExecGantt(execPick);
     html+='<div class="src" style="margin-top:10px">Чем больше «разделов» — тем выше загрузка; <b style="color:var(--red)">красным</b> — кандидаты на перегруз (≥6 разделов). У кого мало разделов — тем можно отдать новые задачи.</div>';
   } else html+='<div class="empty-note">Пока нет назначенных исполнителей по разделам.</div>';
   html+='<div class="ptitle" style="margin:18px 4px 10px"><i>›</i><span>Реестр исполнителей</span></div>';
@@ -1388,7 +1396,29 @@ function renderExecs(){
     '</div>';}).join('')+'</div>';
   return html;
 }
-function execDatalist(){return '<datalist id="execlist">'+execsLive().map(e=>'<option value="'+esc(e.name)+'">').join('')+'</datalist>';}
+function execDatalist(){const items=[];execsLive().forEach(e=>items.push({n:e.name,l:e.org||''}));usersLive().forEach(u=>{if(['gip','pom_gip','smetchik','podryad'].indexOf(u.role)>=0)items.push({n:u.name||u.login,l:(u.company||'')+' · '+ROLE_NAME[u.role]});});return '<datalist id="execlist">'+items.map(x=>'<option value="'+esc(x.n)+'"'+(x.l?' label="'+esc(x.l)+'"':'')+'>').join('')+'</datalist>';}
+function renderExecGantt(name){
+  const asg=execAssignments(name).filter(a=>a.start&&a.end).map(a=>({a:pdt(a.start),b:pdt(a.end),o:a.o,k:a.k,st:a.st}));
+  // задачи по исполнителю как assignee (есть user) или совпадение по имени
+  const u=usersLive().find(x=>(x.name||x.login)===name);
+  const tks=[];DB.objects.filter(o=>!o._del).forEach(o=>(o.tasks||[]).filter(t=>!t._del&&t.due&&t.status!=='выполнена').forEach(t=>{if((u&&t.assignee===u.id)||(!u&&(t.assignee||'').toString().toLowerCase()===name.toLowerCase())){const due=pdt(t.due);const start=t.created?pdt(t.created.length===10?t.created:t.due):new Date(+due-2*DAY);tks.push({a:start<=due?start:new Date(+due-2*DAY),b:due,t:t,o:o});}}));
+  if(!asg.length&&!tks.length)return '<div class="empty-note" style="margin-top:10px">У «'+esc(name)+'» нет разделов и задач с проставленными датами — Гантт строить не из чего.</div>';
+  const all=asg.map(x=>x).concat(tks.map(x=>({a:x.a,b:x.b})));
+  let min=all[0].a,max=all[0].b;all.forEach(x=>{if(x.a<min)min=x.a;if(x.b>max)max=x.b;});const today=todayD();if(today<min)min=today;if(today>max)max=today;min=new Date(+min-3*DAY);max=new Date(+max+3*DAY);
+  const span=Math.max(1,(max-min)/DAY);const pct=d=>((d-min)/DAY)/span*100;const step=Math.max(7,Math.ceil(span/8/7)*7);
+  let ticks='';for(let t=+min;t<=+max;t+=step*DAY){const d=new Date(t);ticks+='<div class="gtick" style="left:'+pct(d)+'%">'+fmtDM(d)+'</div>';}
+  const todayLine=(today>=min&&today<=max)?'<div class="gtoday" style="left:'+pct(today)+'%"><span>сегодня</span></div>':'';
+  // накладки по разделам
+  const conflicts=new Set();for(let i=0;i<asg.length;i++)for(let j=i+1;j<asg.length;j++)if(ovl(asg[i].a.toISOString().slice(0,10),asg[i].b.toISOString().slice(0,10),asg[j].a.toISOString().slice(0,10),asg[j].b.toISOString().slice(0,10))){conflicts.add(i);conflicts.add(j);}
+  let rows='';
+  asg.forEach((a,i)=>{const L=Math.max(0,pct(a.a)),R=Math.min(100,pct(a.b));const col=STAT_COLOR[a.st]||'#888780';const onm=(a.o.passport&&a.o.passport.name)||'объект';const conf=conflicts.has(i);
+    rows+='<div class="grow"><div class="glabel"><div class="gl-name" title="'+esc(onm)+' · '+esc(labelOf(a.o,a.k))+'"><span class="gl-code">'+esc(labelOf(a.o,a.k))+'</span>'+esc(onm)+(conf?' <span class="gl-attn">⚠ накладка</span>':'')+'</div><div class="gl-meta"><span class="w">раздел · '+esc(a.st)+'</span></div></div><div class="gtrack">'+todayLine+'<div class="gbar" style="left:'+L+'%;width:'+Math.max(1.5,R-L)+'%;background:'+col+'" title="'+esc(onm)+' · '+esc(labelOf(a.o,a.k))+' · '+fmtDM(a.a)+'–'+fmtDM(a.b)+'">'+esc(labelOf(a.o,a.k))+'</div></div></div>';});
+  tks.forEach(x=>{const L=Math.max(0,pct(x.a)),R=Math.min(100,pct(x.b));const col=FROM_COLOR[x.t.from]||'#888780';const onm=(x.o.passport&&x.o.passport.name)||'';
+    rows+='<div class="grow"><div class="glabel"><div class="gl-name" title="'+esc(x.t.title||'')+'"><span class="gl-code" style="background:#faeeda;color:#854f0b">?</span>'+esc(x.t.title||'(вопрос)')+'</div><div class="gl-meta"><span class="w">'+esc(onm)+' · '+esc(x.t.from||'')+'</span></div></div><div class="gtrack">'+todayLine+'<div class="gbar" style="left:'+L+'%;width:'+Math.max(1.5,R-L)+'%;background:'+col+'" title="'+esc(x.t.title||'')+' · до '+fmtDM(x.b)+'">'+esc(x.t.from||'')+'</div></div></div>';});
+  return '<div class="ptitle" style="margin:14px 4px 6px"><i>›</i><span>Загрузка: '+esc(name)+'</span><span style="margin-left:auto"><button class="btn sm" onclick="pickExec(\'\')">Закрыть</button></span></div>'+
+    '<div class="gantt"><div class="gantt-head"><div class="gl">Раздел / вопрос</div><div class="gl" style="position:relative;border:none"><div class="gaxis">'+ticks+todayLine+'</div></div></div>'+rows+'</div>'+
+    (conflicts.size?'<div class="src" style="color:var(--red);margin-top:8px">⚠ Найдены накладки по срокам — отмечены красной плашкой «⚠ накладка». Разнесите даты или передайте часть работы другому исполнителю.</div>':'');
+}
 
 /* ===================== Главный рендер ===================== */
 function render(){
@@ -1398,7 +1428,7 @@ function render(){
   else if(view==='lk')html+=renderLK();
   else if(view==='backoffice')html+=renderBackoffice();
   else if(view==='execs')html+=renderExecs();
-  else if(view==='tasks'&&(currentUser.role==='admin'||currentUser.role==='director'))html+=renderAllTasks();
+  else if(view==='tasks'&&(currentUser.role==='admin'||currentUser.role==='director'||currentUser.role==='advisor'||currentUser.role==='rp'))html+=renderAllTasks();
   else if(view==='archive'&&currentUser.role==='admin')html+=renderArchive();
   else if(view==='object'&&O())html+=renderObject();
   else html+=renderPortfolio();
