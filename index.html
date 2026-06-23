@@ -614,7 +614,7 @@ function getSessions(){return fetch(SB_URL+'/rest/v1/storage?select=value&key=eq
 function doLogin(){
   const lg=document.getElementById('lg-login').value.trim();
   const pw=document.getElementById('lg-pass').value;
-  const u=DB.users.find(x=>x.login.toLowerCase()===lg.toLowerCase()&&x.password===pw&&!x._del);
+  const u=DB.users.find(x=>!x._del&&(x.login||'').trim().toLowerCase()===lg.toLowerCase()&&(x.password||'').trim()===pw.trim());
   if(!u){document.getElementById('lg-err').textContent='Неверный логин или пароль';return;}
   document.getElementById('lg-err').textContent='Проверка сеанса…';
   const myToken=genToken();
