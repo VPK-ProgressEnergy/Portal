@@ -590,7 +590,7 @@ function fetchRemote(){
      if(Array.isArray(legacy))legacy.forEach(o=>{if(o&&o.id)omap[o.id]=o;});
      if(Array.isArray(objrows))objrows.forEach(row=>{try{const o=JSON.parse(row.value);if(o&&o.id){omap[o.id]=o;perObjIds.add(o.id);}}catch(e){}});
      if(legacy!==undefined||(Array.isArray(objrows)&&objrows.length)){DB.objects=mergeById(Object.keys(omap).map(k=>omap[k]),DB.objects);}
-     if(ru!==undefined){DB.users=mergeById(ru,DB.users);if(DB.users.length>(ru.length||0))pushKey('piron_users',DB.users);}
+     if(ru!==undefined){if(ru.length)DB.users=DB.users.filter(u=>u.id!=='seed-admin');DB.users=mergeById(ru,DB.users);if(DB.users.length>(ru.length||0))pushKey('piron_users',DB.users);}
      if(rb!==undefined){DB.backoffice=mergeById(rb,DB.backoffice);if(DB.backoffice.length>(rb.length||0))pushKey('piron_backoffice',DB.backoffice);}
      if(re!==undefined){DB.executors=mergeById(re,DB.executors);if(DB.executors.length>(re.length||0))pushKey('piron_executors',DB.executors);}
      // миграция: у объектов без отдельной записи — создать её
@@ -598,7 +598,7 @@ function fetchRemote(){
      ensureSeed();
      if(session.userId)currentUser=DB.users.find(u=>u.id===session.userId)||currentUser;
      saveLocal();setSync(true,'Синхронизировано');render();
-   }).catch(()=>setSync(false,'Нет соединения'));
+   }).catch(()=>{bootSeed();setSync(false,'Облако недоступно — вход только администратору');render();});
 }
 function ensureSeed(){
   if(!DB.users||!DB.users.length){DB.users=[{id:uid(),login:'admin',password:'admin',name:'Администратор',role:'admin'}];pushKey('piron_users',DB.users);}
@@ -1439,8 +1439,17 @@ function render(){
 }
 
 /* ===================== INIT ===================== */
+function bootSeed(){
+  // Гарантируем доступ администратора даже если облако недоступно (фаервол / Supabase «уснул»).
+  // id='seed-admin' — временная локальная запись, удаляется как только из облака придут реальные пользователи.
+  if(!DB.users||!DB.users.length){DB.users=[{id:'seed-admin',login:'admin',password:'admin',name:'Администратор',role:'admin'}];}
+  if(!DB.objects)DB.objects=[];
+  if(!DB.backoffice)DB.backoffice=[];
+  if(!DB.executors)DB.executors=[];
+}
 function init(){
   loadLocal();
+  bootSeed();
   if(session.userId)currentUser=DB.users.find(u=>u.id===session.userId)||null;
   if(currentUser&&view==='login')view='portfolio';
   if(currentUser){if(!session.token)session.token=genToken();startHeartbeat();setTimeout(heartbeat,1500);}
