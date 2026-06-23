@@ -646,7 +646,7 @@ function logout(){
 const O=()=>DB.objects.find(o=>o.id===currentObjId);
 function isMember(o){if(!o||!currentUser)return false;const id=currentUser.id;return o.gipId===id||o.podryadId===id||o.pomGipId===id||(o.team||[]).includes(id);}
 function userScope(){const o=O();return o&&o.access&&o.access[currentUser.id];}
-function canEdit(){const o=O();if(!o||!currentUser)return false;if(currentUser.role==='admin')return true;if(currentUser.role==='director'||currentUser.role==='advisor')return false;if(!isMember(o))return false;const sc=userScope();if(sc&&sc.edit===false)return false;return true;}
+function canEdit(){const o=O();if(!o||!currentUser)return false;if(currentUser.role==='admin'||currentUser.role==='rp')return true;if(currentUser.role==='director'||currentUser.role==='advisor')return false;if(!isMember(o))return false;const sc=userScope();if(sc&&sc.edit===false)return false;return true;}
 function canAsk(){const o=O();if(!o||!currentUser)return false;if(currentUser.role==='admin')return true;if(currentUser.role==='rp')return true;if(currentUser.role==='director'||currentUser.role==='advisor')return false;if(!isMember(o))return false;const sc=userScope();if(sc&&sc.ask===false)return false;return true;}
 function scopeAllows(k){const sc=userScope();if(sc&&sc.restrict&&Array.isArray(sc.sections))return sc.sections.includes(k);return true;}
 function visibleObjects(){if(!currentUser)return[];const live=DB.objects.filter(o=>!o._del);if(currentUser.role==='admin'||currentUser.role==='director'||currentUser.role==='advisor'||currentUser.role==='rp')return live;return live.filter(isMember);}
