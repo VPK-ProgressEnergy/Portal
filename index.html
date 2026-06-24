@@ -346,6 +346,8 @@
   .fdot{display:inline-block;width:11px;height:11px;border-radius:50%;flex-shrink:0}
   .circle{position:relative}
   .exdot{position:absolute;right:-2px;bottom:-2px;width:13px;height:13px;border-radius:50%;border:2px solid var(--surface)}
+  .circle.late{box-shadow:0 0 0 3px var(--red)}
+  .slate{position:absolute;left:-7px;top:-7px;background:var(--red);color:#fff;font-size:9px;font-weight:800;border-radius:8px;padding:1px 4px;line-height:1.35;border:2px solid var(--surface);white-space:nowrap;z-index:2}
   .exp-block{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px}
   .exp-head{display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:700}
   .exp-head i{color:var(--accent);font-style:normal}
@@ -1046,15 +1048,20 @@ function renderGantt(){
 
 /* ===================== Схема (визуализация ПИРон-стиль) ===================== */
 function secNode(label,k){
-  const o=O();const st=(o.rows[k]||{}).st||'не начат';const frac=STAT_FRAC[st];const col=STAT_COLOR[st];
+  const o=O();const r=o.rows[k]||{};const st=r.st||'не начат';const frac=STAT_FRAC[st];const col=STAT_COLOR[st];
   const deg=Math.round(frac*360);
   const tasks=objTasks(o).filter(t=>t.sec===k&&t.status!=='выполнена');
   const fc={};tasks.forEach(t=>{const f=t.from||'—';fc[f]=(fc[f]||0)+1;});
   const pips=Object.keys(fc).map(f=>'<span class="pipc" title="'+esc(f)+' — '+fc[f]+' вопр."><span class="pip" style="background:'+(FROM_COLOR[f]||'#b9bdc4')+'"></span>'+fc[f]+'</span>').join('');
   const ex=exonOf(k);const exDot=(ex&&ex!=='—')?'<span class="exdot" style="background:'+(EXON_COLOR[ex]||'#888780')+'" title="ЭКЗОН: '+esc(ex)+'"></span>':'';
-  return '<div class="snode" onclick="openTask(\''+k+'\')" title="'+esc(rowName(k))+' — '+st+(ex&&ex!=='—'?' · ЭКЗОН: '+esc(ex):'')+'">'+
+  // просрочка: срок окончания (Окончание) прошёл более 5 дней назад, а раздел не сдан
+  const endD=(r.end&&st!=='сдан')?pdt(r.end):null;
+  const lateDays=endD?Math.floor((todayD()-endD)/DAY):0;
+  const late5=lateDays>5;
+  const lateBadge=late5?'<span class="slate" title="Просрочено на '+lateDays+' дн. (срок окончания '+esc(r.end)+')">⏰ '+lateDays+'д</span>':'';
+  return '<div class="snode" onclick="openTask(\''+k+'\')" title="'+esc(rowName(k))+' — '+st+(ex&&ex!=='—'?' · ЭКЗОН: '+esc(ex):'')+(late5?' · ПРОСРОЧЕНО на '+lateDays+' дн.':'')+'">'+
     '<div class="pips">'+pips+'</div>'+
-    '<div class="circle" style="background:conic-gradient('+col+' '+deg+'deg, var(--gray-bg) 0)"><div class="core">'+esc(label)+'</div>'+exDot+'</div>'+
+    '<div class="circle'+(late5?' late':'')+'" style="background:conic-gradient('+col+' '+deg+'deg, var(--gray-bg) 0)"><div class="core">'+esc(label)+'</div>'+exDot+lateBadge+'</div>'+
     '<div class="snlbl">'+esc(label)+'</div></div>';
 }
 function renderSchema(){
@@ -1073,7 +1080,7 @@ function renderSchema(){
   let iBody=iStd.concat(iCust).map(i=>{const st=irdStatus(i.k);const col={'получено':'#2bb189','не требуется':'#b9bdc4','ожидается':'#5a8fd6','запрошено':'#dd9c3e','нет':'#d4685d'}[st];return '<div class="inode" title="'+esc(i.t)+' — '+st+'"><div class="icirc" style="background:'+col+'">'+esc(i.short)+'</div></div>';}).join('');
   html+='<div class="zone"><div class="zlabel">ИРД (исходные данные)</div><div class="zbody">'+iBody+'</div></div>';
   html+='</div>';
-  html+='<div class="src" style="margin-top:14px">Кружок раздела закрашивается по статусу, точки сверху — открытые вопросы (по приоритету). Внизу — ИРД (цвет = статус). Вверху — заполнение комплектов. Клик по разделу открывает его вопросы.</div>';
+  html+='<div class="src" style="margin-top:14px">Кружок раздела закрашивается по статусу, точки сверху — открытые вопросы (по приоритету). <b style="color:var(--red)">Красная обводка и метка ⏰ — раздел просрочен более 5 дней</b> (срок «Окончание» прошёл, а раздел не сдан). Внизу — ИРД (цвет = статус). Вверху — заполнение комплектов. Клик по разделу открывает его вопросы.</div>';
   return html;
 }
 function bigNode(label,pct,col){const deg=Math.round(pct/100*360);return '<div class="bignode"><div class="bigcirc" style="background:conic-gradient('+col+' '+deg+'deg, var(--gray-bg) 0)"><div class="bigcore"><div class="bigpct">'+pct+'%</div></div></div><div class="biglbl">'+esc(label)+'</div></div>';}
