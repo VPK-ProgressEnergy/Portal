@@ -461,6 +461,8 @@
 const SB_URL='https://urfnpjumxkewyizaxgns.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyZm5wanVteGtld3lpemF4Z25zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMzkyNDMsImV4cCI6MjA5MTgxNTI0M30.vDbdyE3Z4whApQo50Mfgor11SL-dT1PWDOygipxVKtE';
 const SB_H={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
+// Дублируем ключ в адресе запроса: некоторые корпоративные прокси/антивирусы вырезают заголовки apikey/Authorization.
+const SB_Q='apikey='+encodeURIComponent(SB_KEY);
 
 /* ===================== Каркас ===================== */
 const STAGE_P=[
@@ -561,7 +563,7 @@ const pushT={};
 function pushKey(key,data){
   saveLocal();clearTimeout(pushT[key]);
   pushT[key]=setTimeout(()=>{
-    fetch(SB_URL+'/rest/v1/storage',{method:'POST',headers:Object.assign({},SB_H,{'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'}),body:JSON.stringify({key:key,value:JSON.stringify(data)})})
+    fetch(SB_URL+'/rest/v1/storage?'+SB_Q,{method:'POST',headers:Object.assign({},SB_H,{'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'}),body:JSON.stringify({key:key,value:JSON.stringify(data)})})
     .then(r=>setSync(r.ok,r.ok?'Сохранено ☁':'Ошибка сохранения')).catch(()=>setSync(false,'Нет соединения'));
   },900);
 }
@@ -579,8 +581,8 @@ function mergeById(remote,local){
 function fetchRemote(){
   if(isEditing())return;
   Promise.all([
-    fetch(SB_URL+'/rest/v1/storage?select=key,value&key=in.(piron_users,piron_objects,piron_backoffice,piron_executors)',{headers:SB_H}).then(r=>r.json()),
-    fetch(SB_URL+'/rest/v1/storage?select=key,value&key=like.piron_obj_*',{headers:SB_H}).then(r=>r.json())
+    fetch(SB_URL+'/rest/v1/storage?select=key,value&key=in.(piron_users,piron_objects,piron_backoffice,piron_executors)&'+SB_Q,{headers:SB_H}).then(r=>r.json()),
+    fetch(SB_URL+'/rest/v1/storage?select=key,value&key=like.piron_obj_*&'+SB_Q,{headers:SB_H}).then(r=>r.json())
   ]).then(function(res){
      const rows=res[0]||[],objrows=res[1]||[];
      let ru,rb,re,legacy;
@@ -610,7 +612,7 @@ function ensureSeed(){
 /* ===================== Авторизация ===================== */
 const SESSION_TTL=120000;let hbTimer=null;
 const genToken=()=>uid()+uid();
-function getSessions(){return fetch(SB_URL+'/rest/v1/storage?select=value&key=eq.piron_sessions',{headers:SB_H}).then(r=>r.json()).then(rows=>{let s={};try{if(rows&&rows[0])s=JSON.parse(rows[0].value)||{};}catch(e){}return s;});}
+function getSessions(){return fetch(SB_URL+'/rest/v1/storage?select=value&key=eq.piron_sessions&'+SB_Q,{headers:SB_H}).then(r=>r.json()).then(rows=>{let s={};try{if(rows&&rows[0])s=JSON.parse(rows[0].value)||{};}catch(e){}return s;});}
 function doLogin(){
   const lg=document.getElementById('lg-login').value.trim();
   const pw=document.getElementById('lg-pass').value;
@@ -701,7 +703,7 @@ function toggleHist(id){histOpen[id]=!histOpen[id];render();}
 function toggleDisc(id){openDisc[id]=!openDisc[id];render();}
 function addReply(objId,id){const inp=document.getElementById('reply_'+id);const text=inp?inp.value.trim():'';if(!text)return;const t=findTask(objId,id);if(!t)return;t.messages=t.messages||[];t.messages.push({id:uid(),by:currentUser.id,byName:(currentUser.name||currentUser.login),ts:nowStr(),text:text});logTask(t,'ответ');persistFor(objId);render();}
 function attachFile(objId,id,inputEl){const f=inputEl.files&&inputEl.files[0];if(!f)return;if(f.size>MAX_FILE){alert('Файл больше 3 МБ — слишком большой для загрузки. Для крупных файлов лучше дать ссылку на облако (Яндекс.Диск) в ответе.');inputEl.value='';return;}const reader=new FileReader();reader.onload=function(){const fid='file_'+uid();pushKey('piron_'+fid,{name:f.name,type:f.type,data:reader.result});const t=findTask(objId,id);if(!t)return;t.messages=t.messages||[];t.messages.push({id:uid(),by:currentUser.id,byName:(currentUser.name||currentUser.login),ts:nowStr(),text:'',fileId:fid,fileName:f.name,fileSize:f.size});logTask(t,'прикреплён файл: '+f.name);persistFor(objId);render();};reader.readAsDataURL(f);}
-function openFile(fid){setSync(true,'Загрузка файла…');fetch(SB_URL+'/rest/v1/storage?select=value&key=eq.piron_'+fid,{headers:SB_H}).then(r=>r.json()).then(rows=>{if(rows&&rows[0]&&rows[0].value){const v=JSON.parse(rows[0].value);const a=document.createElement('a');a.href=v.data;a.download=v.name||'file';document.body.appendChild(a);a.click();a.remove();setSync(true,'Синхронизировано');}else{setSync(false,'Файл не найден');alert('Файл не найден в облаке');}}).catch(()=>{setSync(false,'Ошибка');alert('Не удалось загрузить файл');});}
+function openFile(fid){setSync(true,'Загрузка файла…');fetch(SB_URL+'/rest/v1/storage?select=value&key=eq.piron_'+fid+'&'+SB_Q,{headers:SB_H}).then(r=>r.json()).then(rows=>{if(rows&&rows[0]&&rows[0].value){const v=JSON.parse(rows[0].value);const a=document.createElement('a');a.href=v.data;a.download=v.name||'file';document.body.appendChild(a);a.click();a.remove();setSync(true,'Синхронизировано');}else{setSync(false,'Файл не найден');alert('Файл не найден в облаке');}}).catch(()=>{setSync(false,'Ошибка');alert('Не удалось загрузить файл');});}
 function openTask(k){activeTab=(k&&k[0]==='p')?'P':'R';openSec[k]=true;render();}
 function openLKTask(objId,k){if(objId==='__bo__'){view='backoffice';render();return;}currentObjId=objId;view='object';activeTab=(k&&k[0]==='p')?'P':'R';if(k)openSec[k]=true;render();}
 function assigneeSelect(t){return '<option value="">— исполнитель —</option>'+usersLive().map(u=>'<option value="'+u.id+'"'+(t.assignee===u.id?' selected':'')+'>'+esc(u.name||u.login)+' ('+ROLE_NAME[u.role]+')</option>').join('');}
