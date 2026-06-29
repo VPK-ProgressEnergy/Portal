@@ -1217,7 +1217,7 @@ function accessEditor(o,u){
 function teamCard(o){
   const canManage=(currentUser.role==='admin');
   const ids=[];[o.gipId,o.pomGipId,o.podryadId].forEach(id=>{if(id&&!ids.includes(id))ids.push(id);});(o.team||[]).forEach(id=>{if(!ids.includes(id))ids.push(id);});
-  const members=ids.map(userById).filter(Boolean);
+  const members=ids.map(userById).filter(u=>u&&!u._del);
   const rows=members.length?members.map(u=>{
     const fixed=(u.id===o.gipId||u.id===o.podryadId||u.id===o.pomGipId);
     const a=o.access&&o.access[u.id];const scoped=a&&a.restrict;
