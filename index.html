@@ -779,7 +779,10 @@ IRD.forEach(g=>g.items.forEach(i=>{IRD_NAME[i.k]=i.t;}));
 const ALLK=STAGE_P.map(x=>x.k).concat(STAGE_R.flatMap(g=>g.items.map(i=>i.k)));
 /* кастомные подразделы объекта */
 function objExtra(o){o=o||O();if(!o)return{P:[],R:[],I:[]};o.extra=o.extra||{};o.extra.P=o.extra.P||[];o.extra.R=o.extra.R||[];o.extra.I=o.extra.I||[];return o.extra;}
-function custCmp(a,b){const la=(a.label||'').trim(),lb=(b.label||'').trim();if(!la&&lb)return 1;if(la&&!lb)return -1;const c=la.localeCompare(lb,'ru',{numeric:true,sensitivity:'base'});return c||((a.t||'').localeCompare(b.t||'','ru',{numeric:true}));}
+/* Принятая последовательность марок РД (по комплектам). Внутри марки — по номеру. */
+const MARK_ORDER=['ПЗ','ПЗУ','ГП','ГР','ГТ','АР','АИ','АС','АД','КР','КЖ','КЖ0','КД','КМ','КМД','ТХ','ТК','ТМ','АТХ','ОВ','АОВ','ВК','НВК','ВС','ВО','ТС','НТС','ГСВ','ГСН','ГС','ЭОМ','ЭО','ЭМ','ЭС','ЭСН','ЭН','ЭГ','СС','НСС','СКС','ЛВС','РК','АК','АУ','АПС','АПТ','СОУЭ','ОС','ПС','ВН','ПБ','ГОЧС','ИТМ','ООС','ОВОС','ОДИ','ПОС','ПОД','ППО','ЭЭ','ИЛО','ОИ'];
+function markRank(label){const m=(label||'').trim().toUpperCase().match(/^[А-ЯЁA-Z]+/);const pre=m?m[0]:'';const i=MARK_ORDER.indexOf(pre);return i<0?MARK_ORDER.length:i;}
+function custCmp(a,b){const la=(a.label||'').trim(),lb=(b.label||'').trim();if(!la&&lb)return 1;if(la&&!lb)return -1;const r=markRank(la)-markRank(lb);if(r)return r;return la.localeCompare(lb,'ru',{numeric:true,sensitivity:'base'})||((a.t||'').localeCompare(b.t||'','ru',{numeric:true}));}
 function customP(){return objExtra().P.slice().sort(custCmp);}
 function customR(){return objExtra().R.slice().sort(custCmp);}
 function customI(){return objExtra().I;}
