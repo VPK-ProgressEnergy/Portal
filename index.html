@@ -779,8 +779,9 @@ IRD.forEach(g=>g.items.forEach(i=>{IRD_NAME[i.k]=i.t;}));
 const ALLK=STAGE_P.map(x=>x.k).concat(STAGE_R.flatMap(g=>g.items.map(i=>i.k)));
 /* кастомные подразделы объекта */
 function objExtra(o){o=o||O();if(!o)return{P:[],R:[],I:[]};o.extra=o.extra||{};o.extra.P=o.extra.P||[];o.extra.R=o.extra.R||[];o.extra.I=o.extra.I||[];return o.extra;}
-function customP(){return objExtra().P;}
-function customR(){return objExtra().R;}
+function custCmp(a,b){const la=(a.label||'').trim(),lb=(b.label||'').trim();if(!la&&lb)return 1;if(la&&!lb)return -1;const c=la.localeCompare(lb,'ru',{numeric:true,sensitivity:'base'});return c||((a.t||'').localeCompare(b.t||'','ru',{numeric:true}));}
+function customP(){return objExtra().P.slice().sort(custCmp);}
+function customR(){return objExtra().R.slice().sort(custCmp);}
 function customI(){return objExtra().I;}
 function rowLabel(k){if(ROW_LABEL[k]!=null)return ROW_LABEL[k];const o=O();if(o&&o.extra){const f=(o.extra.P||[]).concat(o.extra.R||[]).find(x=>x.k===k);if(f)return f.label||'•';}return k;}
 function rowName(k){if(ROW_NAME[k]!=null)return ROW_NAME[k];const o=O();if(o&&o.extra){const f=(o.extra.P||[]).concat(o.extra.R||[]).find(x=>x.k===k);if(f)return f.t||'(подраздел)';}return 'раздел';}
