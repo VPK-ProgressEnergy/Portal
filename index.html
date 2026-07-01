@@ -870,6 +870,22 @@ function printRegistry(){const o=O();if(!o)return;const rows=objRegistry();const
     '<table><thead><tr><th>№</th><th>Стадия</th><th>Код</th><th>Наименование</th><th>Исполнитель</th><th>Начало</th><th>Окончание</th><th>Статус</th><th>Просрочка, дн</th><th>Ожидает ИРД</th><th>Вопр.</th></tr></thead><tbody>'+trs+'</tbody></table>'+
     '<script>window.onload=function(){setTimeout(function(){window.print();},200);};<\/script></body></html>';
   const w=window.open('','_blank');if(!w){alert('Разрешите всплывающие окна, чтобы открыть печать/PDF.');return;}w.document.write(html);w.document.close();}
+function printGraphic(kind){const o=O();if(!o)return;const nm=(o.passport&&o.passport.name)||'Объект';
+  let title,inner;
+  if(kind==='schema'){title='Схема объекта';inner=renderSchema();}
+  else{title='График (диаграмма Ганта)';inner=renderGantt();}
+  let styles='';document.querySelectorAll('style').forEach(s=>styles+=s.textContent+'\n');
+  const w=window.open('','_blank');if(!w){alert('Разрешите всплывающие окна, чтобы открыть печать/PDF.');return;}
+  const doc='<!doctype html><html><head><meta charset="utf-8"><title>'+esc(title)+' — '+esc(nm)+'</title>'+
+    '<style>'+styles+'</style>'+
+    '<style>@page{size:landscape;margin:8mm}*{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}'+
+    'body{background:#fff !important;padding:14px;font-family:Manrope,system-ui,sans-serif}'+
+    '.toolbar,.grange,button{display:none !important}'+
+    '.pf-h{font-size:18px;font-weight:800;margin:0 0 2px}.pf-s{color:#666;font-size:11px;margin-bottom:12px}</style></head><body>'+
+    '<div class="pf-h">'+esc(title)+' — '+esc(nm)+'</div><div class="pf-s">ВПК «Прогресс Энерго» · '+esc(new Date().toLocaleString("ru"))+'</div>'+
+    inner+
+    '<script>window.onload=function(){setTimeout(function(){window.print();},350);};<\/script></body></html>';
+  w.document.write(doc);w.document.close();}
 function statusOpts(t){const cur=t.status||'новая';const isAA=(t.author===currentUser.id||currentUser.role==='admin');return TK_STATUSES.filter(s=>s!=='выполнена'||isAA||s===cur).map(s=>'<option'+(s===cur?' selected':'')+'>'+s+'</option>').join('');}
 function taskActions(objId,t){const me=currentUser.id;let h='';
   if(t.status==='на проверке'&&t.author===me){h+='<button class="btn sm pri" onclick="acceptReview(\''+objId+'\',\''+t.id+'\')">Принять</button><button class="btn sm tk-return" onclick="returnReview(\''+objId+'\',\''+t.id+'\')">Вернуть на корректировку</button>';}
@@ -1071,7 +1087,7 @@ function renderGantt(){
     let custBar='';if(it.cs&&it.ce&&!(it.ce<min||it.cs>max)){const cL=Math.max(0,pct(it.cs)),cR=Math.min(100,pct(it.ce));custBar='<div class="gbar-cust" style="left:'+cL+'%;width:'+Math.max(1.5,cR-cL)+'%" title="Срок заказчика · '+fmtDM(it.cs)+'–'+fmtDM(it.ce)+'">заказчик</div>';}
     rows+='<div class="grow"><div class="glabel"><div class="gl-name" title="'+esc(it.name)+'"><span class="gl-code">'+esc(it.label)+'</span>'+esc(it.name)+(needAttn(it.k)?'<span class="gl-attn" title="За пару дней до старта '+esc(attnText(it.k))+'">⚠ важно · '+esc(attnText(it.k))+'</span>':'')+'</div><div class="gl-meta"><span class="w">'+esc(it.who||'исполнитель не указан')+'</span><span class="gleft '+lc+'">'+lb+'</span></div>'+qhtml+'</div><div class="gtrack">'+grid+todayLine+'<div class="gbar" style="left:'+L+'%;width:'+W+'%;background:'+col+'" title="Подрядчик · '+esc(it.name)+' · '+fmtDM(it.a)+'–'+fmtDM(it.b)+'">'+esc(it.label)+'</div>'+custBar+pins+'</div></div>';});
   const legend='<div class="glegend"><span><i class="lg-pod"></i> срок подрядчика</span><span><i class="lg-cust"></i> срок заказчика</span><span><i class="lg-q"></i> вопрос (срок)</span></div>';
-  return rangeBtns+legend+'<div class="gantt"><div class="gantt-head"><div class="gl">Раздел / исполнитель</div><div class="gl" style="position:relative;border:none"><div class="gaxis">'+ticks+todayLine+'</div></div></div>'+rows+'</div>';}
+  return '<div class="toolbar"><button class="btn" onclick="printGraphic(\'gantt\')" title="Диаграмму в PDF">🖨 Диаграмму в PDF</button></div>'+rangeBtns+legend+'<div class="gantt"><div class="gantt-head"><div class="gl">Раздел / исполнитель</div><div class="gl" style="position:relative;border:none"><div class="gaxis">'+ticks+todayLine+'</div></div></div>'+rows+'</div>';}
 
 /* ===================== Схема (визуализация ПИРон-стиль) ===================== */
 function secNode(label,k){
@@ -1094,7 +1110,7 @@ function secNode(label,k){
 function renderSchema(){
   const o=O();const ird=irdProgress();const all=progressKeys(keysAll());
   // верх: комплект
-  let html='<div class="schema">';
+  let html='<div class="toolbar"><button class="btn" onclick="printGraphic(\'schema\')" title="Схема в PDF">🖨 Схема в PDF</button></div><div class="schema">';
   html+='<div class="zone"><div class="zlabel">Выдача комплекта</div><div class="zbody center">'+
     bigNode('Комплект ИРД',ird.pct,'#1d9e75')+bigNode('Комплект ПИР',all.pct,'#2f5fe0')+'</div></div>';
   // середина: разделы (только включённые) + кастомные
