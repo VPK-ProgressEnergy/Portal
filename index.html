@@ -886,6 +886,30 @@ function printGraphic(kind){const o=O();if(!o)return;const nm=(o.passport&&o.pas
     inner+
     '<script>window.onload=function(){setTimeout(function(){window.print();},350);};<\/script></body></html>';
   w.document.write(doc);w.document.close();}
+function printReport(){const o=O();if(!o)return;const nm=(o.passport&&o.passport.name)||'Объект';
+  const reg=objRegistry();const lateCnt=reg.filter(r=>r.late).length;const irdCnt=reg.filter(r=>r.ird).length;
+  const prog=objProgress(o);const ird=irdProgress();const ts=taskStats(o);
+  const card=(v,l,c)=>'<div class="rc"><div class="rcv"'+(c?' style="color:'+c+'"':'')+'>'+v+'</div><div class="rcl">'+l+'</div></div>';
+  const summary='<div class="rep-sum">'+card(prog.pct+'%','Готовность ПИР')+card(ird.pct+'%','Готовность ИРД')+card(reg.length,'Разделов')+card(lateCnt,'Просрочено',lateCnt?'#c00':'')+card(irdCnt,'Ждут ИРД',irdCnt?'#c77400':'')+card(ts.open,'Вопросов открыто')+card(ts.overdue,'Просроч. вопросов',ts.overdue?'#c00':'')+'</div>';
+  const trs=reg.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(r.stage)+'</td><td>'+esc(r.code)+'</td><td>'+esc(r.name)+'</td><td>'+esc(r.who)+'</td><td>'+esc(r.start)+'</td><td>'+esc(r.end)+'</td><td>'+esc(r.st)+'</td><td class="c">'+(r.late?'<b style="color:#c00">'+esc(r.late)+'</b>':'')+'</td><td class="c">'+(r.ird?'да':'')+'</td><td class="c">'+(r.q||'')+'</td></tr>').join('');
+  const regTable='<table class="rep-tbl"><thead><tr><th>№</th><th>Ст.</th><th>Код</th><th>Наименование</th><th>Исполнитель</th><th>Начало</th><th>Окончание</th><th>Статус</th><th>Просрочка, дн</th><th>ИРД</th><th>Вопр.</th></tr></thead><tbody>'+trs+'</tbody></table>';
+  let styles='';document.querySelectorAll('style').forEach(s=>styles+=s.textContent+'\n');
+  const w=window.open('','_blank');if(!w){alert('Разрешите всплывающие окна, чтобы открыть печать/PDF.');return;}
+  const doc='<!doctype html><html><head><meta charset="utf-8"><title>Отчёт по объекту — '+esc(nm)+'</title>'+
+    '<style>'+styles+'</style>'+
+    '<style>@page{size:landscape;margin:8mm}*{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}'+
+    'body{background:#fff !important;padding:0;font-family:Manrope,system-ui,sans-serif;color:#111}'+
+    '.toolbar,.grange,button{display:none !important}'+
+    '.rep-title{text-align:center;padding:120px 20px 0}.rep-title .co{color:#2e4b7d;font-weight:700;font-size:16px}.rep-title h1{font-size:34px;margin:8px 0}.rep-title .ds{color:#666;font-size:13px}'+
+    '.pageb{page-break-before:always}.rep-h{font-size:17px;font-weight:800;color:#1a2742;border-bottom:2px solid #2e4b7d;padding-bottom:5px;margin:0 0 12px}'+
+    '.rep-sum{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:26px 0}.rc{border:1px solid #d7dade;border-radius:10px;padding:10px 16px;min-width:120px;text-align:center}.rcv{font-size:22px;font-weight:800}.rcl{font-size:11px;color:#666;margin-top:2px}'+
+    '.rep-tbl{border-collapse:collapse;width:100%;font-size:10px}.rep-tbl th,.rep-tbl td{border:1px solid #999;padding:3px 5px;vertical-align:top;text-align:left}.rep-tbl th{background:#e8edf6}.rep-tbl td.c{text-align:center}</style></head><body>'+
+    '<div class="rep-title"><div class="co">ВПК «Прогресс Энерго»</div><h1>Отчёт по объекту</h1><div style="font-size:20px;font-weight:700;margin-bottom:6px">'+esc(nm)+'</div><div class="ds">Среда общих данных по ПИР · сформировано '+esc(new Date().toLocaleString("ru"))+'</div>'+summary+'</div>'+
+    '<div class="pageb"><div class="rep-h">1. Реестр разделов</div>'+regTable+'</div>'+
+    '<div class="pageb"><div class="rep-h">2. Схема объекта</div>'+renderSchema()+'</div>'+
+    '<div class="pageb"><div class="rep-h">3. График (диаграмма Ганта)</div>'+renderGantt()+'</div>'+
+    '<script>window.onload=function(){setTimeout(function(){window.print();},400);};<\/script></body></html>';
+  w.document.write(doc);w.document.close();}
 function statusOpts(t){const cur=t.status||'новая';const isAA=(t.author===currentUser.id||currentUser.role==='admin');return TK_STATUSES.filter(s=>s!=='выполнена'||isAA||s===cur).map(s=>'<option'+(s===cur?' selected':'')+'>'+s+'</option>').join('');}
 function taskActions(objId,t){const me=currentUser.id;let h='';
   if(t.status==='на проверке'&&t.author===me){h+='<button class="btn sm pri" onclick="acceptReview(\''+objId+'\',\''+t.id+'\')">Принять</button><button class="btn sm tk-return" onclick="returnReview(\''+objId+'\',\''+t.id+'\')">Вернуть на корректировку</button>';}
@@ -1044,7 +1068,7 @@ function renderIrd(){const ird=irdProgress();let html='<div class="hero"><div cl
 /* списки разделов */
 function renderList(stage){
   const head='<div class="colhead sec"><span>№</span><span>Раздел</span><span>Исполнитель</span><span>Начало</span><span>Окончание</span><span>Статус</span></div>';
-  const toolbar='<div class="toolbar">'+configBtn()+(configMode?'':'<button class="btn" onclick="toggleEmpty()">'+(hideEmpty?'Показать все':'Скрыть незаполненные')+'</button>')+(configMode?'':'<button class="btn" onclick="exportExcel()" title="Реестр разделов в Excel (CSV)">⬇ Excel</button><button class="btn" onclick="printRegistry()" title="Реестр разделов — печать или сохранить в PDF">🖨 PDF</button>')+'<span style="font-size:12.5px;color:var(--muted)">'+(configMode?'Отметьте разделы проекта и проставьте сроки':'Клик по названию раздела — карточка: ссылка, ЭКЗОН, история, вопросы')+'</span></div>';
+  const toolbar='<div class="toolbar">'+configBtn()+(configMode?'':'<button class="btn" onclick="toggleEmpty()">'+(hideEmpty?'Показать все':'Скрыть незаполненные')+'</button>')+(configMode?'':'<button class="btn" onclick="exportExcel()" title="Реестр разделов в Excel (CSV)">⬇ Excel</button><button class="btn" onclick="printRegistry()" title="Реестр разделов — печать или сохранить в PDF">🖨 PDF</button><button class="btn pri" onclick="printReport()" title="Полный отчёт по объекту в PDF: сводка, реестр, схема, диаграмма">📄 Отчёт</button>')+'<span style="font-size:12.5px;color:var(--muted)">'+(configMode?'Отметьте разделы проекта и проставьте сроки':'Клик по названию раздела — карточка: ссылка, ЭКЗОН, история, вопросы')+'</span></div>';
   let list='';
   if(stage==='P'){
     list=STAGE_P.map(x=>secRow(x.n,x.t,x.k,false)).join('');
