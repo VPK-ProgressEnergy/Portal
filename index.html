@@ -667,7 +667,7 @@ const todayStr=()=>new Date().toISOString().slice(0,10);
 function rowOf(k){const o=O();return o.rows[k]||(o.rows[k]={st:'не начат'});}
 function logHist(k,txt){const r=rowOf(k);r.history=r.history||[];r.history.unshift({ts:nowStr(),txt:txt,by:(currentUser&&(currentUser.name||currentUser.login))||''});if(r.history.length>15)r.history.length=15;}
 function setPassport(k,v){O().passport[k]=v;persistObj();if(k==='code'||k==='name')render();}
-function setCell(k,f,v){const r=rowOf(k);r[f]=v;if(f==='link')logHist(k,'обновлена ссылка');persistObj();}
+function setCell(k,f,v){const r=rowOf(k);const old=r[f]||'';r[f]=v;if(old!==v){const L={start:'срок подрядчика «Начало»',end:'срок подрядчика «Окончание»',custStart:'срок заказчика «Начало»',custEnd:'срок заказчика «Окончание»'};if(f==='link')logHist(k,'обновлена ссылка');else if(L[f])logHist(k,L[f]+': '+(old||'—')+' → '+(v||'—'));}persistObj();}
 function setStatus(k,v){const r=rowOf(k);r.st=v;logHist(k,'статус → '+v);persistObj();render();}
 function setExon(k,v){const r=rowOf(k);r.exonSt=v;logHist(k,'ЭКЗОН: '+v);persistObj();render();}
 function exonOf(k){const r=O().rows[k]||{};return r.exonSt||(r.exon?'согласован':'—');}
@@ -847,6 +847,29 @@ function renderSecDetail(k){
     '<div class="sd-hist"><div class="sd-ht">История изменений</div>'+(hist.length?hist.map(h=>'<div class="he"><span class="ht">'+esc(h.ts)+'</span> — '+esc(h.txt)+(h.by?' <span class="hb">('+esc(h.by)+')</span>':'')+'</div>').join(''):'<div class="he muted">пока нет записей — статусы и изменения логируются здесь автоматически</div>')+'</div>'+
   '</div>';
 }
+/* ===================== Экспорт реестра разделов ===================== */
+function objRegistry(){const o=O();if(!o)return[];const blocked=new Set(blockedSections());const today=todayD();const pk=new Set(keysP());const out=[];
+  keysAll().forEach(k=>{if(!secIncluded(k))return;const r=o.rows[k]||{};const st=r.st||'не начат';const end=r.end?pdt(r.end):null;
+    const late=(end&&st!=='сдан'&&end<today)?Math.floor((today-end)/DAY):'';
+    const q=(objTasks(o)||[]).filter(t=>t.sec===k&&t.status!=='выполнена').length;
+    out.push({stage:pk.has(k)?'П':'Р',code:rowLabel(k),name:rowName(k),who:r.who||'',start:r.start||'',end:r.end||'',st:st,late:late===''?'':String(late),ird:blocked.has(k)?'да':'',q:q||''});});
+  return out;}
+function dlFile(name,content,mime){const b=new Blob([content],{type:mime});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}
+function exportExcel(){const o=O();if(!o)return;const rows=objRegistry();const cq=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"';
+  const head=['№','Стадия','Код','Наименование','Исполнитель','Начало','Окончание','Статус','Просрочка, дн','Ожидает ИРД','Открытых вопросов'];
+  let csv=head.map(cq).join(';')+'\r\n';
+  rows.forEach((r,i)=>{csv+=[i+1,r.stage,r.code,r.name,r.who,r.start,r.end,r.st,r.late,r.ird,r.q].map(cq).join(';')+'\r\n';});
+  const nm=((o.passport&&o.passport.name)||'объект').replace(/[\\\/:*?"<>|]/g,'_');
+  dlFile('Реестр разделов — '+nm+'.csv','﻿'+csv,'text/csv;charset=utf-8');}
+function printRegistry(){const o=O();if(!o)return;const rows=objRegistry();const nm=(o.passport&&o.passport.name)||'Объект';
+  const trs=rows.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(r.stage)+'</td><td>'+esc(r.code)+'</td><td>'+esc(r.name)+'</td><td>'+esc(r.who)+'</td><td>'+esc(r.start)+'</td><td>'+esc(r.end)+'</td><td>'+esc(r.st)+'</td><td class="c">'+(r.late?'<b style="color:#c00">'+esc(r.late)+'</b>':'')+'</td><td class="c">'+(r.ird?'да':'')+'</td><td class="c">'+(r.q||'')+'</td></tr>').join('');
+  const html='<!doctype html><html><head><meta charset="utf-8"><title>Реестр разделов — '+esc(nm)+'</title>'+
+    '<style>body{font:12px Arial,sans-serif;padding:16px;color:#111}h2{margin:0 0 4px}.sub{color:#666;margin-bottom:10px;font-size:11px}'+
+    'table{border-collapse:collapse;width:100%}th,td{border:1px solid #999;padding:4px 6px;text-align:left;vertical-align:top}th{background:#e8edf6}td.c{text-align:center}@media print{@page{size:landscape;margin:10mm}}</style></head><body>'+
+    '<h2>Реестр разделов — '+esc(nm)+'</h2><div class="sub">ВПК «Прогресс Энерго» · сформировано '+esc(new Date().toLocaleString('ru'))+'</div>'+
+    '<table><thead><tr><th>№</th><th>Стадия</th><th>Код</th><th>Наименование</th><th>Исполнитель</th><th>Начало</th><th>Окончание</th><th>Статус</th><th>Просрочка, дн</th><th>Ожидает ИРД</th><th>Вопр.</th></tr></thead><tbody>'+trs+'</tbody></table>'+
+    '<script>window.onload=function(){setTimeout(function(){window.print();},200);};<\/script></body></html>';
+  const w=window.open('','_blank');if(!w){alert('Разрешите всплывающие окна, чтобы открыть печать/PDF.');return;}w.document.write(html);w.document.close();}
 function statusOpts(t){const cur=t.status||'новая';const isAA=(t.author===currentUser.id||currentUser.role==='admin');return TK_STATUSES.filter(s=>s!=='выполнена'||isAA||s===cur).map(s=>'<option'+(s===cur?' selected':'')+'>'+s+'</option>').join('');}
 function taskActions(objId,t){const me=currentUser.id;let h='';
   if(t.status==='на проверке'&&t.author===me){h+='<button class="btn sm pri" onclick="acceptReview(\''+objId+'\',\''+t.id+'\')">Принять</button><button class="btn sm tk-return" onclick="returnReview(\''+objId+'\',\''+t.id+'\')">Вернуть на корректировку</button>';}
@@ -1005,7 +1028,7 @@ function renderIrd(){const ird=irdProgress();let html='<div class="hero"><div cl
 /* списки разделов */
 function renderList(stage){
   const head='<div class="colhead sec"><span>№</span><span>Раздел</span><span>Исполнитель</span><span>Начало</span><span>Окончание</span><span>Статус</span></div>';
-  const toolbar='<div class="toolbar">'+configBtn()+(configMode?'':'<button class="btn" onclick="toggleEmpty()">'+(hideEmpty?'Показать все':'Скрыть незаполненные')+'</button>')+'<span style="font-size:12.5px;color:var(--muted)">'+(configMode?'Отметьте разделы проекта и проставьте сроки':'Клик по названию раздела — карточка: ссылка, ЭКЗОН, история, вопросы')+'</span></div>';
+  const toolbar='<div class="toolbar">'+configBtn()+(configMode?'':'<button class="btn" onclick="toggleEmpty()">'+(hideEmpty?'Показать все':'Скрыть незаполненные')+'</button>')+(configMode?'':'<button class="btn" onclick="exportExcel()" title="Реестр разделов в Excel (CSV)">⬇ Excel</button><button class="btn" onclick="printRegistry()" title="Реестр разделов — печать или сохранить в PDF">🖨 PDF</button>')+'<span style="font-size:12.5px;color:var(--muted)">'+(configMode?'Отметьте разделы проекта и проставьте сроки':'Клик по названию раздела — карточка: ссылка, ЭКЗОН, история, вопросы')+'</span></div>';
   let list='';
   if(stage==='P'){
     list=STAGE_P.map(x=>secRow(x.n,x.t,x.k,false)).join('');
