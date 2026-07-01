@@ -780,7 +780,7 @@ const ALLK=STAGE_P.map(x=>x.k).concat(STAGE_R.flatMap(g=>g.items.map(i=>i.k)));
 /* кастомные подразделы объекта */
 function objExtra(o){o=o||O();if(!o)return{P:[],R:[],I:[]};o.extra=o.extra||{};o.extra.P=o.extra.P||[];o.extra.R=o.extra.R||[];o.extra.I=o.extra.I||[];return o.extra;}
 /* Принятая последовательность марок РД (по комплектам). Внутри марки — по номеру. */
-const MARK_ORDER=['ПЗ','ПЗУ','ГП','ГР','ГТ','АР','АИ','АС','АД','КР','КЖ','КЖ0','КД','КМ','КМД','ТХ','ТК','ТМ','АТХ','ОВ','АОВ','ВК','НВК','ВС','ВО','ТС','НТС','ГСВ','ГСН','ГС','ЭОМ','ЭО','ЭМ','ЭС','ЭСН','ЭН','ЭГ','СС','НСС','СКС','ЛВС','РК','АК','АУ','АПС','АПТ','СОУЭ','ОС','ПС','ВН','ПБ','ГОЧС','ИТМ','ООС','ОВОС','ОДИ','ПОС','ПОД','ППО','ЭЭ','ИЛО','ОИ'];
+const MARK_ORDER=['СП','ОПЗ','СПОЗУ','ПЗ','ПЗУ','ГП','ГР','ГТ','АР','АИ','АС','АД','КР','КЖ','КЖ0','КД','КМ','КМД','ИОС','ТХ','ТК','ТМ','АТХ','ОВ','АОВ','ВК','НВК','ВС','ВО','ТС','НТС','ГСВ','ГСН','ГС','ЭОМ','ЭО','ЭМ','ЭС','ЭСН','ЭН','ЭГ','СС','НСС','СКС','ЛВС','РК','АК','АУ','АПС','АПТ','СОУЭ','ОС','ПС','ВН','ПОС','ПОД','ППО','ООС','ОВОС','ПБ','ГОЧС','ТБЭ','ОДИ','МОДИ','СМ','ИТМ','СМИК','СУКС','Н','СЗЗ','ЭЭ','ИЛО','ОИ'];
 function markRank(label){const m=(label||'').trim().toUpperCase().match(/^[А-ЯЁA-Z]+/);const pre=m?m[0]:'';const i=MARK_ORDER.indexOf(pre);return i<0?MARK_ORDER.length:i;}
 function custCmp(a,b){const la=(a.label||'').trim(),lb=(b.label||'').trim();if(!la&&lb)return 1;if(la&&!lb)return -1;const r=markRank(la)-markRank(lb);if(r)return r;return la.localeCompare(lb,'ru',{numeric:true,sensitivity:'base'})||((a.t||'').localeCompare(b.t||'','ru',{numeric:true}));}
 function customP(){return objExtra().P.slice().sort(custCmp);}
@@ -1157,7 +1157,7 @@ function renderLogin(){
     '<input id="lg-login" placeholder="Логин" onkeydown="if(event.key===\'Enter\')doLogin()">'+
     '<input id="lg-pass" type="password" placeholder="Пароль" onkeydown="if(event.key===\'Enter\')doLogin()">'+
     '<button onclick="doLogin()">Войти</button><div class="err" id="lg-err"></div>'+
-    '<div class="hint">Первый вход администратора: <b>admin</b> / <b>admin</b><br>(после входа смените пароль и заведите пользователей)</div></div></div>';
+    '</div></div>';
 }
 function header(){
   const r=currentUser.role;
