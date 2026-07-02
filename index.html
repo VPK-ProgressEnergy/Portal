@@ -908,6 +908,7 @@ function printReport(){const o=O();if(!o)return;const nm=(o.passport&&o.passport
     '<div class="pageb"><div class="rep-h">1. Реестр разделов</div>'+regTable+'</div>'+
     '<div class="pageb"><div class="rep-h">2. Схема объекта</div>'+renderSchema()+'</div>'+
     '<div class="pageb"><div class="rep-h">3. График (диаграмма Ганта)</div>'+renderGantt()+'</div>'+
+    '<div class="pageb"><div class="rep-h">4. Экспертиза (ГГЭ)</div>'+renderExpertise()+'</div>'+
     '<script>window.onload=function(){setTimeout(function(){window.print();},400);};<\/script></body></html>';
   w.document.write(doc);w.document.close();}
 function statusOpts(t){const cur=t.status||'новая';const isAA=(t.author===currentUser.id||currentUser.role==='admin');return TK_STATUSES.filter(s=>s!=='выполнена'||isAA||s===cur).map(s=>'<option'+(s===cur?' selected':'')+'>'+s+'</option>').join('');}
